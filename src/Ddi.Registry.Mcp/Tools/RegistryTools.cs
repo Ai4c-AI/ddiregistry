@@ -1,5 +1,10 @@
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using Ddi.Registry.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using ModelContextProtocol.Server;
 
 namespace Ddi.Registry.Mcp.Tools;
@@ -15,4 +20,56 @@ public sealed class RegistryTools
         _dbContext = dbContext;
         _httpContextAccessor = httpContextAccessor;
     }
+
+    [McpServerTool(Name = "resolve_urn", Title = "Resolve DDI URN")]
+    [Description("Resolve a DDI URN (urn:ddi:{agency}:{identifier}:{version}) to its HTTP resolution endpoints. Only works for Approved agencies. Requires scope ddi.registry.read.")]
+    public async Task<ResolveUrnResult> ResolveUrn(
+        [Description("DDI URN, e.g. urn:ddi:us.foo:bar:1")] string urn)
+    {
+        if (!HasScope("ddi.registry.read"))
+            return new ResolveUrnResult { Found = false, Message = "Missing required scope 'ddi.registry.read'." };
+
+        if (!DdiUrn.TryParse(urn, out var ddiUrn))
+            return new ResolveUrnResult { Found = false, Message = $"Cannot parse URN: {urn}. Expected urn:ddi:{{agency}}:{{identifier}}:{{version}}." };
+
+        var assignment = await _dbContext.Assignments
+            .Include(a => a.HttpResolvers)
+            .Include(a => a.Agency)
+            .FirstOrDefaultAsync(a => a.AssignmentId == ddiUrn.Agency &&
+                a.Agency.ApprovalState == ApprovalState.Approved);
+        if (assignment == null)
+            return new ResolveUrnResult { Found = false, Message = $"No agency assignment found for {ddiUrn.Agency}. The URN may not be approved." };
+
+        var endpoints = new List<ResolveEndpoint>();
+        foreach (var r in assignment.HttpResolvers)
+            endpoints.Add(new ResolveEndpoint { ResolutionType = r.ResolutionType, Url = r.ResolveUrl(ddiUrn) });
+
+        return new ResolveUrnResult { Found = true, AgencyId = ddiUrn.Agency, AgencyLabel = assignment.Agency.Label, Endpoints = endpoints };
+    }
+
+    // Scope values can be emitted as multiple scope/scp claims by an IdP.
+    private bool HasScope(string requiredScope)
+    {
+        var user = _httpContextAccessor.HttpContext?.User;
+        if (user == null || user.Identity?.IsAuthenticated != true) return false;
+        return user.Claims
+            .Where(c => c.Type == "scope" || c.Type == "scp")
+            .SelectMany(c => c.Value.Split((char[]?)null, System.StringSplitOptions.RemoveEmptyEntries))
+            .Contains(requiredScope, System.StringComparer.Ordinal);
+    }
+}
+
+public class ResolveUrnResult
+{
+    public bool Found { get; set; }
+    public string? AgencyId { get; set; }
+    public string? AgencyLabel { get; set; }
+    public string? Message { get; set; }
+    public List<ResolveEndpoint> Endpoints { get; set; } = new();
+}
+
+public class ResolveEndpoint
+{
+    public string? ResolutionType { get; set; }
+    public string? Url { get; set; }
 }
