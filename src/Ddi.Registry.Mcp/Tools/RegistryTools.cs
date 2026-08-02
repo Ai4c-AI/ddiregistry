@@ -94,6 +94,74 @@ public sealed class RegistryTools
         };
     }
 
+    [McpServerTool(Name = "request_agency", Title = "Request New Agency")]
+    [Description("Submit a new DDI agency identifier request (state=Requested). org is the suggested AgencyId, validated exactly like the web app (ISO 3166 / int / uk). Caller identity is mapped from the validated external IdP token to an existing AspNetUsers row. Requires scope ddi.registry.write. No email is sent.")]
+    public async Task<RequestAgencyResult> RequestAgency(
+        [Description("Agency display label")] string label,
+        [Description("Suggested AgencyId, e.g. us.myorg")] string org)
+    {
+        if (!HasScope("ddi.registry.write"))
+            return new RequestAgencyResult { Success = false, Message = "Missing required scope 'ddi.registry.write'." };
+
+        var validation = AgencyIdValidator.Validate(org, label);
+        if (!validation.Ok) return new RequestAgencyResult { Success = false, Message = validation.Error };
+
+        // Duplicate check BEFORE identity mapping: probing for an existing agency must not
+        // trigger an AspNetUsers lookup (also cheaper when the agency already exists).
+        var existing = await _dbContext.Agencies.FindAsync(org);
+        if (existing != null) return new RequestAgencyResult { Success = false, Message = $"Agency identifier {org} already exists." };
+
+        var user = _httpContextAccessor.HttpContext?.User;
+        if (user == null || user.Identity?.IsAuthenticated != true)
+            return new RequestAgencyResult { Success = false, Message = "No valid identity token presented." };
+
+        var email = user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
+        var sub = user.FindFirst("sub")?.Value;
+        var account = !string.IsNullOrWhiteSpace(email)
+            ? await _dbContext.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpperInvariant())
+            : null;
+        account ??= !string.IsNullOrWhiteSpace(sub) ? await _dbContext.Users.FindAsync(sub) : null;
+        if (account == null)
+            return new RequestAgencyResult { Success = false, Message = "Caller identity could not be mapped to an existing AspNetUsers row." };
+
+        var agency = new Agency
+        {
+            AgencyId = org,
+            Label = label,
+            ApprovalState = ApprovalState.Requested,
+            CreatorId = account.Id,
+            AdminContactId = account.Id,
+            TechnicalContactId = account.Id
+        };
+        _dbContext.Agencies.Add(agency);
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) when (IsAgencyPrimaryKeyViolation(ex))
+        {
+            // Concurrent duplicate request: return the same rejection as a pre-existing agency.
+            return new RequestAgencyResult { Success = false, Message = $"Agency identifier {org} already exists." };
+        }
+
+        return new RequestAgencyResult
+        {
+            Success = true,
+            AgencyId = org,
+            ApprovalState = ApprovalState.Requested,
+            Message = $"Agency {org} submitted with state Requested; pending admin approval."
+        };
+    }
+
+    // Detect a Postgres unique-constraint violation (23505, PK_Agencies); when the inner
+    // exception is not a Postgres unique violation, conservatively let it propagate.
+    private static bool IsAgencyPrimaryKeyViolation(Microsoft.EntityFrameworkCore.DbUpdateException ex)
+    {
+        var pgEx = ex.InnerException as Npgsql.PostgresException;
+        return pgEx?.SqlState == "23505" && pgEx.ConstraintName == "PK_Agencies";
+    }
+
     // Scope values can be emitted as multiple scope/scp claims by an IdP.
     private bool HasScope(string requiredScope)
     {
@@ -126,3 +194,5 @@ public class AgencySummary { public string? AgencyId { get; set; } public string
 
 public class GetServicesResult { public bool Ok { get; set; } public string? Message { get; set; } public List<ServiceSummary> Services { get; set; } = new(); }
 public class ServiceSummary { public string? ServiceId { get; set; } public string? Hostname { get; set; } public int Port { get; set; } public string? ServiceName { get; set; } public string? Protocol { get; set; } public int Priority { get; set; } public int Weight { get; set; } public int TimeToLive { get; set; } }
+
+public class RequestAgencyResult { public bool Success { get; set; } public string? AgencyId { get; set; } public ApprovalState ApprovalState { get; set; } public string? Message { get; set; } }
