@@ -11,13 +11,6 @@
 
   <ItemGroup>
     <None Remove="appsettings.json.dist" />
-    <None Remove="iso3166-countrycodes.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="iso3166-countrycodes.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -40,8 +33,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="NISOCountries.Core" Version="1.2.0" />
-    <PackageReference Include="NISOCountries.Ripe" Version="1.2.0" />
   </ItemGroup>
 
 

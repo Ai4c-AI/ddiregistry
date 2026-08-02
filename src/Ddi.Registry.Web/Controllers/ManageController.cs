@@ -13,10 +13,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Encodings.Web;
-using NISOCountries.Ripe;
-using NISOCountries.Core;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
 
 namespace Ddi.Registry.Web.Controllers
 {
@@ -26,15 +22,13 @@ namespace Ddi.Registry.Web.Controllers
         private readonly IEmailSender _email;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public ManageController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IEmailSender email, IWebHostEnvironment hostingEnvironment)
+        public ManageController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IEmailSender email)
         {
             _context = context;
             _email = email;
             _userManager = userManager;
             _roleManager = roleManager;
-            _hostingEnvironment = hostingEnvironment;
         }
 
         #region Assignment
@@ -835,35 +829,10 @@ namespace Ddi.Registry.Web.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             // allow two digit codes, int, and uk
-            if (addAgencyModel != null && addAgencyModel.AgencyId != null)
+            if (addAgencyModel != null)
             {
-
-                int index = addAgencyModel.AgencyId.IndexOf(".");
-                if (index != 2 && index != 3)
-                {
-                    ModelState.AddModelError("", "The agency id must start with a 2 character ISO 3166 country code or int, For example: us.agencyname");
-                }
-                else
-                {
-                    string code = addAgencyModel.AgencyId.Substring(0, index);
-                    if (index == 2 && string.Compare(code.ToLowerInvariant(), "uk") != 0)
-                    {
-                        string projectRootPath = _hostingEnvironment.ContentRootPath;
-                        var ripeFile = Path.Combine(projectRootPath, "iso3166-countrycodes.txt");
-                        var isoCountries = new RipeISOCountryReader().Parse(ripeFile);
-                        var isoLookup = new ISOCountryLookup<RipeCountry>(isoCountries);
-
-                        var isIsoCode = isoLookup.TryGetByAlpha2(code, out RipeCountry country);
-                        if (!isIsoCode)
-                        {
-                            ModelState.AddModelError("", $"{code} is not a valid country code. The agency id must start with a 2 character ISO 3166 country code or int, For example: us.agencyname");
-                        }
-                    }
-                    else if (index == 3 && string.Compare(code.ToLowerInvariant(),"int") != 0)
-                    {
-                        ModelState.AddModelError("", "The agency id must start with a 2 character ISO 3166 country code or int, For example: us.agencyname");
-                    }
-                }
+                var validation = AgencyIdValidator.Validate(addAgencyModel.AgencyId, addAgencyModel.Label);
+                if (!validation.Ok) ModelState.AddModelError("", validation.Error);
             }
 
             if (ModelState.IsValid)

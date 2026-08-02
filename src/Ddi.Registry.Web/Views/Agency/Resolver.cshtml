@@ -27,13 +27,9 @@ else
     </thead>
     <tbody>
         @foreach (var item in Model.HttpResolvers)
-        {            
-            string url = item.UrlTemplate;
-            url = url.Replace("{agency}",Model.Urn.Agency);
-            url = url.Replace("{identifier}",Model.Urn.Identifier);
-            url = url.Replace("{version}",Model.Urn.Version);
-            url = url.Replace("{urn}",Model.Urn.ToString());
-            
+        {
+            string url = item.ResolveUrl(Model.Urn);
+
             <tr>
                 <td>
                     <a href="@url">@item.ResolutionType</a>

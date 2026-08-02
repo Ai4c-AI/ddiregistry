@@ -12,8 +12,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NISOCountries.Core" Version="1.2.0" />
+    <PackageReference Include="NISOCountries.Ripe" Version="1.2.0" />
     <PackageReference Include="Npgsql" Version="10.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="iso3166-countrycodes.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

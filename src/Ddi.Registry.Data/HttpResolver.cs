@@ -20,6 +20,15 @@ namespace Ddi.Registry.Data
 
         }
 
+        public string ResolveUrl(DdiUrn urn)
+        {
+            if (urn == null) throw new ArgumentNullException(nameof(urn));
+            return UrlTemplate.Replace("{agency}", urn.Agency)
+                .Replace("{identifier}", urn.Identifier)
+                .Replace("{version}", urn.Version)
+                .Replace("{urn}", urn.ToString());
+        }
+
         [JsonIgnore]
         [Required]
         public string Id { get; set; }
