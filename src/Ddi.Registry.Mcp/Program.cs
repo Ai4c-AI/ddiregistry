@@ -94,7 +94,10 @@ if (authenticationEnabled)
 
 var mcpEndpoint = app.MapMcp("/mcp");
 if (authenticationEnabled)
-    mcpEndpoint.RequireAuthorization(new AuthorizeAttribute());
+    // No named scheme on the policy: authentication runs the default scheme (Bearer)
+    // while the 401 challenge is issued by the default challenge scheme (McpAuth),
+    // which appends the protected-resource metadata URI to WWW-Authenticate.
+    mcpEndpoint.RequireAuthorization(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
 
 app.Run();
 
