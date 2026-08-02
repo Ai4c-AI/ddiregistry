@@ -73,6 +73,27 @@ public sealed class RegistryTools
         return new ListAgenciesResult { Ok = true, Agencies = agencies };
     }
 
+    [McpServerTool(Name = "get_services", Title = "Get Agency Services")]
+    [Description("Return all DNS SRV-style service records for the given Assignment (i.e. AgencyId). Requires scope ddi.registry.read.")]
+    public async Task<GetServicesResult> GetServices(
+        [Description("AssignmentId, usually equal to AgencyId, e.g. us.foo")] string assignmentId)
+    {
+        if (!HasScope("ddi.registry.read"))
+            return new GetServicesResult { Ok = false, Message = "Missing required scope 'ddi.registry.read'." };
+
+        var services = await _dbContext.GetServicesForAssignment(assignmentId);
+        return new GetServicesResult
+        {
+            Ok = true,
+            Services = services.Select(s => new ServiceSummary
+            {
+                ServiceId = s.ServiceId, Hostname = s.Hostname, Port = s.Port,
+                ServiceName = s.ServiceName, Protocol = s.Protocol, Priority = s.Priority,
+                Weight = s.Weight, TimeToLive = s.TimeToLive
+            }).ToList()
+        };
+    }
+
     // Scope values can be emitted as multiple scope/scp claims by an IdP.
     private bool HasScope(string requiredScope)
     {
@@ -102,3 +123,6 @@ public class ResolveEndpoint
 
 public class ListAgenciesResult { public bool Ok { get; set; } public string? Message { get; set; } public List<AgencySummary> Agencies { get; set; } = new(); }
 public class AgencySummary { public string? AgencyId { get; set; } public string? Label { get; set; } public ApprovalState ApprovalState { get; set; } public DateTime DateCreated { get; set; } public DateTime? DateApproved { get; set; } }
+
+public class GetServicesResult { public bool Ok { get; set; } public string? Message { get; set; } public List<ServiceSummary> Services { get; set; } = new(); }
+public class ServiceSummary { public string? ServiceId { get; set; } public string? Hostname { get; set; } public int Port { get; set; } public string? ServiceName { get; set; } public string? Protocol { get; set; } public int Priority { get; set; } public int Weight { get; set; } public int TimeToLive { get; set; } }
