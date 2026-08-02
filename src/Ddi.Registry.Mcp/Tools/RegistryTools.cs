@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -47,6 +48,31 @@ public sealed class RegistryTools
         return new ResolveUrnResult { Found = true, AgencyId = ddiUrn.Agency, AgencyLabel = assignment.Agency.Label, Endpoints = endpoints };
     }
 
+    [McpServerTool(Name = "list_agencies", Title = "List Agencies")]
+    [Description("List DDI agencies. Optional country filters by AgencyId prefix ({countryCode}.). Returns all approval states (Requested/Approved/Deprecated/None). Requires scope ddi.registry.read.")]
+    public async Task<ListAgenciesResult> ListAgencies(
+        [Description("ISO country-code prefix, e.g. \"us\"; empty returns all")] string? country = null)
+    {
+        if (!HasScope("ddi.registry.read"))
+            return new ListAgenciesResult { Ok = false, Message = "Missing required scope 'ddi.registry.read'." };
+
+        var query = _dbContext.Agencies.AsQueryable();
+        if (!string.IsNullOrWhiteSpace(country))
+        {
+            var escaped = country.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            query = query.Where(a => EF.Functions.ILike(a.AgencyId, escaped + ".%"));
+        }
+
+        var agencies = await query.OrderBy(a => a.AgencyId)
+            .Select(a => new AgencySummary
+            {
+                AgencyId = a.AgencyId, Label = a.Label, ApprovalState = a.ApprovalState,
+                DateCreated = a.DateCreated, DateApproved = a.DateApproved
+            }).ToListAsync();
+
+        return new ListAgenciesResult { Ok = true, Agencies = agencies };
+    }
+
     // Scope values can be emitted as multiple scope/scp claims by an IdP.
     private bool HasScope(string requiredScope)
     {
@@ -73,3 +99,6 @@ public class ResolveEndpoint
     public string? ResolutionType { get; set; }
     public string? Url { get; set; }
 }
+
+public class ListAgenciesResult { public bool Ok { get; set; } public string? Message { get; set; } public List<AgencySummary> Agencies { get; set; } = new(); }
+public class AgencySummary { public string? AgencyId { get; set; } public string? Label { get; set; } public ApprovalState ApprovalState { get; set; } public DateTime DateCreated { get; set; } public DateTime? DateApproved { get; set; } }
