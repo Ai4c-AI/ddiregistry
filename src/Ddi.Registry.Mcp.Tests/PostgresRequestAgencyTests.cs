@@ -19,9 +19,7 @@ namespace Ddi.Registry.Mcp.Tests
     /// </summary>
     public sealed class PostgresRequestAgencyTests : IAsyncLifetime
     {
-        private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
-            .WithImage("postgres:16-alpine")
-            .Build();
+        private PostgreSqlContainer? _container;
 
         private bool _started;
 
@@ -29,7 +27,8 @@ namespace Ddi.Registry.Mcp.Tests
         {
             try
             {
-                await _postgres.StartAsync();
+                _container = new PostgreSqlBuilder().WithImage("postgres:16-alpine").Build();
+                await _container.StartAsync();
                 _started = true;
             }
             catch
@@ -40,17 +39,19 @@ namespace Ddi.Registry.Mcp.Tests
             }
         }
 
-        public Task DisposeAsync()
+        public async Task DisposeAsync()
         {
-            return _started ? _postgres.DisposeAsync().AsTask() : Task.CompletedTask;
+            if (_container is not null)
+                await _container.DisposeAsync();
         }
 
         [SkippableFact]
         public async Task ConcurrentRequestAgency_SameOrg_ExactlyOneSucceeds()
         {
+            Skip.If(_container is null, "Docker not available");
             Skip.IfNot(_started, "Docker daemon is not available; skipping the PostgreSQL Testcontainer test.");
 
-            using var factory = new McpWebApplicationFactory { ConnectionString = _postgres.GetConnectionString() };
+            using var factory = new McpWebApplicationFactory { ConnectionString = _container!.GetConnectionString() };
             using (var scope = factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
