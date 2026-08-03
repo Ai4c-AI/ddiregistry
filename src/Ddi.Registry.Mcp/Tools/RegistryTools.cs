@@ -106,11 +106,10 @@ public sealed class RegistryTools
         var validation = AgencyIdValidator.Validate(org, label);
         if (!validation.Ok) return new RequestAgencyResult { Success = false, Message = validation.Error };
 
-        // Duplicate check BEFORE identity mapping: probing for an existing agency must not
-        // trigger an AspNetUsers lookup (also cheaper when the agency already exists).
-        var existing = await _dbContext.Agencies.FindAsync(org);
-        if (existing != null) return new RequestAgencyResult { Success = false, Message = $"Agency identifier {org} already exists." };
-
+        // Identity mapping BEFORE the duplicate check (spec §6): a caller must be mapped to an
+        // existing AspNetUsers row before any agency-ID existence signal is emitted, so an
+        // unmappable caller cannot probe existing IDs via the "already exists" vs
+        // "could not be mapped" error split.
         var user = _httpContextAccessor.HttpContext?.User;
         if (user == null || user.Identity?.IsAuthenticated != true)
             return new RequestAgencyResult { Success = false, Message = "No valid identity token presented." };
@@ -123,6 +122,10 @@ public sealed class RegistryTools
         account ??= !string.IsNullOrWhiteSpace(sub) ? await _dbContext.Users.FindAsync(sub) : null;
         if (account == null)
             return new RequestAgencyResult { Success = false, Message = "Caller identity could not be mapped to an existing AspNetUsers row." };
+
+        // Duplicate check AFTER identity mapping.
+        var existing = await _dbContext.Agencies.FindAsync(org);
+        if (existing != null) return new RequestAgencyResult { Success = false, Message = $"Agency identifier {org} already exists." };
 
         var agency = new Agency
         {
