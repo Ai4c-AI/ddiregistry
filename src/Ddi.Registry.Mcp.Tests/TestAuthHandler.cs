@@ -25,6 +25,8 @@ namespace Ddi.Registry.Mcp.Tests
             {
                 "full" => new[] { new Claim(ClaimTypes.Email, EmailClaim), new Claim("scope", "ddi.registry.read ddi.registry.write") },
                 "read" => new[] { new Claim(ClaimTypes.Email, EmailClaim), new Claim("scope", "ddi.registry.read") },
+                // Authenticated but carries no scope claim at all (scope-denied path for read tools).
+                "no-scope" => new[] { new Claim(ClaimTypes.Email, EmailClaim) },
                 "unknown" => new[] { new Claim(ClaimTypes.Email, "unknown@example.com"), new Claim("scope", "ddi.registry.write") },
                 "sub" => new[] { new Claim("sub", SeedUserId), new Claim("scope", "ddi.registry.write") },
                 // Regression case: required scope is in the second same-name claim.

@@ -172,5 +172,42 @@ namespace Ddi.Registry.Mcp.Tests
             var result = await client.CallToolAsync("resolve_urn", new Dictionary<string, object> { ["urn"] = "urn:ddi:us.testorg:bar:1" });
             Assert.Contains("https://us.testorg.example.org/bar", result.Content.ToString());
         }
+
+        [Fact]
+        public async Task ListAgencies_ScopeMissing_ReturnsError()
+        {
+            using var factory = new McpWebApplicationFactory();
+            factory.Seed();
+            // "no-scope" principal is authenticated but carries no scope claim.
+            var client = await ConnectAsync(factory, "no-scope");
+            var result = await client.CallToolAsync("list_agencies", new Dictionary<string, object>());
+            Assert.Contains("Missing required scope", result.Content.ToString());
+        }
+
+        [Fact]
+        public async Task GetServices_ReturnsServices()
+        {
+            using var factory = new McpWebApplicationFactory();
+            factory.Seed();
+            var client = await ConnectAsync(factory);
+            var result = await client.CallToolAsync("get_services", new Dictionary<string, object> { ["assignmentId"] = "us.testorg" });
+            // Projection of the seeded Service row for us.testorg (hostname/serviceName match the
+            // HttpResolver seeded alongside it).
+            Assert.Contains("\"ok\":true", result.Content.ToString());
+            Assert.Contains("\"hostname\":\"svc.us.testorg.example.org\"", result.Content.ToString());
+            Assert.Contains("\"serviceName\":\"website\"", result.Content.ToString());
+            Assert.Contains("\"port\":8080", result.Content.ToString());
+        }
+
+        [Fact]
+        public async Task GetServices_UnknownAssignment_ReturnsEmpty()
+        {
+            using var factory = new McpWebApplicationFactory();
+            factory.Seed();
+            var client = await ConnectAsync(factory);
+            var result = await client.CallToolAsync("get_services", new Dictionary<string, object> { ["assignmentId"] = "nonexistent" });
+            Assert.Contains("\"ok\":true", result.Content.ToString());
+            Assert.Contains("\"services\":[]", result.Content.ToString());
+        }
     }
 }

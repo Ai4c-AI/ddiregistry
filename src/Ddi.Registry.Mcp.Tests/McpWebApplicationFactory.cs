@@ -18,7 +18,7 @@ namespace Ddi.Registry.Mcp.Tests
     /// The real Postgres DbContext is swapped for EF InMemory (unless a ConnectionString is supplied,
     /// as the 23505 concurrency test requires real Postgres), and a request-header-driven Test
     /// authentication scheme is installed. Seeding writes a local user, an Approved agency with an
-    /// Assignment + HttpResolver, matching the resolution used by the MCP tools.
+    /// Assignment + HttpResolver + Service, matching the resolution used by the MCP tools.
     /// </summary>
     public class McpWebApplicationFactory : WebApplicationFactory<Program>
     {
@@ -73,6 +73,17 @@ namespace Ddi.Registry.Mcp.Tests
             ctx.Agencies.Add(new Agency { AgencyId = agencyId, Label = "Test Org", ApprovalState = ApprovalState.Approved, CreatorId = user.Id, AdminContactId = user.Id, TechnicalContactId = user.Id });
             ctx.Assignments.Add(new Assignment { AssignmentId = agencyId, AgencyId = agencyId });
             ctx.HttpResolvers.Add(new HttpResolver { AssignmentId = agencyId, ResolutionType = HttpResolver.ServiceNameWeb, UrlTemplate = "https://{agency}.example.org/{identifier}" });
+            ctx.Services.Add(new Service
+            {
+                AssignmentId = agencyId,
+                Hostname = "svc.us.testorg.example.org",
+                Port = 8080,
+                ServiceName = HttpResolver.ServiceNameWeb,
+                Protocol = "tcp",
+                Priority = 1,
+                Weight = 10,
+                TimeToLive = 300
+            });
             ctx.SaveChanges();
         }
     }
