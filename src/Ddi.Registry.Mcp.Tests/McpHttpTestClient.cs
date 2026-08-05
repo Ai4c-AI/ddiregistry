@@ -45,6 +45,15 @@ namespace Ddi.Registry.Mcp.Tests
             return client;
         }
 
+        public static async Task<McpHttpTestClient> ConnectWithBearerTokenAsync(McpWebApplicationFactory factory, string accessToken)
+        {
+            var httpClient = factory.CreateClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var client = new McpHttpTestClient(httpClient, "/mcp");
+            await client.InitializeAsync();
+            return client;
+        }
+
         public async Task InitializeAsync()
         {
             await SendAsync("initialize", InitializeParams(), _nextId++);

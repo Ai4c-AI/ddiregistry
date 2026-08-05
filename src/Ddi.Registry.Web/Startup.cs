@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -16,18 +19,21 @@ using Ddi.Registry.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using AspNetCoreRateLimit;
 
 namespace Ddi.Registry.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -58,6 +64,36 @@ namespace Ddi.Registry.Web
                 //.AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders(); 
+
+            var keycloakAuthority = Configuration["Authentication:Keycloak:Authority"];
+            var keycloakClientId = Configuration["Authentication:Keycloak:ClientId"];
+            var keycloakClientSecret = Configuration["Authentication:Keycloak:ClientSecret"];
+            if (!string.IsNullOrWhiteSpace(keycloakAuthority) &&
+                !string.IsNullOrWhiteSpace(keycloakClientId) &&
+                !string.IsNullOrWhiteSpace(keycloakClientSecret))
+            {
+                services.AddAuthentication()
+                    .AddOpenIdConnect("Keycloak", options =>
+                    {
+                        options.SignInScheme = IdentityConstants.ExternalScheme;
+                        options.Authority = keycloakAuthority;
+                        options.ClientId = keycloakClientId;
+                        options.ClientSecret = keycloakClientSecret;
+                        options.RequireHttpsMetadata = !Environment.IsDevelopment();
+                        options.CallbackPath = "/signin-oidc";
+                        options.ResponseType = OpenIdConnectResponseType.Code;
+                        options.UsePkce = true;
+                        options.SaveTokens = false;
+                        options.GetClaimsFromUserInfoEndpoint = true;
+                        options.Scope.Clear();
+                        options.Scope.Add("openid");
+                        options.Scope.Add("profile");
+                        options.Scope.Add("email");
+                        options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                    });
+            }
+
+            services.AddScoped<ExternalLoginAccountLinker>();
 
             var emailconfig = Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
             services.AddTransient<IEmailSender, EmailSender>(i => new EmailSender(emailconfig));
@@ -94,7 +130,7 @@ namespace Ddi.Registry.Web
                 app.UseHsts();
             }
 
-            UpdateDatabase(app).Wait();
+            UpdateDatabase(app, env).Wait();
             CreateRoles(app).Wait();
 
             app.UseHttpsRedirection();
@@ -113,7 +149,7 @@ namespace Ddi.Registry.Web
             }); 
         }
 
-        private static async Task UpdateDatabase(IApplicationBuilder app)
+        private static async Task UpdateDatabase(IApplicationBuilder app, IWebHostEnvironment env)
         {
             using (var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
@@ -121,7 +157,14 @@ namespace Ddi.Registry.Web
             {
                 using (var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
                 {
-                    await context.Database.MigrateAsync();
+                    if (!context.Database.IsRelational())
+                    {
+                        await context.Database.EnsureCreatedAsync();
+                    }
+                    else
+                    {
+                        await context.Database.MigrateAsync();
+                    }
                 }
             }
         }

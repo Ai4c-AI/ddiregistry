@@ -1,5 +1,6 @@
 using Ddi.Registry.Data;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -24,22 +25,28 @@ namespace Ddi.Registry.Mcp.Tests
     {
         /// <summary>When set, the factory uses this Npgsql connection string instead of EF InMemory.</summary>
         public string? ConnectionString { get; init; }
+        public bool UseRealOidc { get; }
+        public string? OidcAuthority { get; }
+        public string? OidcAudience { get; }
 
-        public McpWebApplicationFactory()
+        public McpWebApplicationFactory(string? oidcAuthority = null, string? oidcAudience = null)
         {
             // Program.cs reads MCP:Oidc:* and MCP:ReverseProxy:* in its top-level statements, before
             // WebApplicationFactory's ConfigureAppConfiguration hook is applied. Environment variables
             // (with __ as the section separator) are loaded by WebApplication.CreateBuilder before any
             // top-level read, so they are the reliable channel for enabling authentication in tests.
-            SetEnvironmentVariable("MCP__Oidc__Authority", "https://test-idp.invalid");
-            SetEnvironmentVariable("MCP__Oidc__Audience", "mcp-test-audience");
+            UseRealOidc = !string.IsNullOrWhiteSpace(oidcAuthority);
+            OidcAuthority = oidcAuthority;
+            OidcAudience = oidcAudience;
+            SetEnvironmentVariable("MCP__Oidc__Authority", oidcAuthority ?? "https://test-idp.invalid");
+            SetEnvironmentVariable("MCP__Oidc__Audience", oidcAudience ?? "mcp-test-audience");
             SetEnvironmentVariable("MCP__Oidc__Scopes", "ddi.registry.read ddi.registry.write");
             SetEnvironmentVariable("MCP__ReverseProxy__TrustedProxy", "127.0.0.1");
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.UseEnvironment("Testing");
+            builder.UseEnvironment(UseRealOidc ? "Development" : "Testing");
             builder.ConfigureServices(services =>
             {
                 services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
@@ -48,14 +55,21 @@ namespace Ddi.Registry.Mcp.Tests
                     services.AddDbContext<ApplicationDbContext>(o => o.UseInMemoryDatabase("mcp-test"));
                 else
                     services.AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(ConnectionString));
-                // Program's fallback policy has no named scheme. Override only
-                // authentication for tests; retain McpAuth as the challenge scheme.
-                services.AddAuthentication(options =>
+                if (!UseRealOidc)
                 {
-                    options.DefaultAuthenticateScheme = TestAuthHandler.SchemeName;
-                    options.DefaultChallengeScheme = "McpAuth";
-                })
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(TestAuthHandler.SchemeName, _ => { });
+                    // Program's fallback policy has no named scheme. Override only
+                    // authentication for tests; retain McpAuth as the challenge scheme.
+                    services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = TestAuthHandler.SchemeName;
+                        options.DefaultChallengeScheme = "McpAuth";
+                    })
+                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(TestAuthHandler.SchemeName, _ => { });
+                }
+                else
+                {
+                    services.Configure<JwtBearerOptions>("Bearer", options => options.TokenValidationParameters.ClockSkew = TimeSpan.Zero);
+                }
             });
         }
 

@@ -22,6 +22,8 @@
 
 The MCP service remains a generic OAuth 2.0 protected resource. Its existing JwtBearer and MCP protected-resource metadata configuration remains provider-neutral. In local environments, `MCP:Oidc:Authority` points to the Keycloak realm issuer and `MCP:Oidc:Audience` identifies the MCP resource client.
 
+Compose uses the fixed development issuer `http://keycloak.localtest.me:8180/realms/ddi-registry`. `localtest.me` resolves to loopback for the browser, while the Keycloak Compose service has the same name as a Docker network alias for Web and MCP containers. Keycloak is configured with this hostname and listens on port 8180 in both locations, so discovery, authorization redirects, JWKS retrieval, and token `iss` use the same URL for every participant.
+
 The Web application retains ASP.NET Core Identity as its application session and authorization authority. It adds a named `Keycloak` OpenID Connect external-login scheme using authorization code flow with PKCE. The handler uses a separate Keycloak client from MCP because browser redirect URIs and client credentials have distinct requirements.
 
 The Keycloak realm is test-only and stored as a versioned import file. It declares the following clients and identities:
@@ -39,11 +41,17 @@ The Keycloak clients issue tokens whose issuer is the realm URL, whose audience 
 
 The Compose environment includes the existing PostgreSQL and Web services plus:
 
-- `keycloak`: imports the versioned test realm on startup; exposes its administration and login UI for local development; uses a documented local-only administrator default that can be overridden through environment variables.
-- `mcp`: builds and runs the MCP host, configures its Authority using the Compose-internal Keycloak realm address, and waits for PostgreSQL and Keycloak readiness.
+- `keycloak`: imports the versioned test realm on startup; exposes its administration and login UI at `http://keycloak.localtest.me:8180`; uses a documented local-only administrator default that can be overridden through environment variables.
+- `mcp`: builds and runs the MCP host, configures its Authority with the shared fixed Keycloak issuer, and waits for PostgreSQL and Keycloak readiness.
 - `registry`: receives the Web Keycloak Authority, client ID, client secret, and callback configuration. It waits for Keycloak readiness before startup.
 
 The realm's redirect URI includes the local Web callback path `/signin-oidc`. No production hostname, credential, or secret is encoded in the realm import. Compose documentation distinguishes the local defaults from production configuration.
+
+Keycloak data is intentionally ephemeral in Compose: no persistent volume is attached. The realm is re-imported from the versioned file on every container start, guaranteeing a deterministic state for development and testing. The trade-off is that any runtime changes (e.g., test user password resets) are lost on restart — acceptable for a dev/test environment.
+
+### Realm Assets
+
+The realm definition is stored as a Keycloak JSON realm export at `infra/keycloak/realm.json`. It is treated as a versioned configuration file (full replacement on each change). Realm upgrades follow the standard Keycloak export/import workflow: export the dev realm, replace the file, and commit. No incremental migration tooling is needed for a single test realm.
 
 ## Web Login Flow
 
@@ -55,6 +63,10 @@ The realm's redirect URI includes the local Web callback path `/signin-oidc`. No
 
 Application roles remain in the local Identity database. Keycloak realm roles do not directly grant Web application permissions.
 
+### Web Logout
+
+The default behavior is local-only logout: ASP.NET Core Identity clears its session cookie, but the Keycloak session may remain active. A subsequent "Sign in with Keycloak" click re-authenticates silently without prompting for credentials. This is acceptable for initial implementation. If shared-device concerns arise later, RP-initiated logout to Keycloak's end_session_endpoint can be added as a follow-up.
+
 ## MCP Token Flow
 
 1. The integration fixture starts Keycloak and waits for the realm discovery document.
@@ -62,6 +74,10 @@ Application roles remain in the local Identity database. Keycloak realm roles do
 3. The MCP host uses the Keycloak discovery document and JWKS to validate the token. Read operations require `ddi.registry.read`; `request_agency` requires `ddi.registry.write` and maps the caller to the existing local user.
 4. A client-credentials request from `mcp-service-client` obtains a read-only token. Read operations succeed while write operations return the existing explicit missing-scope tool result.
 5. Missing token, invalid audience, and missing scope requests retain their established rejection semantics: unauthorized HTTP requests receive `401` and authenticated callers without a required scope receive an explicit MCP error result.
+
+Token lifetime validation is handled by the standard JwtBearer middleware (`LifetimeValidator`). The MCP client is responsible for token refresh before expiry — this is standard OAuth behavior. The test suite includes an expired-token rejection case in the real-provider tests.
+
+Identity mapping uses the email claim as the primary path: the token's `email` claim is matched against `AspNetUsers.NormalizedEmail`. The existing `sub`-based fallback in `RegistryTools.RequestAgency` is preserved for non-Keycloak IdPs but is not expected to match for Keycloak-issued tokens (Keycloak `sub` values are realm-specific GUIDs that do not correspond to `AspNetUsers.Id`).
 
 ## Testing
 

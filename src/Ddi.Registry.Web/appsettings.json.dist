@@ -16,6 +16,13 @@
     "ReCaptchaPublicKey": "xxx",
     "ReCaptchaPrivateKey": "xxx"
   },
+  "Authentication": {
+    "Keycloak": {
+      "Authority": "https://keycloak.example/realms/ddi-registry",
+      "ClientId": "registry-web",
+      "ClientSecret": "set-through-user-secrets-or-environment"
+    }
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Warning"

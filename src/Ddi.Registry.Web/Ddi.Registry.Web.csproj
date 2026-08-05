@@ -26,6 +26,7 @@
     <PackageReference Include="MailKit" Version="4.14.1" />
 	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.2" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -41,11 +42,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Ddi.Registry.Web.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
   
   <ItemGroup>
     <Folder Include="wwwroot\assets\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="appsettings.json" />
   </ItemGroup>
 
 

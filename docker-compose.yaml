@@ -1,0 +1,85 @@
+# docker-compose.yml
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: ddi_registry
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 12
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: ["start-dev", "--import-realm"]
+    ports:
+      - "8180:8180"
+    environment:
+      KC_HTTP_PORT: "8180"
+      KC_HOSTNAME: http://keycloak.localtest.me:8180
+      KC_HEALTH_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-local-admin-password}
+    volumes:
+      - ./infra/keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000 && printf \"GET /health/ready HTTP/1.0\\r\\n\\r\\n\" >&3 && grep -q \"200\" <&3'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      default:
+        aliases:
+          - keycloak.localtest.me
+
+  registry:
+    build:
+      context: .                          # 仓库根目录（Dockerfile 在 src/Ddi.Registry.Web/）
+      dockerfile: src/Ddi.Registry.Web/Dockerfile
+    ports:
+      - "8000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=db;Database=ddi_registry;Username=postgres;Password=${DB_PASSWORD}"
+      EmailConfiguration__Host: ${SMTP_HOST:-localhost}
+      EmailConfiguration__Port: ${SMTP_PORT:-25}
+      EmailConfiguration__EnableSSL: "false"
+      EmailConfiguration__FromAddress: registry@example.internal
+      Recaptcha__ReCaptchaPublicKey: ""   # 内网留空，注册页不强制验证码
+      Recaptcha__ReCaptchaPrivateKey: ""
+      Authentication__Keycloak__Authority: http://keycloak.localtest.me:8180/realms/ddi-registry
+      Authentication__Keycloak__ClientId: registry-web
+      Authentication__Keycloak__ClientSecret: ${REGISTRY_WEB_CLIENT_SECRET:-local-registry-web-secret}
+    depends_on:
+      db:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+  mcp:
+    build:
+      context: .
+      dockerfile: src/Ddi.Registry.Mcp/Dockerfile
+    ports:
+      - "8001:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__DefaultConnection: "Host=db;Database=ddi_registry;Username=postgres;Password=${DB_PASSWORD}"
+      MCP__Oidc__Authority: http://keycloak.localtest.me:8180/realms/ddi-registry
+      MCP__Oidc__Audience: mcp-client
+      MCP__Oidc__Scopes: ddi.registry.read ddi.registry.write
+    depends_on:
+      db:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+volumes:
+  pgdata:
