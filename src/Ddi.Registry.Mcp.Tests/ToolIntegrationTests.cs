@@ -21,15 +21,40 @@ namespace Ddi.Registry.Mcp.Tests
         }
 
         [Fact]
-        public async Task ToolsList_ReturnsExactlyFourTools()
+        public async Task ToolsList_ReturnsExactlyTwentyThreeTools()
         {
             using var factory = new McpWebApplicationFactory();
             factory.Seed();
             var client = await ConnectAsync(factory);
             var tools = await client.ListToolsAsync();
             var names = tools.Select(t => t.Name).ToHashSet();
-            Assert.Equal(new[] { "resolve_urn", "list_agencies", "get_services", "request_agency" }.OrderBy(x => x), names.OrderBy(x => x));
-            Assert.Equal(4, names.Count);
+            Assert.Equal(new[]
+            {
+                "approve_concept",
+                "approve_representation",
+                "approve_variable",
+                "deprecate_concept",
+                "deprecate_representation",
+                "deprecate_variable",
+                "resolve_urn",
+                "list_agencies",
+                "get_services",
+                "request_agency",
+                "list_concepts",
+                "get_concept",
+                "list_representations",
+                "get_representation",
+                "list_variables",
+                "get_variable",
+                "get_variable_publishability",
+                "request_concept",
+                "request_representation",
+                "request_variable",
+                "update_concept_request",
+                "update_representation_request"
+                ,"update_variable_request"
+            }.OrderBy(x => x), names.OrderBy(x => x));
+            Assert.Equal(23, names.Count);
         }
 
         [Fact]

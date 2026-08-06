@@ -719,6 +719,260 @@ namespace Ddi.Registry.Web.Controllers
         }
 
         [Authorize]
+        public async Task<IActionResult> AddConceptRegistration(string agencyId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (!await _context.ManagesAgency(userId, agencyId))
+            {
+                return Forbid();
+            }
+
+            var model = new ConceptRegistrationModel()
+            {
+                AgencyId = agencyId,
+                Version = "1.0"
+            };
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddConceptRegistration(ConceptRegistrationModel model)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (!await _context.ManagesAgency(userId, model.AgencyId))
+            {
+                return Forbid();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var irdi = RegistryIrdi.BuildConceptIrdi(model.AgencyId, model.Name, model.Version);
+            var existing = await _context.ConceptRegistrations.FirstOrDefaultAsync(c => c.Irdi == irdi);
+            if (existing != null)
+            {
+                ModelState.AddModelError("", "The concept already exists, please try again");
+                return View(model);
+            }
+
+            var concept = new ConceptRegistration
+            {
+                Irdi = irdi,
+                AgencyId = model.AgencyId,
+                Name = model.Name,
+                Version = model.Version,
+                Label = model.Label,
+                ApprovalState = ApprovalState.Requested
+            };
+
+            _context.ConceptRegistrations.Add(concept);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("ViewAgency", new { agencyId = model.AgencyId });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> EditConceptRegistration(string irdi)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var concept = await _context.ConceptRegistrations.FirstOrDefaultAsync(c => c.Irdi == irdi);
+            if (concept == null || !await _context.ManagesAgency(userId, concept.AgencyId))
+            {
+                return Forbid();
+            }
+
+            var model = new ConceptRegistrationModel
+            {
+                AgencyId = concept.AgencyId,
+                Name = concept.Name,
+                Version = concept.Version,
+                Label = concept.Label
+            };
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> EditConceptRegistration(ConceptRegistrationModel model)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var irdi = RegistryIrdi.BuildConceptIrdi(model.AgencyId, model.Name, model.Version);
+            var concept = await _context.ConceptRegistrations.FirstOrDefaultAsync(c => c.Irdi == irdi);
+            if (concept == null || !await _context.ManagesAgency(userId, model.AgencyId))
+            {
+                return Forbid();
+            }
+
+            if (concept.ApprovalState != ApprovalState.Requested)
+            {
+                return Forbid();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            concept.Label = model.Label;
+            concept.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("ViewAgency", new { agencyId = model.AgencyId });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> AddRepresentationRegistration(string agencyId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (!await _context.ManagesAgency(userId, agencyId))
+            {
+                return Forbid();
+            }
+
+            var model = new RepresentationRegistrationModel()
+            {
+                AgencyId = agencyId,
+                Version = "1.0",
+                Type = "Code",
+                JsonSchema = "{\"type\":\"string\"}"
+            };
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddRepresentationRegistration(RepresentationRegistrationModel model)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (!await _context.ManagesAgency(userId, model.AgencyId))
+            {
+                return Forbid();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var irdi = RegistryIrdi.BuildRepresentationIrdi(model.AgencyId, model.Name, model.Version);
+            var existing = await _context.RepresentationRegistrations.FirstOrDefaultAsync(r => r.Irdi == irdi);
+            if (existing != null)
+            {
+                ModelState.AddModelError("", "The representation already exists, please try again");
+                return View(model);
+            }
+
+            var representation = new RepresentationRegistration
+            {
+                Irdi = irdi,
+                AgencyId = model.AgencyId,
+                Name = model.Name,
+                Version = model.Version,
+                Type = model.Type,
+                JsonSchema = model.JsonSchema,
+                ShaclTemplateIrdi = model.ShaclTemplateIrdi,
+                ApprovalState = ApprovalState.Requested
+            };
+
+            _context.RepresentationRegistrations.Add(representation);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("ViewAgency", new { agencyId = model.AgencyId });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> AddVariableRegistration(string agencyId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (!await _context.ManagesAgency(userId, agencyId))
+            {
+                return Forbid();
+            }
+
+            var model = new VariableRegistrationModel()
+            {
+                AgencyId = agencyId,
+                Version = "1.0"
+            };
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddVariableRegistration(VariableRegistrationModel model)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (!await _context.ManagesAgency(userId, model.AgencyId))
+            {
+                return Forbid();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var concept = await _context.ConceptRegistrations.FirstOrDefaultAsync(c => c.Irdi == model.ConceptIrdi);
+            var representation = await _context.RepresentationRegistrations.FirstOrDefaultAsync(r => r.Irdi == model.RepresentationIrdi);
+            if (concept == null || representation == null)
+            {
+                ModelState.AddModelError("", "The concept or representation reference could not be found.");
+                return View(model);
+            }
+
+            var validation = RegistrationValidation.ValidateVariableReferences(
+                model.AgencyId,
+                concept.AgencyId,
+                representation.AgencyId,
+                allowCrossAgency: false);
+            if (!validation.IsValid)
+            {
+                ModelState.AddModelError("", validation.ErrorMessage);
+                return View(model);
+            }
+
+            var irdi = RegistryIrdi.BuildVariableIrdi(model.AgencyId, model.Name, model.Version);
+            var existing = await _context.VariableRegistrations.FirstOrDefaultAsync(v => v.Irdi == irdi);
+            if (existing != null)
+            {
+                ModelState.AddModelError("", "The variable already exists, please try again");
+                return View(model);
+            }
+
+            var variable = new VariableRegistration
+            {
+                Irdi = irdi,
+                AgencyId = model.AgencyId,
+                Name = model.Name,
+                Version = model.Version,
+                ConceptIrdi = model.ConceptIrdi,
+                RepresentationIrdi = model.RepresentationIrdi,
+                CollectionMethod = model.CollectionMethod,
+                ApprovalState = ApprovalState.Requested
+            };
+
+            _context.VariableRegistrations.Add(variable);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("ViewAgency", new { agencyId = model.AgencyId });
+        }
+
+        [Authorize]
         public async Task<IActionResult> EditAgency(string agencyId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -948,6 +1202,21 @@ The DDI Alliance</p>";
             model.AdminContact = agency.AdminContact;
             model.TechnicalContact = agency.TechnicalContact;
             model.Assignments = agency.Assignments;
+            model.Concepts = await _context.ConceptRegistrations
+                .Where(x => x.AgencyId == agencyId)
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
+            model.Representations = await _context.RepresentationRegistrations
+                .Where(x => x.AgencyId == agencyId)
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
+            model.Variables = await _context.VariableRegistrations
+                .Where(x => x.AgencyId == agencyId)
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
 
             foreach (Assignment a in model.Assignments)
             {

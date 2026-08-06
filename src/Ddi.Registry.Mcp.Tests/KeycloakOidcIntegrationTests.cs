@@ -32,7 +32,34 @@ namespace Ddi.Registry.Mcp.Tests
             factory.Seed();
             var client = await McpHttpTestClient.ConnectWithBearerTokenAsync(factory, await _fixture.GetPasswordTokenAsync());
             var tools = await client.ListToolsAsync();
-            Assert.Equal(new[] { "get_services", "list_agencies", "request_agency", "resolve_urn" }, tools.Select(tool => tool.Name).OrderBy(name => name));
+            Assert.Equal(
+                new[]
+                {
+                    "approve_concept",
+                    "approve_representation",
+                    "approve_variable",
+                    "deprecate_concept",
+                    "deprecate_representation",
+                    "deprecate_variable",
+                    "get_concept",
+                    "get_representation",
+                    "get_services",
+                    "get_variable",
+                    "get_variable_publishability",
+                    "list_agencies",
+                    "list_concepts",
+                    "list_representations",
+                    "list_variables",
+                    "request_agency",
+                    "request_concept",
+                    "request_representation",
+                    "request_variable",
+                    "resolve_urn",
+                    "update_concept_request",
+                    "update_representation_request",
+                    "update_variable_request",
+                },
+                tools.Select(tool => tool.Name).OrderBy(name => name));
         }
 
         [SkippableFact]

@@ -24,6 +24,7 @@ namespace Ddi.Registry.Mcp.Tests
             var claims = principal.ToString() switch
             {
                 "full" => new[] { new Claim(ClaimTypes.Email, EmailClaim), new Claim("scope", "ddi.registry.read ddi.registry.write") },
+                "admin" => new[] { new Claim(ClaimTypes.Email, EmailClaim), new Claim("scope", "ddi.registry.read ddi.registry.write"), new Claim(ClaimTypes.Role, "admin") },
                 "read" => new[] { new Claim(ClaimTypes.Email, EmailClaim), new Claim("scope", "ddi.registry.read") },
                 // Authenticated but carries no scope claim at all (scope-denied path for read tools).
                 "no-scope" => new[] { new Claim(ClaimTypes.Email, EmailClaim) },

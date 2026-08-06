@@ -25,6 +25,7 @@ namespace Ddi.Registry.Mcp.Tests
     {
         /// <summary>When set, the factory uses this Npgsql connection string instead of EF InMemory.</summary>
         public string? ConnectionString { get; init; }
+        private readonly string _databaseName = $"mcp-test-{Guid.NewGuid():N}";
         public bool UseRealOidc { get; }
         public string? OidcAuthority { get; }
         public string? OidcAudience { get; }
@@ -52,7 +53,7 @@ namespace Ddi.Registry.Mcp.Tests
                 services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
                 services.RemoveAll<IDbContextOptionsConfiguration<ApplicationDbContext>>();
                 if (ConnectionString is null)
-                    services.AddDbContext<ApplicationDbContext>(o => o.UseInMemoryDatabase("mcp-test"));
+                    services.AddDbContext<ApplicationDbContext>(o => o.UseInMemoryDatabase(_databaseName));
                 else
                     services.AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(ConnectionString));
                 if (!UseRealOidc)

@@ -1,130 +1,130 @@
-# DDI Triple Registry Design
+# DDI 三元组注册表设计
 
-Date: 2026-08-05
-Status: Draft for user review
-Scope: Entity model + MCP + Web for Concept/Variable/Representation registration
+日期：2026-08-05  
+状态：待用户审阅  
+范围：为 Concept/Variable/Representation 提供实体模型 + MCP + Web 注册能力
 
-## 1. Goals
+## 1. 目标
 
-Build complete DDI triple registration capabilities on top of the existing registry model.
+在现有注册表模型基础上，构建完整的 DDI 三元组注册能力。
 
-- Add first-class registries for Concept, Representation, and Variable.
-- Keep existing Agency/Assignment/Service/HttpResolver behavior unchanged.
-- Support registration workflow from request to approval/deprecation.
-- Enforce cross-entity consistency for publishability.
-- Expose capabilities through both MCP tools and Web management UI.
+- 新增 Concept、Representation、Variable 三类一等注册表。
+- 保持现有 Agency/Assignment/Service/HttpResolver 行为不变。
+- 支持从申请到审批/废弃的完整生命周期。
+- 对发布能力施加跨实体一致性约束。
+- 同时通过 MCP 工具和 Web 管理界面提供能力。
 
-## 2. Confirmed Product Decisions
+## 2. 已确认产品决策
 
-### 2.1 Delivery scope
+### 2.1 交付范围
 
-In scope:
-- Data model and database migration.
-- MCP read/write/approval tools.
-- Web management and approval pages.
-- Tests across data, MCP, and Web layers.
+本期包含：
+- 数据模型与数据库迁移。
+- MCP 读写与审批工具。
+- Web 管理与审批页面。
+- 数据层、MCP 层、Web 层测试。
 
-### 2.2 Reference and publishability rules
+### 2.2 引用与可发布规则
 
-- Variable creation may reference `Requested` Concept/Representation entities.
-- A Variable is publishable only if all three are `Approved`:
-  - Variable itself
-  - Referenced Concept
-  - Referenced Representation
-- Cross-agency references are denied by default.
+- Variable 创建时允许引用处于 `Requested` 的 Concept/Representation。
+- Variable 仅在以下三者均为 `Approved` 时才可发布：
+  - Variable 自身
+  - 引用的 Concept
+  - 引用的 Representation
+- 默认禁止跨 Agency 引用。
 
-### 2.3 IRDI strategy
+### 2.3 IRDI 策略
 
-- Default path: system-generated IRDI from `AgencyId + Name + Version`.
-- Admin import path: allow full IRDI input.
-- Both paths must pass format, ownership, and uniqueness checks.
+- 默认路径：系统根据 `AgencyId + Name + Version` 生成 IRDI。
+- 管理员导入路径：允许提交完整 IRDI。
+- 两条路径都必须通过格式、归属和唯一性校验。
 
-Canonical formats:
-- Concept: `urn:irdi:{agency}:concept:{name}:{version}`
-- Variable: `urn:irdi:{agency}:variable:{name}:{version}`
-- Representation: `urn:irdi:{agency}:representation:{name}:{version}`
+规范格式：
+- Concept：`urn:irdi:{agency}:concept:{name}:{version}`
+- Variable：`urn:irdi:{agency}:variable:{name}:{version}`
+- Representation：`urn:irdi:{agency}:representation:{name}:{version}`
 
-### 2.4 Related concepts model
+### 2.4 RelatedConcepts 建模
 
-Use a dedicated relation table (not JSON list).
+采用独立关系表，不使用 JSON 字符串数组。
 
-- Default: relation targets must be same agency.
-- Admin override: explicit external or cross-agency relation is allowed and audited.
+- 默认要求关系目标属于同一 Agency。
+- 管理员可显式建立外部 IRDI 或跨 Agency 关联，并写入审计信息。
 
-### 2.5 Approval model
+### 2.5 审批模型
 
-- Creator can only create/update request-stage records.
-- Only existing `admin`/`SuperAdmin` can approve/deprecate.
-- Current enum has no `Rejected`; this release does not add a new approval enum value.
+- 创建者仅可创建/更新申请阶段记录。
+- 仅现有 `admin`/`SuperAdmin` 可执行审批与废弃。
+- 当前枚举不存在 `Rejected`；本期不新增审批状态枚举值。
 
-### 2.6 JSON Schema/SHACL boundary
+### 2.6 JSON Schema 与 SHACL 边界
 
-Chosen implementation level:
-- Validate `JsonSchema` as valid JSON payload and basic structural constraints.
-- Validate Variable->Representation reference integrity.
-- Persist `ShaclTemplateIrdi` as validated reference only.
-- No RDF/SHACL execution engine in this release.
+本期能力边界：
+- 校验 `JsonSchema` 为合法 JSON 且满足基础结构约束。
+- 校验 Variable -> Representation 引用完整性。
+- `ShaclTemplateIrdi` 仅作为受校验的引用字段持久化。
+- 不引入 RDF/SHACL 执行引擎。
 
-## 3. Alternative Approaches Considered
+## 3. 备选方案与取舍
 
-### A. Independent entities + strong relation tables (recommended)
+### A. 独立实体 + 强关系表（推荐）
 
-- Three dedicated registry tables + one concept relation table.
-- Strong FK and index strategy.
-- Predictable query and approval behavior.
+- 三张注册实体表 + 一张概念关系表。
+- 使用强外键和索引约束。
+- 查询与审批行为可预测。
 
-Pros:
-- Aligns with existing EF-style domain model.
-- Clear constraints and easier approval logic.
-- Better MCP/Web implementation clarity.
+优点：
+- 与现有 EF 风格一致。
+- 约束边界清晰，审批逻辑简单。
+- MCP/Web 实现更直观。
 
-Cons:
-- More schema objects and migration code.
+缺点：
+- 数据库对象与迁移代码更多。
 
-### B. Single generic registration table with JSON payload
+### B. 单一通用注册表 + JSON 载荷
 
-Pros:
-- Faster schema bootstrap.
+优点：
+- 初始建表更快。
 
-Cons:
-- Weak compile-time integrity.
-- Harder joins, constraints, approval queries, and form validation.
+缺点：
+- 编译期约束弱。
+- Join、约束、审批查询和表单校验复杂。
 
-### C. Hybrid (core columns + flexible metadata JSON)
+### C. 混合方案（核心列 + 扩展 JSON）
 
-Pros:
-- More extensible metadata model.
+优点：
+- 元数据扩展弹性更好。
 
-Cons:
-- Higher complexity in v1 without clear immediate benefit.
+缺点：
+- v1 复杂度更高，当前收益不明确。
 
-Decision: Approach A.
+结论：采用方案 A。
 
-## 4. Target Domain Model
+## 4. 目标领域模型
 
-### 4.1 New entities
+### 4.1 新增实体
 
 `ConceptRegistration`
 - `Id: Guid`
-- `Irdi: string` (unique)
-- `AgencyId: string` (FK -> Agency)
+- `Irdi: string`（唯一）
+- `AgencyId: string`（FK -> Agency）
 - `Name: string`
 - `Version: string`
 - `Label: string`
 - `Definition: string`
-- `DomainOntology: string` (e.g., `GoodCrew`/`TokenHub`)
-- `MapsToClass: string` (e.g., `gc:DigitalWorker`)
+- `DomainOntology: string`（如 `GoodCrew`/`TokenHub`）
+- `MapsToClass: string`（如 `gc:DigitalWorker`）
 - `ApprovalState: ApprovalState`
 - `CreatedAt: DateTime`
 - `UpdatedAt: DateTime?`
 
 `RepresentationRegistration`
 - `Id: Guid`
-- `Irdi: string` (unique)
-- `AgencyId: string` (FK -> Agency)
+- `Irdi: string`（唯一）
+- `AgencyId: string`（FK -> Agency）
 - `Name: string`
 - `Version: string`
-- `Type: string` (`Numeric`/`Text`/`Code`/`DateTime`)
+- `Type: string`（`Numeric`/`Text`/`Code`/`DateTime`）
 - `JsonSchema: string`
 - `ShaclTemplateIrdi: string`
 - `ApprovalState: ApprovalState`
@@ -133,65 +133,65 @@ Decision: Approach A.
 
 `VariableRegistration`
 - `Id: Guid`
-- `Irdi: string` (unique)
-- `AgencyId: string` (FK -> Agency)
+- `Irdi: string`（唯一）
+- `AgencyId: string`（FK -> Agency）
 - `Name: string`
 - `Version: string`
-- `ConceptIrdi: string` (FK -> ConceptRegistration.Irdi)
-- `RepresentationIrdi: string` (FK -> RepresentationRegistration.Irdi)
-- `SourceType: string` (`Survey`/`API`/`OCR`/`SystemLog`)
+- `ConceptIrdi: string`（FK -> ConceptRegistration.Irdi）
+- `RepresentationIrdi: string`（FK -> RepresentationRegistration.Irdi）
+- `SourceType: string`（`Survey`/`API`/`OCR`/`SystemLog`）
 - `CollectionMethod: string`
 - `Universe: string`
-- `QualityGate: string` (`Block`/`Warn`/`Off`)
+- `QualityGate: string`（`Block`/`Warn`/`Off`）
 - `ApprovalState: ApprovalState`
 - `CreatedAt: DateTime`
 - `UpdatedAt: DateTime?`
 
 `ConceptRelation`
 - `Id: Guid`
-- `SourceConceptIrdi: string` (FK -> ConceptRegistration.Irdi)
-- `TargetConceptIrdi: string` (nullable when external only)
-- `TargetExternalIrdi: string` (nullable)
+- `SourceConceptIrdi: string`（FK -> ConceptRegistration.Irdi）
+- `TargetConceptIrdi: string`（可空，仅当目标为内部联系时使用）
+- `TargetExternalIrdi: string`（可空）
 - `IsCrossAgency: bool`
 - `CreatedByUserId: string`
 - `CreatedAt: DateTime`
 
-### 4.2 Constraints and indexes
+### 4.2 约束与索引
 
-- Unique `Irdi` in each registry table.
-- Unique `(AgencyId, Name, Version)` in each registry table.
-- Indexes for `AgencyId`, `ApprovalState`, `CreatedAt`.
-- Variable FK references enforced via `ConceptIrdi` and `RepresentationIrdi`.
-- Validation-level constraint: Variable, Concept, Representation must share `AgencyId` unless explicit admin override policy allows otherwise (override only for related concept links, not variable foreign references).
+- 每张注册表内 `Irdi` 唯一。
+- 每张注册表内 `(AgencyId, Name, Version)` 唯一。
+- 为 `AgencyId`、`ApprovalState`、`CreatedAt` 建索引。
+- Variable 通过 `ConceptIrdi` 与 `RepresentationIrdi` 建立外键引用。
+- 规则层约束：Variable、Concept、Representation 必须同 Agency；仅 ConceptRelation 允许管理员显式跨 Agency 或外部 IRDI 关联。
 
-## 5. Data Flow and State Flow
+## 5. 数据流与状态流
 
-### 5.1 Creation flow
+### 5.1 创建流程
 
-1. Authenticate and authorize.
-2. Map caller identity to existing local user.
-3. Validate input format.
-4. Resolve IRDI (generated or imported).
-5. Validate ownership and uniqueness.
-6. Validate references (for Variable and Concept relations).
-7. Persist record with `ApprovalState.Requested`.
+1. 认证与授权。
+2. 将调用者映射到本地用户。
+3. 校验输入格式。
+4. 生成或解析 IRDI。
+5. 校验归属与唯一性。
+6. 校验引用关系（Variable 与 Concept 关联场景）。
+7. 以 `ApprovalState.Requested` 持久化。
 
-### 5.2 Approval flow
+### 5.2 审批流程
 
-- Admin/SuperAdmin actions:
-  - `approve_*`: set `ApprovalState.Approved`
-  - `deprecate_*`: set `ApprovalState.Deprecated`
-- Non-admin approval attempts are rejected.
+- `admin`/`SuperAdmin` 可执行：
+  - `approve_*`：设置为 `ApprovalState.Approved`
+  - `deprecate_*`：设置为 `ApprovalState.Deprecated`
+- 非管理员审批请求直接拒绝。
 
-### 5.3 Publishability flow
+### 5.3 可发布判定
 
-- Derived field `IsPublishable` for variable queries:
-  - True only when variable + concept + representation are all approved.
-  - Never directly editable.
+- 对 Variable 提供派生字段 `IsPublishable`：
+  - 仅当 Variable、Concept、Representation 全为 Approved 时为真。
+  - 该字段不可直接编辑。
 
-## 6. MCP Tool Design
+## 6. MCP 工具设计
 
-### 6.1 Read (`ddi.registry.read`)
+### 6.1 读取工具（`ddi.registry.read`）
 
 - `list_concepts`
 - `get_concept`
@@ -201,7 +201,7 @@ Decision: Approach A.
 - `get_variable`
 - `get_variable_publishability`
 
-### 6.2 Write (`ddi.registry.write`)
+### 6.2 写入工具（`ddi.registry.write`）
 
 - `request_concept`
 - `request_representation`
@@ -211,83 +211,83 @@ Decision: Approach A.
 - `update_variable_request`
 - `link_related_concept`
 
-### 6.3 Admin approval
+### 6.3 管理员审批工具
 
 - `approve_concept`, `approve_representation`, `approve_variable`
 - `deprecate_concept`, `deprecate_representation`, `deprecate_variable`
 
-### 6.4 Error semantics
+### 6.4 错误语义
 
-Follow existing MCP message style:
+沿用现有 MCP 消息风格：
 - `Missing required scope '...'`
 - `Caller identity could not be mapped...`
 - `... already exists.`
-- Deterministic messages for invalid references and cross-agency violations.
+- 对非法引用与跨 Agency 违规返回稳定、可预期错误文本。
 
-## 7. Web Design
+## 7. Web 设计
 
-Add pages under management/admin flows:
+在现有管理/管理员流程下新增页面：
 
-- User-facing management:
-  - Concept requests
-  - Representation requests
-  - Variable requests
-- Admin approval queues:
-  - Requested Concept list
-  - Requested Representation list
-  - Requested Variable list
+- 用户管理页：
+  - Concept 申请
+  - Representation 申请
+  - Variable 申请
+- 管理员审批队列：
+  - Concept Requested 列表
+  - Representation Requested 列表
+  - Variable Requested 列表
 
-UI behavior:
-- Request-stage records are editable by creators (policy-aligned).
-- Approved/Deprecated records become read-only for non-admin.
-- Variable detail page shows publishability and reason when not publishable.
+界面行为：
+- 申请阶段记录可由创建者编辑（符合权限策略）。
+- Approved/Deprecated 记录对非管理员只读。
+- Variable 详情页显示可发布状态及不可发布原因。
 
-## 8. Validation Rules
+## 8. 校验规则
 
-- IRDI format + uniqueness + ownership checks.
-- Enumerated field checks (`DomainOntology`, `Type`, `SourceType`, `QualityGate`).
-- `JsonSchema` must be valid JSON and pass basic structural checks.
-- `ShaclTemplateIrdi` format validation only.
-- Variable references must exist and obey agency policy.
-- Concept relation policy:
-  - default same-agency only
-  - admin explicit override required for cross-agency/external.
+- IRDI 格式、唯一性、归属校验。
+- 枚举字段校验（`DomainOntology`、`Type`、`SourceType`、`QualityGate`）。
+- `JsonSchema` 必须为合法 JSON 且满足基础结构要求。
+- `ShaclTemplateIrdi` 仅做格式/引用校验。
+- Variable 引用必须存在并满足 Agency 规则。
+- ConceptRelation 规则：
+  - 默认仅同 Agency
+  - 跨 Agency 或外部关联必须由管理员显式执行。
 
-## 9. Testing Strategy
+## 9. 测试策略
 
-### 9.1 Data tests
+### 9.1 数据层测试
 
-- IRDI generation/import validation.
-- Unique constraints and conflict translation.
-- Publishability logic.
-- Agency boundary checks.
+- IRDI 生成与导入校验。
+- 唯一约束与冲突错误翻译。
+- 可发布逻辑校验。
+- Agency 边界校验。
 
-### 9.2 MCP integration tests
+### 9.2 MCP 集成测试
 
-- Scope boundaries for read/write/admin.
-- Identity mapping precedence before duplicate checks.
-- Variable with requested references (allowed but not publishable).
-- Cross-agency relation restrictions and admin override path.
+- read/write/admin scope 边界。
+- 身份映射优先于重复检查（防枚举）。
+- Variable 引用 Requested 实体（允许创建但不可发布）。
+- 跨 Agency 关系限制与管理员覆盖路径。
 
-### 9.3 Web integration tests
+### 9.3 Web 集成测试
 
-- Management CRUD in request stage.
-- Admin approval/deprecation operations.
-- Validation error rendering and consistency.
+- 申请阶段管理 CRUD。
+- 管理员审批/废弃操作。
+- 校验错误渲染与一致性。
 
-### 9.4 Regression tests
+### 9.4 回归测试
 
-- No behavior regression in existing Agency/Assignment/Service/Resolver flows.
+- 现有 Agency/Assignment/Service/Resolver 功能无行为回归。
 
-## 10. Non-Goals (This Release)
+## 10. 非目标（本期不做）
 
-- RDF graph ingestion and SHACL execution.
-- JSON schema instance validation engine.
-- Approval role model redesign.
+- RDF 图加载与 SHACL 执行。
+- JSON Schema 实例数据验证引擎。
+- 审批角色体系重构。
 
-## 11. Rollout Notes
+## 11. 发布与上线说明
 
-- Add migration with additive tables/indexes only.
-- Keep old endpoints and data untouched.
-- Enable new MCP/Web capabilities behind normal auth and role checks.
-- Document IRDI generation/import behavior in README and operator docs.
+- 迁移采用增量表/索引方式，不破坏旧表。
+- 保持旧接口与历史数据不变。
+- 新 MCP/Web 能力受现有认证与角色控制。
+- 在 README 与运维文档中补充 IRDI 生成/导入规则。

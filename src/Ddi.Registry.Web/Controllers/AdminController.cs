@@ -73,6 +73,24 @@ namespace Ddi.Registry.Web.Controllers
                 }
             }
             model.People = people;
+            model.RequestedConcepts = await _context.ConceptRegistrations
+                .Where(x => x.ApprovalState == ApprovalState.Requested)
+                .OrderBy(x => x.AgencyId)
+                .ThenBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
+            model.RequestedRepresentations = await _context.RepresentationRegistrations
+                .Where(x => x.ApprovalState == ApprovalState.Requested)
+                .OrderBy(x => x.AgencyId)
+                .ThenBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
+            model.RequestedVariables = await _context.VariableRegistrations
+                .Where(x => x.ApprovalState == ApprovalState.Requested)
+                .OrderBy(x => x.AgencyId)
+                .ThenBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
 
             return View(model);
         }
@@ -144,6 +162,102 @@ namespace Ddi.Registry.Web.Controllers
 				return View(model);
             }
             return Forbid();
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> ApproveConceptRegistration(string irdi)
+        {
+            var concept = await _context.ConceptRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (concept == null)
+            {
+                return Forbid();
+            }
+
+            concept.ApprovalState = ApprovalState.Approved;
+            concept.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> DeprecateConceptRegistration(string irdi)
+        {
+            var concept = await _context.ConceptRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (concept == null)
+            {
+                return Forbid();
+            }
+
+            concept.ApprovalState = ApprovalState.Deprecated;
+            concept.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> ApproveRepresentationRegistration(string irdi)
+        {
+            var representation = await _context.RepresentationRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (representation == null)
+            {
+                return Forbid();
+            }
+
+            representation.ApprovalState = ApprovalState.Approved;
+            representation.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> DeprecateRepresentationRegistration(string irdi)
+        {
+            var representation = await _context.RepresentationRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (representation == null)
+            {
+                return Forbid();
+            }
+
+            representation.ApprovalState = ApprovalState.Deprecated;
+            representation.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> ApproveVariableRegistration(string irdi)
+        {
+            var variable = await _context.VariableRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (variable == null)
+            {
+                return Forbid();
+            }
+
+            variable.ApprovalState = ApprovalState.Approved;
+            variable.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> DeprecateVariableRegistration(string irdi)
+        {
+            var variable = await _context.VariableRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (variable == null)
+            {
+                return Forbid();
+            }
+
+            variable.ApprovalState = ApprovalState.Deprecated;
+            variable.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
         }
 
 		[Authorize(Roles = "admin,SuperAdmin")]

@@ -21,4 +21,11 @@ namespace Ddi.Registry.Web.Models
 			this.Agency = agency;
 		}
 	}
+
+	public partial class ApproveModel
+	{
+		public IEnumerable<ConceptRegistration> RequestedConcepts { get; set; }
+		public IEnumerable<RepresentationRegistration> RequestedRepresentations { get; set; }
+		public IEnumerable<VariableRegistration> RequestedVariables { get; set; }
+	}
 }

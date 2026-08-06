@@ -51,6 +51,107 @@ else
     </table>
 }
 
+<h2>Concept Registrations</h2>
+
+<p>@Html.ActionLink("Add concept registration", "AddConceptRegistration", new { agencyId = Model.Agency.AgencyId })</p>
+
+@if (!Model.Concepts.Any())
+{
+    <p>No Concept Registrations have been submitted.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Label</th>
+                <th>Approval State</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var concept in Model.Concepts)
+            {
+                <tr>
+                    <td>@concept.Name</td>
+                    <td>@concept.Version</td>
+                    <td>@concept.Label</td>
+                    <td>@concept.ApprovalState</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>Representation Registrations</h2>
+
+<p>@Html.ActionLink("Add representation registration", "AddRepresentationRegistration", new { agencyId = Model.Agency.AgencyId })</p>
+
+@if (!Model.Representations.Any())
+{
+    <p>No Representation Registrations have been submitted.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Type</th>
+                <th>Approval State</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var representation in Model.Representations)
+            {
+                <tr>
+                    <td>@representation.Name</td>
+                    <td>@representation.Version</td>
+                    <td>@representation.Type</td>
+                    <td>@representation.ApprovalState</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>Variable Registrations</h2>
+
+<p>@Html.ActionLink("Add variable registration", "AddVariableRegistration", new { agencyId = Model.Agency.AgencyId })</p>
+
+@if (!Model.Variables.Any())
+{
+    <p>No Variable Registrations have been submitted.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Concept</th>
+                <th>Representation</th>
+                <th>Approval State</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var variable in Model.Variables)
+            {
+                <tr>
+                    <td>@variable.Name</td>
+                    <td>@variable.Version</td>
+                    <td>@variable.ConceptIrdi</td>
+                    <td>@variable.RepresentationIrdi</td>
+                    <td>@variable.ApprovalState</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 <h2>Contact Information</h2>
 
 @if (Model.AdminContact != null)

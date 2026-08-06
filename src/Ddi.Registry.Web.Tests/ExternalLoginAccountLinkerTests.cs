@@ -30,7 +30,7 @@ public class ExternalLoginAccountLinkerTests
     }
 
     [Fact]
-    public async Task KeycloakUnknownEmail_DoesNotCreateLocalUser()
+    public async Task KeycloakUnknownEmail_CreatesLocalUserAndBindsExternalLogin()
     {
         await using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
         using var scope = factory.Services.CreateScope();
@@ -41,7 +41,31 @@ public class ExternalLoginAccountLinkerTests
 
         var result = await linker.LinkAsync(loginInfo, "unknown@example.com");
 
-        Assert.Equal(ExternalLoginLinkResult.MissingUser, result);
-        Assert.Null(await userManager.FindByEmailAsync("unknown@example.com"));
+        Assert.Equal(ExternalLoginLinkResult.Linked, result);
+        var user = await userManager.FindByEmailAsync("unknown@example.com");
+        Assert.NotNull(user);
+        var logins = await userManager.GetLoginsAsync(user!);
+        Assert.Contains(logins, login => login.LoginProvider == "Keycloak" && login.ProviderKey == "keycloak-subject");
+    }
+
+    [Fact]
+    public async Task KeycloakDefaultAdminEmail_AddsAdminRoleToLinkedUser()
+    {
+        await using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        using var scope = factory.Services.CreateScope();
+        var linker = scope.ServiceProvider.GetRequiredService<ExternalLoginAccountLinker>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var loginInfo = new ExternalLoginInfo(
+            new ClaimsPrincipal(), "Keycloak", "keycloak-admin-subject", "Keycloak");
+
+        await roleManager.CreateAsync(new IdentityRole("admin"));
+
+        var result = await linker.LinkAsync(loginInfo, "admin@localhost");
+
+        Assert.Equal(ExternalLoginLinkResult.Linked, result);
+        var user = await userManager.FindByEmailAsync("admin@localhost");
+        Assert.NotNull(user);
+        Assert.True(await userManager.IsInRoleAsync(user!, "admin"));
     }
 }

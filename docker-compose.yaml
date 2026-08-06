@@ -20,7 +20,8 @@ services:
       - "8180:8180"
     environment:
       KC_HTTP_PORT: "8180"
-      KC_HOSTNAME: http://keycloak.localtest.me:8180
+      KC_HOSTNAME: http://192.168.1.186:8180
+      KC_HOSTNAME_STRICT: "false"
       KC_HEALTH_ENABLED: "true"
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-local-admin-password}
@@ -53,7 +54,7 @@ services:
       EmailConfiguration__FromAddress: registry@example.internal
       Recaptcha__ReCaptchaPublicKey: ""   # 内网留空，注册页不强制验证码
       Recaptcha__ReCaptchaPrivateKey: ""
-      Authentication__Keycloak__Authority: http://keycloak.localtest.me:8180/realms/ddi-registry
+      Authentication__Keycloak__Authority: http://192.168.1.186:8180/realms/ddi-registry
       Authentication__Keycloak__ClientId: registry-web
       Authentication__Keycloak__ClientSecret: ${REGISTRY_WEB_CLIENT_SECRET:-local-registry-web-secret}
     depends_on:
@@ -72,7 +73,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: "8080"
       ConnectionStrings__DefaultConnection: "Host=db;Database=ddi_registry;Username=postgres;Password=${DB_PASSWORD}"
-      MCP__Oidc__Authority: http://keycloak.localtest.me:8180/realms/ddi-registry
+      MCP__Oidc__Authority: http://192.168.1.186:8180/realms/ddi-registry
       MCP__Oidc__Audience: mcp-client
       MCP__Oidc__Scopes: ddi.registry.read ddi.registry.write
     depends_on:

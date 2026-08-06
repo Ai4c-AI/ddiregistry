@@ -18,11 +18,11 @@
     </p>
 
     <h3>Request a DDI agency ID</h3>
-    <p>Follow these three quick steps to obtain a DDI agency identifier</p>
+    <p>Follow these quick steps to obtain a DDI agency identifier.</p>
     <ol>
-        <li>Create an account. <a asp-area="Identity" asp-page="/Account/Register">Register here.</a></li>
-        <li>Request an Agency ID under the <a href="/Manage">Your Agencies</a> tab.</li>
-        <li>You will receive an email confirmation when the agency identifier is approved.</li>
+        <li>Sign in to the registry. Use the <a asp-area="Identity" asp-page="/Account/Login">login page</a> for local sign-in, or the external Keycloak option when it is configured.</li>
+        <li>If you do not yet have an account, <a asp-area="Identity" asp-page="/Account/Register">register here</a> first, then sign in.</li>
+        <li>Request an Agency ID under the <a href="/Manage">Your Agencies</a> tab and wait for the approval email.</li>
     </ol>
 
     <p>See the Help page for @Html.ActionLink("detailed instructions", "Index", "Help").</p>

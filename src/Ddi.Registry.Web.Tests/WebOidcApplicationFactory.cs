@@ -40,6 +40,12 @@ public sealed class WebOidcApplicationFactory : WebApplicationFactory<Program>
                 settings["Authentication:Keycloak:ClientId"] = "registry-web";
                 settings["Authentication:Keycloak:ClientSecret"] = "test-secret";
             }
+            else
+            {
+                settings["Authentication:Keycloak:Authority"] = string.Empty;
+                settings["Authentication:Keycloak:ClientId"] = string.Empty;
+                settings["Authentication:Keycloak:ClientSecret"] = string.Empty;
+            }
 
             configuration.AddInMemoryCollection(settings);
         });

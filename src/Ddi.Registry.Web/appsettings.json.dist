@@ -3,6 +3,12 @@
     "DefaultConnection": "Host=localhost;Database=ddi_registry;Username=postgres;Password=yourpassword;",
     "ProviderName": "Npgsql"
   },
+  "DefaultUser": {
+    "UserName": "admin",
+    "Email": "admin@localhost",
+    "Password": "Password123!",
+    "Role": "admin"
+  },
   "EmailConfiguration": {
     "Host": "localhost",
     "Port": 587,
@@ -18,9 +24,9 @@
   },
   "Authentication": {
     "Keycloak": {
-      "Authority": "https://keycloak.example/realms/ddi-registry",
+      "Authority": "http://localhost:8180/realms/ddi-registry",
       "ClientId": "registry-web",
-      "ClientSecret": "set-through-user-secrets-or-environment"
+      "ClientSecret": "local-registry-web-secret"
     }
   },
   "Logging": {

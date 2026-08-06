@@ -116,3 +116,119 @@ else
         </tbody>
     </table>
 }
+
+<h2>Approve Concept Registrations</h2>
+
+@if (!Model.RequestedConcepts.Any())
+{
+    <p>No concept registrations need to be approved.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Agency</th>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Label</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RequestedConcepts)
+            {
+                <tr>
+                    <td>@item.AgencyId</td>
+                    <td>@item.Name</td>
+                    <td>@item.Version</td>
+                    <td>@item.Label</td>
+                    <td>@item.CreatedAt</td>
+                    <td>
+                        @Html.ActionLink("Approve", "ApproveConceptRegistration", new { irdi = item.Irdi }) |
+                        @Html.ActionLink("Deprecate", "DeprecateConceptRegistration", new { irdi = item.Irdi })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>Approve Representation Registrations</h2>
+
+@if (!Model.RequestedRepresentations.Any())
+{
+    <p>No representation registrations need to be approved.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Agency</th>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Type</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RequestedRepresentations)
+            {
+                <tr>
+                    <td>@item.AgencyId</td>
+                    <td>@item.Name</td>
+                    <td>@item.Version</td>
+                    <td>@item.Type</td>
+                    <td>@item.CreatedAt</td>
+                    <td>
+                        @Html.ActionLink("Approve", "ApproveRepresentationRegistration", new { irdi = item.Irdi }) |
+                        @Html.ActionLink("Deprecate", "DeprecateRepresentationRegistration", new { irdi = item.Irdi })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>Approve Variable Registrations</h2>
+
+@if (!Model.RequestedVariables.Any())
+{
+    <p>No variable registrations need to be approved.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Agency</th>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Concept</th>
+                <th>Representation</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RequestedVariables)
+            {
+                <tr>
+                    <td>@item.AgencyId</td>
+                    <td>@item.Name</td>
+                    <td>@item.Version</td>
+                    <td>@item.ConceptIrdi</td>
+                    <td>@item.RepresentationIrdi</td>
+                    <td>@item.CreatedAt</td>
+                    <td>
+                        @Html.ActionLink("Approve", "ApproveVariableRegistration", new { irdi = item.Irdi }) |
+                        @Html.ActionLink("Deprecate", "DeprecateVariableRegistration", new { irdi = item.Irdi })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

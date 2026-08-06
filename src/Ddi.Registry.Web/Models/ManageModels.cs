@@ -19,7 +19,7 @@ namespace Ddi.Registry.Web.Models
         public string Term { get; set; }
     }
 
-    public class ApproveModel
+    public partial class ApproveModel
     {
         public IEnumerable<Agency> Agencies { get; set; }
         public Dictionary<string, ApplicationUser> People { get; set; }
@@ -39,6 +39,9 @@ namespace Ddi.Registry.Web.Models
             this.Services = new Dictionary<string, IEnumerable<Service>>();
             this.Delegations = new Dictionary<string, IEnumerable<Delegation>>();
             this.HttpResolvers = new Dictionary<string, IEnumerable<HttpResolver>> ();
+            this.Concepts = new List<ConceptRegistration>();
+            this.Representations = new List<RepresentationRegistration>();
+            this.Variables = new List<VariableRegistration>();
         }
         public Agency Agency { get; set; }
         public ApplicationUser AdminContact { get; set; }
@@ -49,6 +52,10 @@ namespace Ddi.Registry.Web.Models
         public Dictionary<string, IEnumerable<Delegation>> Delegations { get; set; }
 
         public Dictionary<string, IEnumerable<HttpResolver>> HttpResolvers { get; set; }
+
+        public IEnumerable<ConceptRegistration> Concepts { get; set; }
+        public IEnumerable<RepresentationRegistration> Representations { get; set; }
+        public IEnumerable<VariableRegistration> Variables { get; set; }
     }
 
 	public class UnknownAgencyModel
@@ -117,6 +124,61 @@ namespace Ddi.Registry.Web.Models
 
 		public bool IsDelegated { get; set; }
 	}
+
+    public class ConceptRegistrationModel
+    {
+        [Required]
+        public string AgencyId { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Version { get; set; }
+
+        [Required]
+        public string Label { get; set; }
+    }
+
+    public class RepresentationRegistrationModel
+    {
+        [Required]
+        public string AgencyId { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Version { get; set; }
+
+        [Required]
+        public string Type { get; set; }
+
+        [Required]
+        public string JsonSchema { get; set; }
+
+        public string ShaclTemplateIrdi { get; set; }
+    }
+
+    public class VariableRegistrationModel
+    {
+        [Required]
+        public string AgencyId { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Version { get; set; }
+
+        [Required]
+        public string ConceptIrdi { get; set; }
+
+        [Required]
+        public string RepresentationIrdi { get; set; }
+
+        public string CollectionMethod { get; set; }
+    }
 
 
 }
