@@ -1,11 +1,12 @@
 ﻿@using Ddi.Registry.Data
 @model Ddi.Registry.Data.HttpResolver
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Add a Http Resolver";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h2>Add Http Resolver</h2>
+<h2>@Localizer["Heading"]</h2>
 
 
 
@@ -17,12 +18,12 @@
         @Html.HiddenFor(model => model.AssignmentId)
         @Html.HiddenFor(model => model.Id)
 
-        <h2>Http Resolution Type</h2>
+        <h2>@Localizer["ResolutionTypeHeading"]</h2>
         <div>
-            <p>The default resolution types are website, ddiitem, and ddiset.</p>
+            <p>@Localizer["ResolutionTypeHint"]</p>
         </div>
         <div class="editor-label">
-            @Html.LabelFor(model => model.ResolutionType), double click for default options.
+            @Html.LabelFor(model => model.ResolutionType), @Localizer["DoubleClickForDefaults"].
         </div>
         <div class="editor-field">
             <input asp-for="ResolutionType" class="form-control" list="ResolutionTypeOptions" />
@@ -35,10 +36,10 @@
         </div>
         <br/>
 
-        <h2>Url Template</h2>
+        <h2>@Localizer["UrlTemplateHeading"]</h2>
         <div>
-            <p>You can use the tags {agency} {identifier} {version} and {ddiurn} within the URL template.</p>
-            <p>For example, https://yourorganization.com/Item/{agency}/{identifier}/{version} </p>
+            <p>@Localizer["UrlTemplateHint"]</p>
+            <p>@Localizer["UrlTemplateExample"]</p>
         </div>
         <div class="editor-label">
             @Html.LabelFor(model => model.UrlTemplate)
@@ -52,7 +53,7 @@
 
         <div class="editor-submit">
             <p>
-                <input type="submit" value="Create" />
+                <input type="submit" value="@Localizer["Create"]" />
             </p>
         </div>
     </fieldset>

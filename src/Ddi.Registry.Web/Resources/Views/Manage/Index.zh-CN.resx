@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>管理</value></data>
+  <data name="Agencies" xml:space="preserve"><value>机构</value></data>
+  <data name="NoApprovedAgencies" xml:space="preserve"><value>此账户没有已批准的机构。</value></data>
+  <data name="AgencyName" xml:space="preserve"><value>机构名称</value></data>
+  <data name="AgencyLabel" xml:space="preserve"><value>机构标签</value></data>
+  <data name="Created" xml:space="preserve"><value>创建时间</value></data>
+  <data name="Modified" xml:space="preserve"><value>修改时间</value></data>
+  <data name="AdministrativeContact" xml:space="preserve"><value>行政联系人</value></data>
+  <data name="TechnicalContact" xml:space="preserve"><value>技术联系人</value></data>
+  <data name="Status" xml:space="preserve"><value>状态</value></data>
+  <data name="Manage" xml:space="preserve"><value>管理</value></data>
+  <data name="Edit" xml:space="preserve"><value>编辑</value></data>
+  <data name="PendingRequests" xml:space="preserve"><value>待处理申请</value></data>
+  <data name="NoPendingRequests" xml:space="preserve"><value>此账户没有待处理的机构申请。</value></data>
+  <data name="RequestNewAgency" xml:space="preserve"><value>申请新机构</value></data>
+  <data name="RequestedOn" xml:space="preserve"><value>申请时间</value></data>
+  <data name="EditContacts" xml:space="preserve"><value>编辑联系人</value></data>
+  <data name="RelatedPeople" xml:space="preserve"><value>相关人员</value></data>
+  <data name="Name" xml:space="preserve"><value>名称</value></data>
+  <data name="Email" xml:space="preserve"><value>邮箱</value></data>
+  <data name="Details" xml:space="preserve"><value>详情</value></data>
+</root>

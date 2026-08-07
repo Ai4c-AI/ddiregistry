@@ -1,18 +1,18 @@
 ﻿@using Ddi.Registry.Web.Services
 @model Ddi.Registry.Web.Models.AgencyModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Add an Agency";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h2>Add Agency</h2>
+<h2>@Localizer["Heading"]</h2>
 
 
 
 
 <p>
-    Use this form to request an agency identifier. The agency name should be in the form [country code] dot [name].
-    For example: <strong>us.agencyname</strong>
+    @Localizer["Intro"] <strong>us.agencyname</strong>
 </p>
 
 
@@ -39,11 +39,11 @@
     <div class="form-group">
         <label asp-for="AdminContactId"></label>
         <p>@Html.DescriptionFor(m => m.AdminContactId)</p>
-        <p>Select the Admin contact from the list, <b>or</b> enter their email address.</p>
+        <p>@Localizer["AdminContactPrompt"]</p>
         <select asp-for="AdminContactId" asp-items="@(new SelectList(ViewBag.People, "Id", "Email"," "))" class="form-control">
-            <option value="">--- None or Other ---</option>
+            <option value="">@Localizer["NoneOrOther"]</option>
         </select>
-        <input asp-for="AdminContactEmail" class="form-control" placeholder="or enter an email address" />
+        <input asp-for="AdminContactEmail" class="form-control" placeholder="@Localizer["OrEnterEmail"]" />
         <span asp-validation-for="AdminContactId" class="text-danger"></span>
     </div>
 
@@ -52,22 +52,22 @@
     <div class="form-group">
         <label asp-for="TechnicalContactId"></label>
         <p>@Html.DescriptionFor(m => m.TechnicalContactId)</p>
-        <p>Select the Technical contact from the list, <b>or</b> enter their email address.</p>
+        <p>@Localizer["TechnicalContactPrompt"]</p>
         <select asp-for="TechnicalContactId" asp-items="@(new SelectList(ViewBag.People, "Id", "Email"," "))" class="form-control">
-            <option value="">--- None or Other ---</option>
+            <option value="">@Localizer["NoneOrOther"]</option>
         </select>
-        <input asp-for="TechnicalContactEmail" class="form-control" placeholder="or enter an email address" />
+        <input asp-for="TechnicalContactEmail" class="form-control" placeholder="@Localizer["OrEnterEmail"]" />
         <span asp-validation-for="TechnicalContactId" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
 
 
 </form>
 
 
 <div>
-    @Html.ActionLink("Back to Management Page", "Index")
+    @Html.ActionLink(Localizer["BackToManagement"].Value, "Index")
 </div>
 
 @section Scripts {

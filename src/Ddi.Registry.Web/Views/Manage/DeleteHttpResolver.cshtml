@@ -1,25 +1,26 @@
 ﻿@model Ddi.Registry.Data.HttpResolver
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Delete " + Model.ResolutionType;
+    ViewData["Title"] = Localizer["DeletePrefix"].Value + " " + Model.ResolutionType;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete Http Resolver</h2>
+<h2>@Localizer["DeleteHttpResolverHeading"]</h2>
 
-<h3>Are you sure you want to delete this resolution?</h3>
+<h3>@Localizer["ConfirmDelete"]</h3>
 <fieldset>
-	<div class="display-label">Resolution Type</div>
+	<div class="display-label">@Localizer["ResolutionType"]</div>
     <div class="display-field">@Model.ResolutionType</div>
 
-    <div class="display-label">Url Template</div>
+    <div class="display-label">@Localizer["UrlTemplate"]</div>
     <div class="display-field">@Model.UrlTemplate</div>
 </fieldset>
 @using (Html.BeginForm()) {
     <p>
 		@Html.HiddenFor(s => s.Id)
-        <input type="submit" value="Delete" /> |
-        @Html.ActionLink("Back to Assignment Page", "EditAssignment", new { assignmentId = Model.AssignmentId })
+        <input type="submit" value="@Localizer["Delete"]" /> |
+        @Html.ActionLink(Localizer["BackToAssignment"].Value, "EditAssignment", new { assignmentId = Model.AssignmentId })
     </p>
 }
 

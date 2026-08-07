@@ -1,29 +1,30 @@
 ﻿@model Ddi.Registry.Web.Models.OverviewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Manage";
+    ViewData["Title"] = Localizer["Title"].Value;
 	
 	var approvedAgencies = Model.Agencies.Where(m => m.ApprovalState == Ddi.Registry.Data.ApprovalState.Approved).ToList();
 	var requestedAgencies = Model.Agencies.Where(m => m.ApprovalState == Ddi.Registry.Data.ApprovalState.Requested).ToList();
 }
 
-<h2>Agencies</h2>
+<h2>@Localizer["Agencies"]</h2>
 @if (approvedAgencies.Count == 0)
 {
-	<p>This account has no approved agencies.</p>
+	<p>@Localizer["NoApprovedAgencies"]</p>
 }
 else
 {
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Agency Name</th>
-                <th>Agency Label</th>
-                <th>Created</th>
-                <th>Modified</th>
-                <th>Administrative Contact</th>
-                <th>Technical Contact</th>
-                <th>Status</th>
+                <th>@Localizer["AgencyName"]</th>
+                <th>@Localizer["AgencyLabel"]</th>
+                <th>@Localizer["Created"]</th>
+                <th>@Localizer["Modified"]</th>
+                <th>@Localizer["AdministrativeContact"]</th>
+                <th>@Localizer["TechnicalContact"]</th>
+                <th>@Localizer["Status"]</th>
                 <th></th>
             </tr>
         </thead>
@@ -51,8 +52,8 @@ else
                     <td>@GetName(item.TechnicalContactId)</td>
                     <td>@item.ApprovalState.ToString()</td>
                     <td>
-                        @Html.ActionLink("Manage", "ViewAgency", new { agencyId = item.AgencyId }) |
-                        @Html.ActionLink("Edit", "EditAgency", new { agencyId = item.AgencyId })
+                        @Html.ActionLink(Localizer["Manage"].Value, "ViewAgency", new { agencyId = item.AgencyId }) |
+                        @Html.ActionLink(Localizer["Edit"].Value, "EditAgency", new { agencyId = item.AgencyId })
 
                     </td>
                 </tr>
@@ -61,14 +62,14 @@ else
 </table>
 }
 
-<h2>Pending Requests</h2>
+<h2>@Localizer["PendingRequests"]</h2>
 
 @if (requestedAgencies.Count == 0)
 {
-	<p>This account has no pending agency requests.</p>
+	<p>@Localizer["NoPendingRequests"]</p>
 }
 
-<p>@Html.ActionLink("Request New Agency", "AddAgency")</p>
+<p>@Html.ActionLink(Localizer["RequestNewAgency"].Value, "AddAgency")</p>
 
 
 @if (requestedAgencies.Count > 0)
@@ -76,9 +77,9 @@ else
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Agency Name</th>
-            <th>Requested On</th>
-            <th>Status</th>
+            <th>@Localizer["AgencyName"]</th>
+            <th>@Localizer["RequestedOn"]</th>
+            <th>@Localizer["Status"]</th>
             <th></th>
         </tr>
     </thead>
@@ -90,7 +91,7 @@ else
                 <td>@item.DateCreated</td>
                 <td>@item.ApprovalState.ToString()</td>
                 <td>
-                    @Html.ActionLink("Edit Contacts", "EditAgency", new { agencyId = item.AgencyId })
+                    @Html.ActionLink(Localizer["EditContacts"].Value, "EditAgency", new { agencyId = item.AgencyId })
                 </td>
             </tr>
         }
@@ -99,7 +100,7 @@ else
 }
 
 
-<h2>Related People</h2>
+<h2>@Localizer["RelatedPeople"]</h2>
 
 
 @if (Model.People.Count() == 0)
@@ -112,8 +113,8 @@ else
     <thead>
         <tr>
             <th></th>
-            <th>Name</th>
-            <th>Email</th>
+            <th>@Localizer["Name"]</th>
+            <th>@Localizer["Email"]</th>
             <th></th>
         </tr>
     </thead>
@@ -125,7 +126,7 @@ else
                 <td>@item.Name</td>
                 <td>@item.Email</td>
                 <td>
-                    @Html.ActionLink("Details", "ViewPerson", new { personId = item.Id })
+                    @Html.ActionLink(Localizer["Details"].Value, "ViewPerson", new { personId = item.Id })
                 </td>
             </tr>
         }

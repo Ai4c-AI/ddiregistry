@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="EditPrefix" xml:space="preserve"><value>Edit</value></data>
+  <data name="HttpResolvers" xml:space="preserve"><value>HTTP Resolvers</value></data>
+  <data name="AddHttpResolver" xml:space="preserve"><value>Add a HTTP Resolver</value></data>
+  <data name="DnsSrvServices" xml:space="preserve"><value>DNS SRV Services</value></data>
+  <data name="ServicesInactive" xml:space="preserve"><value>These services are not active because resolution for</value></data>
+  <data name="ServicesInactiveTail" xml:space="preserve"><value>is delegated to other name servers.</value></data>
+  <data name="AddService" xml:space="preserve"><value>Add a service</value></data>
+  <data name="Delegations" xml:space="preserve"><value>Delegations</value></data>
+  <data name="Disabled" xml:space="preserve"><value>(Disabled)</value></data>
+  <data name="UseOwnNameServers" xml:space="preserve"><value>Use my own name servers for resolution.</value></data>
+  <data name="AddNameserver" xml:space="preserve"><value>Add a Nameserver</value></data>
+  <data name="Save" xml:space="preserve"><value>Save</value></data>
+</root>

@@ -1,4 +1,5 @@
 ﻿@model Ddi.Registry.Web.Models.AgencyOverviewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = Model.Agency.AgencyId;
@@ -8,23 +9,23 @@
 
 <partial name="AgencyControl" for="Agency" />
 
-<h2>Agency and Sub Agency Assignments</h2>
+<h2>@Localizer["AgencyAndSubAgencyAssignments"]</h2>
 
-<p>@Html.ActionLink("Add sub agency assignment", "AddAssignment", new { agencyId = Model.Agency.AgencyId })</p>
+<p>@Html.ActionLink(Localizer["AddSubAgencyAssignment"].Value, "AddAssignment", new { agencyId = Model.Agency.AgencyId })</p>
 
 @if (Model.Assignments.Count() == 0)
 {
-    <p>No Sub Agencies have been assigned.</p>
+    <p>@Localizer["NoSubAgenciesAssigned"]</p>
 }
 else
 {
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>HTTP Resolution Services</th>
-                <th>DNS SRV Services</th>
-                <th>Is DNS Delegated</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["HttpResolutionServices"]</th>
+                <th>@Localizer["DnsSrvServices"]</th>
+                <th>@Localizer["IsDnsDelegated"]</th>
                 <th></th>
             </tr>
         </thead>
@@ -38,10 +39,10 @@ else
                         <td>@Model.Services[a.AssignmentId].Count()</td>
                         <td>@a.IsDelegated</td>
                         <td>
-                            @Html.ActionLink("Edit", "EditAssignment", new { assignmentId = a.AssignmentId })
+                            @Html.ActionLink(Localizer["Edit"].Value, "EditAssignment", new { assignmentId = a.AssignmentId })
                             @if (a.AssignmentId != Model.Agency.AgencyId)
                             {
-                                <text>| @Html.ActionLink("Delete", "DeleteAssignment", new { assignmentId = a.AssignmentId })</text>
+                                <text>| @Html.ActionLink(Localizer["Delete"].Value, "DeleteAssignment", new { assignmentId = a.AssignmentId })</text>
             }
                         </td>
                     </tr>
@@ -51,23 +52,23 @@ else
     </table>
 }
 
-<h2>Concept Registrations</h2>
+<h2>@Localizer["ConceptRegistrations"]</h2>
 
-<p>@Html.ActionLink("Add concept registration", "AddConceptRegistration", new { agencyId = Model.Agency.AgencyId })</p>
+<p>@Html.ActionLink(Localizer["AddConceptRegistration"].Value, "AddConceptRegistration", new { agencyId = Model.Agency.AgencyId })</p>
 
 @if (!Model.Concepts.Any())
 {
-    <p>No Concept Registrations have been submitted.</p>
+    <p>@Localizer["NoConceptRegistrations"]</p>
 }
 else
 {
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Label</th>
-                <th>Approval State</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Version"]</th>
+                <th>@Localizer["Label"]</th>
+                <th>@Localizer["ApprovalState"]</th>
             </tr>
         </thead>
         <tbody>
@@ -84,23 +85,23 @@ else
     </table>
 }
 
-<h2>Representation Registrations</h2>
+<h2>@Localizer["RepresentationRegistrations"]</h2>
 
-<p>@Html.ActionLink("Add representation registration", "AddRepresentationRegistration", new { agencyId = Model.Agency.AgencyId })</p>
+<p>@Html.ActionLink(Localizer["AddRepresentationRegistration"].Value, "AddRepresentationRegistration", new { agencyId = Model.Agency.AgencyId })</p>
 
 @if (!Model.Representations.Any())
 {
-    <p>No Representation Registrations have been submitted.</p>
+    <p>@Localizer["NoRepresentationRegistrations"]</p>
 }
 else
 {
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Type</th>
-                <th>Approval State</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Version"]</th>
+                <th>@Localizer["Type"]</th>
+                <th>@Localizer["ApprovalState"]</th>
             </tr>
         </thead>
         <tbody>
@@ -117,24 +118,24 @@ else
     </table>
 }
 
-<h2>Variable Registrations</h2>
+<h2>@Localizer["VariableRegistrations"]</h2>
 
-<p>@Html.ActionLink("Add variable registration", "AddVariableRegistration", new { agencyId = Model.Agency.AgencyId })</p>
+<p>@Html.ActionLink(Localizer["AddVariableRegistration"].Value, "AddVariableRegistration", new { agencyId = Model.Agency.AgencyId })</p>
 
 @if (!Model.Variables.Any())
 {
-    <p>No Variable Registrations have been submitted.</p>
+    <p>@Localizer["NoVariableRegistrations"]</p>
 }
 else
 {
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Concept</th>
-                <th>Representation</th>
-                <th>Approval State</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Version"]</th>
+                <th>@Localizer["Concept"]</th>
+                <th>@Localizer["Representation"]</th>
+                <th>@Localizer["ApprovalState"]</th>
             </tr>
         </thead>
         <tbody>
@@ -152,16 +153,16 @@ else
     </table>
 }
 
-<h2>Contact Information</h2>
+<h2>@Localizer["ContactInformation"]</h2>
 
 @if (Model.AdminContact != null)
 {
-    var adminViewData = new ViewDataDictionary(ViewData) { { "CardTitle", "Administrative Contact" } };
+    var adminViewData = new ViewDataDictionary(ViewData) { { "CardTitle", Localizer["AdministrativeContact"].Value } };
     <partial name="PersonControl" model="Model.AdminContact" view-data="adminViewData" />
 }
 
 @if (Model.TechnicalContact != null)
 {
-    var techViewData = new ViewDataDictionary(ViewData) { { "CardTitle", "Technical Contact" } };
+    var techViewData = new ViewDataDictionary(ViewData) { { "CardTitle", Localizer["TechnicalContact"].Value } };
     <partial name="PersonControl" model="Model.TechnicalContact" view-data="techViewData" />
 }

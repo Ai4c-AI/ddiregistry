@@ -1,10 +1,11 @@
 ﻿@model Ddi.Registry.Data.Service
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edit " + Model.ServiceName;
+    ViewData["Title"] = Localizer["EditPrefix"].Value + " " + Model.ServiceName;
 }
 
-<h2>Edit @Model.ServiceName</h2>
+<h2>@Localizer["EditPrefix"] @Model.ServiceName</h2>
 
 
 
@@ -75,14 +76,14 @@
 
         <div class="editor-submit">
             <p>
-                <input type="submit" value="Save" />
+                <input type="submit" value="@Localizer["Save"]" />
             </p>
         </div>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to Assignment Page", "EditAssignment", new { assignmentId = Model.AssignmentId })
+    @Html.ActionLink(Localizer["BackToAssignment"].Value, "EditAssignment", new { assignmentId = Model.AssignmentId })
 </div>
 
 @section Scripts {

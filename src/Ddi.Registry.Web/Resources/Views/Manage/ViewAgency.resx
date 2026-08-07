@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AgencyAndSubAgencyAssignments" xml:space="preserve"><value>Agency and Sub Agency Assignments</value></data>
+  <data name="AddSubAgencyAssignment" xml:space="preserve"><value>Add sub agency assignment</value></data>
+  <data name="NoSubAgenciesAssigned" xml:space="preserve"><value>No Sub Agencies have been assigned.</value></data>
+  <data name="Name" xml:space="preserve"><value>Name</value></data>
+  <data name="HttpResolutionServices" xml:space="preserve"><value>HTTP Resolution Services</value></data>
+  <data name="DnsSrvServices" xml:space="preserve"><value>DNS SRV Services</value></data>
+  <data name="IsDnsDelegated" xml:space="preserve"><value>Is DNS Delegated</value></data>
+  <data name="Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="ConceptRegistrations" xml:space="preserve"><value>Concept Registrations</value></data>
+  <data name="AddConceptRegistration" xml:space="preserve"><value>Add concept registration</value></data>
+  <data name="NoConceptRegistrations" xml:space="preserve"><value>No Concept Registrations have been submitted.</value></data>
+  <data name="Version" xml:space="preserve"><value>Version</value></data>
+  <data name="Label" xml:space="preserve"><value>Label</value></data>
+  <data name="ApprovalState" xml:space="preserve"><value>Approval State</value></data>
+  <data name="RepresentationRegistrations" xml:space="preserve"><value>Representation Registrations</value></data>
+  <data name="AddRepresentationRegistration" xml:space="preserve"><value>Add representation registration</value></data>
+  <data name="NoRepresentationRegistrations" xml:space="preserve"><value>No Representation Registrations have been submitted.</value></data>
+  <data name="Type" xml:space="preserve"><value>Type</value></data>
+  <data name="VariableRegistrations" xml:space="preserve"><value>Variable Registrations</value></data>
+  <data name="AddVariableRegistration" xml:space="preserve"><value>Add variable registration</value></data>
+  <data name="NoVariableRegistrations" xml:space="preserve"><value>No Variable Registrations have been submitted.</value></data>
+  <data name="Concept" xml:space="preserve"><value>Concept</value></data>
+  <data name="Representation" xml:space="preserve"><value>Representation</value></data>
+  <data name="ContactInformation" xml:space="preserve"><value>Contact Information</value></data>
+  <data name="AdministrativeContact" xml:space="preserve"><value>Administrative Contact</value></data>
+  <data name="TechnicalContact" xml:space="preserve"><value>Technical Contact</value></data>
+</root>
