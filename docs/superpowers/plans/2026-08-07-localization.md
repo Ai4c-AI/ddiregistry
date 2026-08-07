@@ -517,9 +517,11 @@ git commit -m "feat(web): localize data annotation messages via SharedResource"
 ### Task 3: 控制器文案 + 审批/邀请邮件本地化
 
 **Files:**
+- Modify: `src/Ddi.Registry.Data/AgencyIdValidator.cs`（为验证结果增加稳定 `ErrorCode`，Web 按代码本地化，MCP 仍可使用英文 `Error`）
 - Modify: `src/Ddi.Registry.Web/Controllers/HomeController.cs`
 - Modify: `src/Ddi.Registry.Web/Controllers/ManageController.cs`
 - Modify: `src/Ddi.Registry.Web/Controllers/AdminController.cs`
+- Modify: `src/Ddi.Registry.Mcp.Tests/AgencyIdValidatorTests.cs`（覆盖错误码）
 - Modify: `src/Ddi.Registry.Web.Tests/WebOidcApplicationFactory.cs`（加可选服务配置钩子，供测试替换 `IEmailSender`）
 - Create: `src/Ddi.Registry.Web/Resources/Controllers/HomeController.resx` + `.zh-CN.resx`
 - Create: `src/Ddi.Registry.Web/Resources/Controllers/ManageController.resx` + `.zh-CN.resx`
@@ -528,7 +530,7 @@ git commit -m "feat(web): localize data annotation messages via SharedResource"
 
 **Interfaces:**
 - Consumes: `SharedResource` 无依赖；`IEmailSender`（现有）；`WebOidcApplicationFactory(bool configureKeycloak, string environmentName = "Testing", Action<IServiceCollection>? configureServices = null)`。
-- Produces: 控制器 `ViewData["Title"]`、`TempData`、审批/邀请邮件文案随请求文化本地化。
+- Produces: `AgencyIdValidationResult(bool Ok, string ErrorCode, string Error)`；`ManageController` 的 8 条 `ModelState` 错误路径及审批/邀请邮件随请求文化本地化。经全文件扫描，`ManageController` 当前没有 `ViewData["Title"]` 或 `TempData`。
 
 - [ ] **Step 1: 给 `WebOidcApplicationFactory` 加可选服务配置钩子**
 
@@ -684,7 +686,29 @@ Expected: FAIL —— `AdminController` 构造要求新增 localizer 参数导�
 ```
 - 经核查，`AdminController` 的 `Index`/`Approve`/`Delete` 等 action 当前**不设置** `ViewData["Title"]`，也**无** `TempData` 提示或 `ModelState.AddModelError` 硬编码文案，因此本任务仅需处理两个邮件方法。若实现时发现任何 `ViewData["Title"]`/`TempData`/`ModelState` 硬编码字符串，一律改为 `_localizer["Key"]` 并追加对应控制器资源词条。
 
-- [ ] **Step 5: 修改 `ManageController.cs`**
+- [ ] **Step 5: 为 `AgencyIdValidator` 增加稳定错误码**
+
+将当前命名元组返回值改为记录类型，同时保留现有 `.Ok`/`.Error` 消费接口：
+
+```csharp
+    public sealed record AgencyIdValidationResult(bool Ok, string ErrorCode, string Error);
+```
+
+`Validate` 每个失败分支返回稳定代码，英文 `Error` 保留给 MCP：
+
+| ErrorCode | 现有英文 Error |
+| --- | --- |
+| `AgencyNameRequired` | An agency name is required. |
+| `AgencyLabelRequired` | An agency label is required. |
+| `AgencyNameTooLong` | The agency name must be 50 characters or fewer. |
+| `AgencyNamePattern` | The agency name should be in the form ... |
+| `CountryCodeDataUnavailable` | ISO country-code validation data is unavailable. |
+| `CountryCodeInvalid` | `{code}` is not a valid country code... |
+| `AgencyPrefixInvalid` | The agency id must start with... |
+
+`CountryCodeInvalid` 的本地化消息需要把国家代码作为参数，因此 Web 控制器从 `AgencyId` 的点号前缀提取该值。更新 `AgencyIdValidatorTests`，至少断言空名称返回 `AgencyNameRequired`、非法国家代码返回 `CountryCodeInvalid`、缺少合法前缀返回 `AgencyPrefixInvalid`。
+
+- [ ] **Step 6: 修改 `ManageController.cs`**
 
 - 顶部加 `using Microsoft.Extensions.Localization;`
 - 构造函数注入 `IStringLocalizer<ManageController> _localizer`
@@ -712,10 +736,37 @@ Expected: FAIL —— `AdminController` 构造要求新增 localizer 参数导�
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);
         }
 ```
-- 将 `AddAgency` 里 `ModelState.AddModelError("", "...")` 的硬编码文案替换为 `_localizer[...]`（键如 `AgencyIdExists`）。
-- `ViewData["Title"]`、`TempData` 提示同步替换（实现时逐一核对，键按语义命名）。
+- 将全部 8 条 `ModelState` 错误路径逐项替换，不留“实现时核对”：
 
-- [ ] **Step 6: 创建控制器资源文件**
+| 当前位置/来源 | 资源键 | 参数 |
+| --- | --- | --- |
+| AddAssignment: agency prefix | `AssignmentAgencyPrefixRequired` | 无 |
+| AddAssignment: duplicate sub-agency | `SubAgencyExists` | `{0}=assignmentName` |
+| AddConceptRegistration: duplicate | `ConceptExists` | 无 |
+| AddRepresentationRegistration: duplicate | `RepresentationExists` | 无 |
+| AddVariableRegistration: missing reference | `VariableReferenceNotFound` | 无 |
+| AddVariableRegistration: `RegistrationValidation.ErrorCode` | `CrossAgencyReference` | 无；按 ErrorCode 查资源，禁止直接显示英文 ErrorMessage |
+| AddVariableRegistration: duplicate | `VariableExists` | 无 |
+| AddAgency: `AgencyIdValidator.ErrorCode` | 与 Step 5 的 ErrorCode 同名 | `CountryCodeInvalid` 传 `{0}=code`；禁止直接显示英文 Error |
+
+示例：
+```csharp
+ModelState.AddModelError(string.Empty, _localizer["SubAgencyExists", assignmentName]);
+
+var validation = AgencyIdValidator.Validate(addAgencyModel.AgencyId, addAgencyModel.Label);
+if (!validation.Ok)
+{
+    var countryCode = addAgencyModel.AgencyId?.Split('.')[0] ?? string.Empty;
+    ModelState.AddModelError(string.Empty,
+        validation.ErrorCode == "CountryCodeInvalid"
+            ? _localizer[validation.ErrorCode, countryCode]
+            : _localizer[validation.ErrorCode]);
+}
+```
+
+`RegistrationValidation` 已提供稳定 `ErrorCode`，直接 `_localizer[validation.ErrorCode]`。不要把 Web 本地化依赖引入 Data 项目。
+
+- [ ] **Step 7: 创建控制器资源文件**
 
 `Resources/Controllers/AdminController.resx`（英文）：
 ```xml
@@ -744,6 +795,13 @@ Expected: FAIL —— `AdminController` 构造要求新增 localizer 参数导�
   <data name="ConfirmationEmailSubject" xml:space="preserve"><value>DDI Registry - Agency Request: {0}</value></data>
   <data name="ConfirmationEmailBody" xml:space="preserve"><value><![CDATA[<p>You submitted the following request for a new agency identifier:</p><p>{0}</p><p>You will receive a separate confirmation when your request has been processed.</p><p>Thank you,<br/>The DDI Alliance</p>]]></value></data>
   <data name="AgencyIdExists" xml:space="preserve"><value>The agency id already exists, please try again</value></data>
+    <data name="AssignmentAgencyPrefixRequired" xml:space="preserve"><value>The agency must start with the agency id</value></data>
+    <data name="SubAgencyExists" xml:space="preserve"><value>Sub agency already exists: {0}</value></data>
+    <data name="ConceptExists" xml:space="preserve"><value>The concept already exists, please try again</value></data>
+    <data name="RepresentationExists" xml:space="preserve"><value>The representation already exists, please try again</value></data>
+    <data name="VariableReferenceNotFound" xml:space="preserve"><value>The concept or representation reference could not be found.</value></data>
+    <data name="CrossAgencyReference" xml:space="preserve"><value>Variable references must remain within the same agency.</value></data>
+    <data name="VariableExists" xml:space="preserve"><value>The variable already exists, please try again</value></data>
 ```
 ```xml
   <!-- 中文 -->
@@ -754,17 +812,26 @@ Expected: FAIL —— `AdminController` 构造要求新增 localizer 参数导�
   <data name="ConfirmationEmailSubject" xml:space="preserve"><value>DDI 注册表 - 机构申请：{0}</value></data>
   <data name="ConfirmationEmailBody" xml:space="preserve"><value><![CDATA[<p>您提交了以下新机构标识符申请：</p><p>{0}</p><p>您的申请处理完成后将收到单独确认。</p><p>谢谢，<br/>DDI Alliance</p>]]></value></data>
   <data name="AgencyIdExists" xml:space="preserve"><value>该机构标识符已存在，请重试</value></data>
+    <data name="AssignmentAgencyPrefixRequired" xml:space="preserve"><value>子机构标识符必须以机构标识符开头</value></data>
+    <data name="SubAgencyExists" xml:space="preserve"><value>子机构已存在：{0}</value></data>
+    <data name="ConceptExists" xml:space="preserve"><value>该概念已存在，请重试</value></data>
+    <data name="RepresentationExists" xml:space="preserve"><value>该表示已存在，请重试</value></data>
+    <data name="VariableReferenceNotFound" xml:space="preserve"><value>找不到引用的概念或表示。</value></data>
+    <data name="CrossAgencyReference" xml:space="preserve"><value>变量引用必须属于同一机构。</value></data>
+    <data name="VariableExists" xml:space="preserve"><value>该变量已存在，请重试</value></data>
 ```
 
-- [ ] **Step 7: 运行测试确认通过**
+同一 `ManageController` 资源文件还必须包含 Step 5 的 7 个 AgencyIdValidator 错误码对应中英文词条；`CountryCodeInvalid` 使用 `{0}` 占位符。英文值保持 Data 层当前文案，中文分别为“机构名称不能为空”“机构标签不能为空”“机构名称不能超过 50 个字符”“机构名称格式应为…”“ISO 国家/地区代码验证数据不可用”“{0} 不是有效的国家/地区代码…”“机构标识符必须以…开头”。
+
+- [ ] **Step 8: 运行测试确认通过**
 
 Run: `dotnet test src/Ddi.Registry.Web.Tests/Ddi.Registry.Web.Tests.csproj --filter "FullyQualifiedName~EmailLocalizationTests"`
 Expected: PASS。
 
-- [ ] **Step 8: 全量构建 + 全量测试 + 提交**
+- [ ] **Step 9: 全量构建 + 全量测试 + 提交**
 
 ```bash
-git add src/Ddi.Registry.Web/Controllers src/Ddi.Registry.Web/Resources/Controllers src/Ddi.Registry.Web.Tests/EmailLocalizationTests.cs
+git add src/Ddi.Registry.Data/AgencyIdValidator.cs src/Ddi.Registry.Mcp.Tests/AgencyIdValidatorTests.cs src/Ddi.Registry.Web/Controllers src/Ddi.Registry.Web/Resources/Controllers src/Ddi.Registry.Web.Tests/EmailLocalizationTests.cs
 git commit -m "feat(web): localize controller strings and approval/invite emails"
 ```
 
@@ -1006,13 +1073,22 @@ git commit -m "feat(web): localize Identity account pages"
 Run: `dotnet build Ddi.Registry.Web.sln -c Debug` → 0 errors
 Run: `dotnet test Ddi.Registry.Web.sln -c Debug` → 全部通过（Data/Web/Mcp；MCP 的 Docker 测试可跳过）
 
+运行硬编码文案扫描并逐项清零（允许注释、日志、API 协议文本、专有名词；所有面向用户的 MVC/Identity 文案必须进入资源）：
+
+```powershell
+rg -n 'ViewData\["Title"\]|TempData\[|ModelState\.AddModelError|SendEmailAsync' src/Ddi.Registry.Web/Controllers src/Ddi.Registry.Web/Areas/Identity
+rg -n '>[^<@]*[A-Za-z][^<]*<|placeholder="[A-Za-z]|title="[A-Za-z]|aria-label="[A-Za-z]' src/Ddi.Registry.Web/Views src/Ddi.Registry.Web/Areas/Identity/Pages --glob '*.cshtml'
+```
+
+预期：`ManageController` 无未本地化的 `ModelState.AddModelError` 或邮件文本；视图扫描命中项均属于专有名词、不可见脚本/属性值或已记录的明确例外。把任何新增用户可见命中补入对应 `.resx` 后再继续。
+
 - [ ] **Step 2: 人工验证清单**
 
 1. 启动 Web，默认显示中文首页与中文导航。
 2. 导航栏下拉切换 English → 界面变英文；刷新后仍为英文（Cookie 持久化）。
 3. URL 加 `?culture=zh-CN` 覆盖 Cookie 生效。
 4. 浏览器 Accept-Language 为 en 时默认英文。
-5. 登录/注册页中英文正确；Manage 表单提交非法数据时显示中文校验消息。
+5. 登录/注册页中英文正确；逐页检查 Manage 的 Add/Edit/Delete/List/View 页面，提交非法数据时确认 8 条控制器错误路径及数据注解均显示当前语言。
 6. 管理员在中文界面批准机构 → 邮件主题/正文为中文。
 
 - [ ] **Step 3: 提交任何遗留改动**
