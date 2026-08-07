@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav.Develop" xml:space="preserve"><value>Develop</value></data>
+  <data name="Nav.RegistryTools" xml:space="preserve"><value>Registry Tools</value></data>
+  <data name="Nav.RegistryDeployment" xml:space="preserve"><value>Registry Deployment</value></data>
+  <data name="Nav.RegistryGitHub" xml:space="preserve"><value>DDI Registry GitHub</value></data>
+  <data name="Nav.YourAgencies" xml:space="preserve"><value>Your Agencies</value></data>
+  <data name="Nav.Contact" xml:space="preserve"><value>Contact</value></data>
+  <data name="Nav.Administration" xml:space="preserve"><value>Administration</value></data>
+  <data name="Nav.Admin" xml:space="preserve"><value>Admin</value></data>
+  <data name="Nav.AgencyAdmin" xml:space="preserve"><value>Agency Admin</value></data>
+  <data name="Nav.AgencyAdminHelp" xml:space="preserve"><value>Agency Admin Help</value></data>
+  <data name="Nav.SuperAdmin" xml:space="preserve"><value>SuperAdmin</value></data>
+  <data name="Nav.UserAdmin" xml:space="preserve"><value>User Admin</value></data>
+  <data name="Nav.Privacy" xml:space="preserve"><value>Privacy</value></data>
+  <data name="Nav.Manage" xml:space="preserve"><value>Manage</value></data>
+  <data name="Nav.ContactDDI" xml:space="preserve"><value>Contact DDI</value></data>
+  <data name="Nav.Register" xml:space="preserve"><value>Register</value></data>
+  <data name="Nav.Login" xml:space="preserve"><value>Login</value></data>
+  <data name="Nav.Logout" xml:space="preserve"><value>Logout</value></data>
+  <data name="Language.Label" xml:space="preserve"><value>Language</value></data>
+  <data name="Cookie.ConsentMessage" xml:space="preserve"><value>This site uses cookies.</value></data>
+  <data name="Cookie.LearnMore" xml:space="preserve"><value>Learn More</value></data>
+  <data name="Cookie.Accept" xml:space="preserve"><value>Accept</value></data>
+</root>

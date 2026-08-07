@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http.Features
+@inject IStringLocalizer<SharedResource> Localizer
 
 @{
     var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
@@ -9,9 +10,9 @@
 @if (showBanner)
 {
     <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
-        This site uses cookies. <a asp-area="" asp-controller="Home" asp-action="Privacy">Learn More</a>.
+        @Localizer["Cookie.ConsentMessage"] <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Cookie.LearnMore"]</a>.
         <button type="button" class="accept-policy close" data-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString">
-            <span aria-hidden="true">Accept</span>
+            <span aria-hidden="true">@Localizer["Cookie.Accept"]</span>
         </button>
     </div>
     <script>

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject IStringLocalizer<SharedResource> Localizer
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -31,6 +32,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
+                    <partial name="_LanguageSelector" />
                     <ul class="navbar-nav flex-grow-1">
                         <!--<li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -44,13 +46,13 @@
     </li>-->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Develop
+                                @Localizer["Nav.Develop"]
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Home" asp-action="Tools">Registry Tools</a>
-                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Home" asp-action="RegistrySource">Registry Deployment</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Home" asp-action="Tools">@Localizer["Nav.RegistryTools"]</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Home" asp-action="RegistrySource">@Localizer["Nav.RegistryDeployment"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item  text-dark" href="https://github.com/Colectica/ddiregistry">DDI Registry GitHub</a>
+                                <a class="dropdown-item  text-dark" href="https://github.com/Colectica/ddiregistry">@Localizer["Nav.RegistryGitHub"]</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -73,7 +75,7 @@
 
     <footer class="border-top footer" style="background-color: #054E72">
         <div class="container text-white">
-            &copy; @DateTime.UtcNow.Year - DDI Alliance Agency Registry - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @DateTime.UtcNow.Year - DDI Alliance Agency Registry - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Nav.Privacy"]</a>
         </div>
     </footer>
 
