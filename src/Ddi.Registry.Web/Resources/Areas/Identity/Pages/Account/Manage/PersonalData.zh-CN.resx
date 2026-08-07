@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>个人数据</value></data>
+  <data name="Intro" xml:space="preserve"><value>您的账户包含您提供给我们的个人数据。此页面允许您下载或删除这些数据。</value></data>
+  <data name="Warning" xml:space="preserve"><value>删除此数据将永久移除您的账户，且无法恢复。</value></data>
+  <data name="Download" xml:space="preserve"><value>下载</value></data>
+  <data name="Delete" xml:space="preserve"><value>删除</value></data>
+</root>

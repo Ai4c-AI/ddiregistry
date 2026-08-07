@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>配置身份验证器应用</value></data>
+  <data name="Intro" xml:space="preserve"><value>要使用身份验证器应用，请按照以下步骤操作：</value></data>
+  <data name="Step1" xml:space="preserve"><value>下载双因素身份验证应用，例如适用于以下平台的 Microsoft Authenticator</value></data>
+  <data name="Step2" xml:space="preserve"><value>扫描二维码，或将此密钥</value></data>
+  <data name="Step2Tail" xml:space="preserve"><value>输入到您的双因素身份验证应用中。空格和大小写无关紧要。</value></data>
+  <data name="QrInfo1" xml:space="preserve"><value>要启用二维码生成，请阅读我们的</value></data>
+  <data name="Documentation" xml:space="preserve"><value>文档</value></data>
+  <data name="Step3" xml:space="preserve"><value>扫描二维码或输入上方密钥后，您的双因素身份验证应用将为您提供一个唯一代码。请在下方确认框中输入该代码。</value></data>
+  <data name="VerificationCode" xml:space="preserve"><value>验证代码</value></data>
+  <data name="Verify" xml:space="preserve"><value>验证</value></data>
+</root>

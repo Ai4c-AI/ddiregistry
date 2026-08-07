@@ -1,7 +1,8 @@
 ﻿@page
 @model DeletePersonalDataModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Delete Personal Data";
+    ViewData["Title"] = Localizer["Title"].Value;
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
@@ -10,7 +11,7 @@
 <div class="alert alert-warning" role="alert">
     <p>
         <span class="glyphicon glyphicon-warning-sign"></span>
-        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+        <strong>@Localizer["Warning"]</strong>
     </p>
 </div>
 
@@ -25,7 +26,7 @@
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
         }
-        <button class="btn btn-danger" type="submit">Delete data and close my account</button>
+        <button class="btn btn-danger" type="submit">@Localizer["DeleteData"]</button>
     </form>
 </div>
 

@@ -16,9 +16,9 @@
 
 <h3>@Localizer["DevMode"]</h3>
 <p>
-    @Localizer["DevModeBody1"]
+    @Html.Raw(Localizer["DevModeBody1"].Value)
 </p>
 <p>
-    @Localizer["DevModeBody2"]
-    @Localizer["DevModeBody3"]
+    @Html.Raw(Localizer["DevModeBody2"].Value)
+    @Html.Raw(Localizer["DevModeBody3"].Value)
 </p>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>生成双因素身份验证（2FA）恢复代码</value></data>
+  <data name="SafePlace" xml:space="preserve"><value>请将这些代码存放在安全的地方。</value></data>
+  <data name="Body1" xml:space="preserve"><value>如果您丢失设备且没有恢复代码，您将无法访问您的账户。</value></data>
+  <data name="Body2" xml:space="preserve"><value>生成新的恢复代码不会更改身份验证器应用中使用的密钥。如果您希望更改身份验证器应用中使用的密钥，应</value></data>
+  <data name="ResetKeys" xml:space="preserve"><value>重置身份验证器密钥。</value></data>
+  <data name="GenerateCodes" xml:space="preserve"><value>生成恢复代码</value></data>
+</root>
