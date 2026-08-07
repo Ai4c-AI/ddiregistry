@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>Log in</value></data>
+  <data name="LocalAccount" xml:space="preserve"><value>Use a local account to log in.</value></data>
+  <data name="LogInButton" xml:space="preserve"><value>Log in</value></data>
+  <data name="ForgotPassword" xml:space="preserve"><value>Forgot your password?</value></data>
+  <data name="RegisterNewUser" xml:space="preserve"><value>Register as a new user</value></data>
+  <data name="OtherService" xml:space="preserve"><value>Use another service to log in.</value></data>
+  <data name="NoExternal" xml:space="preserve"><value>There are no external authentication services configured. See</value></data>
+  <data name="ThisArticle" xml:space="preserve"><value>this article</value></data>
+  <data name="NoExternalTail" xml:space="preserve"><value>for details on setting up this ASP.NET application to support logging in via external services.</value></data>
+  <data name="LogInUsingYour" xml:space="preserve"><value>Log in using your {0} account</value></data>
+  <data name="SignInWith" xml:space="preserve"><value>Sign in with {0}</value></data>
+</root>

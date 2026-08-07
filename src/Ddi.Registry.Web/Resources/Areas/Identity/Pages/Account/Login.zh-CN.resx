@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>登录</value></data>
+  <data name="LocalAccount" xml:space="preserve"><value>使用本地账户登录。</value></data>
+  <data name="LogInButton" xml:space="preserve"><value>登录</value></data>
+  <data name="ForgotPassword" xml:space="preserve"><value>忘记密码？</value></data>
+  <data name="RegisterNewUser" xml:space="preserve"><value>注册新用户</value></data>
+  <data name="OtherService" xml:space="preserve"><value>使用其他服务登录。</value></data>
+  <data name="NoExternal" xml:space="preserve"><value>未配置外部身份验证服务。有关如何设置此 ASP.NET 应用程序以支持通过外部服务登录的详细信息，请参阅</value></data>
+  <data name="ThisArticle" xml:space="preserve"><value>这篇文章</value></data>
+  <data name="NoExternalTail" xml:space="preserve"><value>。</value></data>
+  <data name="LogInUsingYour" xml:space="preserve"><value>使用您的 {0} 账户登录</value></data>
+  <data name="SignInWith" xml:space="preserve"><value>使用 {0} 登录</value></data>
+</root>

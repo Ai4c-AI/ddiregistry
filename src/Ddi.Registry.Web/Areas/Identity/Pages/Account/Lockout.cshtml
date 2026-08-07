@@ -1,10 +1,11 @@
 ﻿@page
 @model LockoutModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Locked out";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
 <header>
     <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">This account has been locked out, please try again later.</p>
+    <p class="text-danger">@Localizer["Body"]</p>
 </header>

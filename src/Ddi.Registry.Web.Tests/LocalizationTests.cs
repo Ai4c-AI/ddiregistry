@@ -133,4 +133,24 @@ public sealed class LocalizationTests
         var decoded = WebUtility.HtmlDecode(html);
         Assert.Contains("Agency Search Results", decoded);
     }
+
+    [Fact]
+    public async Task Login_DefaultCulture_IsChinese()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        var client = factory.CreateClient();
+        var html = await client.GetStringAsync("/Identity/Account/Login");
+        var decoded = WebUtility.HtmlDecode(html);
+        Assert.Contains("登录", decoded);
+    }
+
+    [Fact]
+    public async Task Login_QueryCultureEn_IsEnglish()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        var client = factory.CreateClient();
+        var html = await client.GetStringAsync("/Identity/Account/Login?culture=en");
+        var decoded = WebUtility.HtmlDecode(html);
+        Assert.Contains("Log in", decoded);
+    }
 }
