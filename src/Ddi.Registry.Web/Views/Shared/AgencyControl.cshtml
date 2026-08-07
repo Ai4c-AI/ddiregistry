@@ -1,20 +1,21 @@
 ﻿@model Ddi.Registry.Data.Agency
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <dl class="row">
    
-    <dt class="col-sm-3">Agency Name:</dt>
+    <dt class="col-sm-3">@Localizer["AgencyName"]:</dt>
     <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyId)</dd>
 
-    <dt class="col-sm-3">Agency Label:</dt>
+    <dt class="col-sm-3">@Localizer["AgencyLabel"]:</dt>
     <dd class="col-sm-9">@Html.DisplayFor(model => model.Label)</dd>
 
-    <dt class="col-sm-3">Date Created:</dt>
+    <dt class="col-sm-3">@Localizer["DateCreated"]:</dt>
     <dd class="col-sm-9">@Html.DisplayFor(model => model.DateCreated)</dd>
 
-    <dt class="col-sm-3">Last Modified:</dt>
+    <dt class="col-sm-3">@Localizer["LastModified"]:</dt>
     <dd class="col-sm-9">@Html.DisplayFor(model => model.LastModified)</dd>
 
-    <dt class="col-sm-3">Date Approved:</dt>
+    <dt class="col-sm-3">@Localizer["DateApproved"]:</dt>
     <dd class="col-sm-9">@Html.DisplayFor(model => model.DateApproved)</dd>
   
 </dl>
