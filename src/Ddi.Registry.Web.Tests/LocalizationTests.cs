@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,6 +12,28 @@ namespace Ddi.Registry.Web.Tests;
 
 public sealed class LocalizationTests
 {
+    [Fact]
+    public void SharedResource_LocalizesRequiredMessage_ToChinese()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        using var scope = factory.Services.CreateScope();
+        var localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<SharedResource>>();
+
+        // 请求外解析本地化器读的是线程 CurrentUICulture，必须显式设置，否则结果取决于运行机器
+        var original = CultureInfo.CurrentUICulture;
+        try
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo("zh-CN");
+            CultureInfo.CurrentCulture = new CultureInfo("zh-CN");
+            Assert.Contains("不能为空", localizer["AgencyNameRequired"].Value);
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = original;
+            CultureInfo.CurrentCulture = original;
+        }
+    }
+
     [Fact]
     public async Task SetLanguage_ZhCn_SetsCultureCookieAndRedirectsToReturnUrl()
     {

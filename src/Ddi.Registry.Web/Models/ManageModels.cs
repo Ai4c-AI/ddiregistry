@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Ddi.Registry.Data;
+using Ddi.Registry.Web;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -78,31 +79,31 @@ namespace Ddi.Registry.Web.Models
 		/// limited to 50 characters.
 		/// </remarks>
 		[RegularExpression(@"[a-zA-Z]{2,3}[\.][a-zA-Z0-9](-?[a-zA-Z0-9]+)*",
-			ErrorMessage="The agency name should be in the form [country code] dot [name]. For example: us.agencyname")]
+			ErrorMessageResourceName = "AgencyNamePattern", ErrorMessageResourceType = typeof(SharedResource))]
         [StringLength(50)]
-		[Required(ErrorMessage="An agency name is required.")]
-		[Display(Name = "Agency Name", Description="The agency name should be in the form [country code] dot [name]. For example: us.agencyname")]
+		[Required(ErrorMessageResourceName = "AgencyNameRequired", ErrorMessageResourceType = typeof(SharedResource))]
+		[Display(Name = "AgencyName", ResourceType = typeof(SharedResource), Description="The agency name should be in the form [country code] dot [name]. For example: us.agencyname")]
         public string AgencyId { get; set; }
 
-        [Required(ErrorMessage = "An agency label is required.")]
-        [Display(Name = "Agency Label", Description = "You can add a label to the agency, such as an organization name")]
+        [Required(ErrorMessageResourceName = "AgencyLabelRequired", ErrorMessageResourceType = typeof(SharedResource))]
+        [Display(Name = "AgencyLabel", ResourceType = typeof(SharedResource), Description = "You can add a label to the agency, such as an organization name")]
         public string Label { get; set; }
 
-        [Display(Name = "Technical Contact", Description="The technical contact for your agency identifier is the individual or organization authorized to manage any technical issues related to your agency identifier.")]
+        [Display(Name = "TechnicalContact", ResourceType = typeof(SharedResource), Description="The technical contact for your agency identifier is the individual or organization authorized to manage any technical issues related to your agency identifier.")]
         public string TechnicalContactId { get; set; }
 
         [EmailAddress]
-        [Display(Name = "Technical Contact Email", Description = "The technical contact for your agency identifier is the individual or organization authorized to manage any technical issues related to your agency identifier.")]
+        [Display(Name = "TechnicalContactEmail", ResourceType = typeof(SharedResource), Description = "The technical contact for your agency identifier is the individual or organization authorized to manage any technical issues related to your agency identifier.")]
         public string TechnicalContactEmail { get; set; }
 
-        [Display(Name = "Administrative Contact", Description = "An administrative contact is the individual authorized to interact with the DDI Registry on behalf of the registrant specified in the WHOIS record. The administrative contact for your domain has the authorization to accept notices and make requests to the DDI Registry regarding the management of your agency identifier and, along with the technical contact for your agency identifier, will receive all renewal and other administrative notices associated with the agency identifier.")]
+        [Display(Name = "AdministrativeContact", ResourceType = typeof(SharedResource), Description = "An administrative contact is the individual authorized to interact with the DDI Registry on behalf of the registrant specified in the WHOIS record. The administrative contact for your domain has the authorization to accept notices and make requests to the DDI Registry regarding the management of your agency identifier and, along with the technical contact for your agency identifier, will receive all renewal and other administrative notices associated with the agency identifier.")]
         public string AdminContactId { get; set; }
 
         [EmailAddress]
-        [Display(Name = "Administrative Contact Email", Description = "An administrative contact is the individual authorized to interact with the DDI Registry on behalf of the registrant specified in the WHOIS record. The administrative contact for your domain has the authorization to accept notices and make requests to the DDI Registry regarding the management of your agency identifier and, along with the technical contact for your agency identifier, will receive all renewal and other administrative notices associated with the agency identifier.")]
+        [Display(Name = "AdministrativeContactEmail", ResourceType = typeof(SharedResource), Description = "An administrative contact is the individual authorized to interact with the DDI Registry on behalf of the registrant specified in the WHOIS record. The administrative contact for your domain has the authorization to accept notices and make requests to the DDI Registry regarding the management of your agency identifier and, along with the technical contact for your agency identifier, will receive all renewal and other administrative notices associated with the agency identifier.")]
         public string AdminContactEmail { get; set; }
 
-        [Display(Name = "Creator", Description = "The user who initially created the agency.")]
+        [Display(Name = "Creator", ResourceType = typeof(SharedResource), Description = "The user who initially created the agency.")]
         public string CreatorId { get; set; }
     }
 
@@ -110,7 +111,7 @@ namespace Ddi.Registry.Web.Models
     {        
         public string AgencyId { get; set; }
         [RegularExpression(@"^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$",
-            ErrorMessage = "The sub domain must contain letters, numbers, and dots only, and begin with the agency name")]
+            ErrorMessageResourceName = "SubdomainPattern", ErrorMessageResourceType = typeof(SharedResource))]
         [StringLength(255)]
         [Required]
         public string AssignmentId { get; set; }

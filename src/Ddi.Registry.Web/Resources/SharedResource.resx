@@ -26,4 +26,18 @@
   <data name="Cookie.ConsentMessage" xml:space="preserve"><value>This site uses cookies.</value></data>
   <data name="Cookie.LearnMore" xml:space="preserve"><value>Learn More</value></data>
   <data name="Cookie.Accept" xml:space="preserve"><value>Accept</value></data>
+  <data name="AgencyName" xml:space="preserve"><value>Agency Name</value></data>
+  <data name="AgencyNameRequired" xml:space="preserve"><value>An agency name is required.</value></data>
+  <data name="AgencyNamePattern" xml:space="preserve"><value>The agency name should be in the form [country code] dot [name]. For example: us.agencyname</value></data>
+  <data name="AgencyLabel" xml:space="preserve"><value>Agency Label</value></data>
+  <data name="AgencyLabelRequired" xml:space="preserve"><value>An agency label is required.</value></data>
+  <data name="TechnicalContact" xml:space="preserve"><value>Technical Contact</value></data>
+  <data name="TechnicalContactEmail" xml:space="preserve"><value>Technical Contact Email</value></data>
+  <data name="AdministrativeContact" xml:space="preserve"><value>Administrative Contact</value></data>
+  <data name="AdministrativeContactEmail" xml:space="preserve"><value>Administrative Contact Email</value></data>
+  <data name="Creator" xml:space="preserve"><value>Creator</value></data>
+  <data name="SubdomainPattern" xml:space="preserve"><value>The sub domain must contain letters, numbers, and dots only, and begin with the agency name</value></data>
+  <data name="The {0} field is required." xml:space="preserve"><value>The {0} field is required.</value></data>
+  <data name="The {0} field is not a valid e-mail address." xml:space="preserve"><value>The {0} field is not a valid e-mail address.</value></data>
+  <data name="The field {0} must be a string with a maximum length of {1}." xml:space="preserve"><value>The field {0} must be a string with a maximum length of {1}.</value></data>
 </root>
