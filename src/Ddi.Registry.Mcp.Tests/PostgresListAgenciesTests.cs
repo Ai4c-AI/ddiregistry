@@ -20,7 +20,7 @@ namespace Ddi.Registry.Mcp.Tests
 
         private bool _started;
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             try
             {
@@ -30,23 +30,23 @@ namespace Ddi.Registry.Mcp.Tests
             }
             catch
             {
-                // Docker daemon unavailable on the local machine; the [SkippableFact] below
+                // Docker daemon unavailable on the local machine; Assert.SkipUnless below
                 // reports the test as skipped rather than failing the whole suite.
                 _started = false;
             }
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             if (_container is not null)
                 await _container.DisposeAsync();
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task ListAgencies_CountryFilter_ReturnsMatching()
         {
-            Skip.If(_container is null, "Docker not available");
-            Skip.IfNot(_started, "Docker daemon is not available; skipping the PostgreSQL Testcontainer test.");
+            Assert.SkipWhen(_container is null, "Docker not available");
+            Assert.SkipUnless(_started, "Docker daemon is not available; skipping the PostgreSQL Testcontainer test.");
 
             using var factory = new McpWebApplicationFactory { ConnectionString = _container!.GetConnectionString() };
             using (var scope = factory.Services.CreateScope())

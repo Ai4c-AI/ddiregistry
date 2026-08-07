@@ -24,10 +24,10 @@ namespace Ddi.Registry.Mcp.Tests
             _fixture = fixture;
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task KeycloakPasswordToken_InitializesAndListsTools()
         {
-            Skip.IfNot(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
+            Assert.SkipUnless(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
             using var factory = CreateFactory();
             factory.Seed();
             var client = await McpHttpTestClient.ConnectWithBearerTokenAsync(factory, await _fixture.GetPasswordTokenAsync());
@@ -62,10 +62,10 @@ namespace Ddi.Registry.Mcp.Tests
                 tools.Select(tool => tool.Name).OrderBy(name => name));
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task KeycloakPasswordToken_RequestAgency_MapsEmailToSeededLocalUser()
         {
-            Skip.IfNot(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
+            Assert.SkipUnless(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
             using var factory = CreateFactory();
             factory.Seed();
             var client = await McpHttpTestClient.ConnectWithBearerTokenAsync(factory, await _fixture.GetPasswordTokenAsync());
@@ -78,10 +78,10 @@ namespace Ddi.Registry.Mcp.Tests
             Assert.Equal(TestAuthHandler.SeedUserId, agency.TechnicalContactId);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task KeycloakServiceToken_ReadToolSucceeds_WriteToolReturnsMissingScope()
         {
-            Skip.IfNot(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
+            Assert.SkipUnless(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
             using var factory = CreateFactory();
             factory.Seed();
             var client = await McpHttpTestClient.ConnectWithBearerTokenAsync(factory, await _fixture.GetServiceTokenAsync());
@@ -91,28 +91,28 @@ namespace Ddi.Registry.Mcp.Tests
             Assert.Contains("ddi.registry.write", write.Content);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task KeycloakWrongAudienceToken_IsRejectedWithUnauthorized()
         {
-            Skip.IfNot(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
+            Assert.SkipUnless(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
             using var factory = CreateFactory();
             var response = await SendInitializeAsync(factory, await _fixture.GetPasswordTokenAsync("wrong-audience-client"));
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task KeycloakUnauthenticatedRequest_IsRejectedWithUnauthorized()
         {
-            Skip.IfNot(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
+            Assert.SkipUnless(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
             using var factory = CreateFactory();
             var response = await McpHttpTestClient.SendInitializeAsync(factory.CreateClient(), "/mcp");
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task KeycloakExpiredPasswordToken_IsRejectedWithUnauthorized()
         {
-            Skip.IfNot(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
+            Assert.SkipUnless(_fixture.Started, "Docker daemon is not available; skipping the Keycloak Testcontainer test.");
             using var factory = CreateFactory();
             var token = await _fixture.GetPasswordTokenAsync("short-lived-client");
             await Task.Delay(TimeSpan.FromSeconds(6));

@@ -16,7 +16,7 @@ namespace Ddi.Registry.Mcp.Tests
         public bool Started { get; private set; }
         public string Authority { get; private set; } = string.Empty;
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             try
             {
@@ -42,7 +42,7 @@ namespace Ddi.Registry.Mcp.Tests
             }
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             if (_container is not null)
             {
