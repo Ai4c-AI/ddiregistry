@@ -17,7 +17,7 @@
 - 专有名词（DDI、Agency Registry、Keycloak、DDI Alliance、机构名、域名）不翻译。
 - 邮件本地化跟随**发送者当前请求语言**（`IStringLocalizer` 在请求内解析）。
 - 数据注解消息统一走 `SharedResource`；标记类 `SharedResource` 命名空间为 `Ddi.Registry.Web.Resources`。
-- 视图本地化统一用 `@inject IViewLocalizer Localizer` + `Localizer["Key"]`（`_ViewImports` 已 `@using Microsoft.AspNetCore.Mvc.Localization`）。
+- 视图正文本地化用 `@inject IViewLocalizer Localizer` + `Localizer["Key"]`（`_ViewImports` 已 `@using Microsoft.AspNetCore.Mvc.Localization`）；**导航/共享文案**（词条放在 SharedResource）用 `@inject IStringLocalizer<SharedResource> Localizer`。二者**不混用**：`IViewLocalizer` 只查自身视图路径对应的资源，**不会**回落到 SharedResource——把 SharedResource 里的键用 `IViewLocalizer` 读取会渲染出键名本身。
 - 每个任务结束需 `dotnet build Ddi.Registry.Web.sln` 通过，且 `dotnet test src/Ddi.Registry.Web.Tests/Ddi.Registry.Web.Tests.csproj` 通过，然后提交。
 
 ---
@@ -50,8 +50,7 @@
 - Modify: `src/Ddi.Registry.Web/Views/_ViewImports.cshtml`
 - Modify: `src/Ddi.Registry.Web/Views/Shared/_Layout.cshtml`
 - Modify: `src/Ddi.Registry.Web/Views/Shared/_LoginPartial.cshtml`
-- Create: `src/Ddi.Registry.Web/Resources/Views/Shared/_Layout.resx` + `.zh-CN.resx`
-- Create: `src/Ddi.Registry.Web/Resources/Views/Shared/_LoginPartial.resx` + `.zh-CN.resx`
+- Modify: `src/Ddi.Registry.Web/Views/Shared/_CookieConsentPartial.cshtml`
 - Test: `src/Ddi.Registry.Web.Tests/LocalizationTests.cs`
 
 **Interfaces:**
@@ -271,17 +270,19 @@ namespace Ddi.Registry.Web.Controllers
 ```
 
 - [ ] **Step 6: 修改 `_ViewImports.cshtml`** —— 追加一行
+三行
 
 ```
 @using Microsoft.AspNetCore.Mvc.Localization
-```
+@using Microsoft.Extensions.Localization
+@using Ddi.Registry.Web.Resources
 
 - [ ] **Step 7: 创建 `_LanguageSelector.cshtml`**
 
 ```html
 @using Microsoft.AspNetCore.Http.Features
 @using Microsoft.AspNetCore.Localization
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> Localizer
 
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
@@ -296,10 +297,11 @@ namespace Ddi.Registry.Web.Controllers
     </select>
 </form>
 ```
+> 说明：导航/共享键存在 `SharedResource`，因此这里注入 `IStringLocalizer<SharedResource>`（`_ViewImports` 已带 `@using Microsoft.Extensions.Localization` 与 `@using Ddi.Registry.Web.Resources`），**不要**用 `IViewLocalizer`（它查不到 SharedResource 的键）。
 
 - [ ] **Step 8: 修改 `_Layout.cshtml`**
 
-- 文件顶部 `@{` 前插入：`@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer`
+- 文件顶部 `@{` 前插入：`@inject IStringLocalizer<SharedResource> Localizer`（导航键在 SharedResource，用共享本地化器；`_ViewImports` 已带所需 using）
 - `navbar-collapse` 内、`<partial name="_LoginPartial" />` 之后追加：`<partial name="_LanguageSelector" />`
 - 替换可见英文：
   - `Develop` → `@Localizer["Nav.Develop"]`
@@ -311,7 +313,7 @@ namespace Ddi.Registry.Web.Controllers
 
 - [ ] **Step 9: 修改 `_LoginPartial.cshtml`**
 
-- 顶部追加 `@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer`
+- 顶部追加 `@inject IStringLocalizer<SharedResource> Localizer`（同上，导航键在 SharedResource）
 - `Your Agencies` → `@Localizer["Nav.YourAgencies"]`
 - `Contact` → `@Localizer["Nav.Contact"]`
 - `Administration` → `@Localizer["Nav.Administration"]`
@@ -322,10 +324,26 @@ namespace Ddi.Registry.Web.Controllers
 - `User Admin` → `@Localizer["Nav.UserAdmin"]`
 - 各 `title="..."` 属性同步替换为 `title="@Localizer[...]"`。
 
-- [ ] **Step 10: 创建视图资源文件**
+- [ ] **Step 10: 本地化 `_CookieConsentPartial.cshtml`**
 
-`Resources/Views/Shared/_LoginPartial.resx`（英文，含 LoginPartial 特有的键；导航共享键已在 SharedResource，可直接复用，不重复建）：为每个被替换的键在 SharedResource 已有则复用；`_LoginPartial` 使用 SharedResource 的键即可，**无需**单独建 `_LoginPartial` 资源。若后续出现仅本视图使用的词条再追加。`_Layout` 同理复用 SharedResource 导航键，无需单独资源文件。因此本步可跳过——导航词条全部集中在 SharedResource。
-> 若实现时某视图出现仅该视图使用的词条，才新建 `Resources/Views/Shared/_Layout.zh-CN.resx` 等对应视图资源。
+`Views/Shared/_CookieConsentPartial.cshtml` 含可见英文（"This site uses cookies."、"Learn More"、"Accept"），在 `_Layout` 中渲染：
+- 注入 `@inject IStringLocalizer<SharedResource> Localizer`
+- 替换：`This site uses cookies.` → `@Localizer["Cookie.ConsentMessage"]`、`Learn More` → `@Localizer["Cookie.LearnMore"]`、`Accept` → `@Localizer["Cookie.Accept"]`、`aria-label="Close"` 保持
+- 在 `SharedResource.resx` / `.zh-CN.resx` 追加：
+```xml
+  <!-- 英文 -->
+  <data name="Cookie.ConsentMessage" xml:space="preserve"><value>This site uses cookies.</value></data>
+  <data name="Cookie.LearnMore" xml:space="preserve"><value>Learn More</value></data>
+  <data name="Cookie.Accept" xml:space="preserve"><value>Accept</value></data>
+```
+```xml
+  <!-- 中文 -->
+  <data name="Cookie.ConsentMessage" xml:space="preserve"><value>本网站使用 Cookie。</value></data>
+  <data name="Cookie.LearnMore" xml:space="preserve"><value>了解更多</value></data>
+  <data name="Cookie.Accept" xml:space="preserve"><value>接受</value></data>
+```
+
+> 说明：`_Layout`/`_LoginPartial`/`_LanguageSelector` 的导航词条全部集中在 `SharedResource`，**无需**为它们单独建视图资源文件；视图资源（`Resources/Views/**`）只服务于正文视图（Task 4–7）。
 
 - [ ] **Step 11: 运行测试确认通过**
 
@@ -360,27 +378,28 @@ git commit -m "feat(web): add localization infrastructure and language selector"
 
 ```csharp
     [Fact]
-    public async Task AddAgency_InvalidAgencyId_ShowsChineseValidationMessage()
-    {
-        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
-        var client = factory.CreateClient();
-        // 匿名用户会被重定向到登录页；这里改为请求 /Manage/AddAgency 直接渲染（无认证时走 login）。
-        // 为稳定测试，直接通过 IStringLocalizer 校验更简单，见下一个测试。
-        await Task.CompletedTask;
-    }
-
-    [Fact]
     public void SharedResource_LocalizesRequiredMessage_ToChinese()
     {
         using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
         using var scope = factory.Services.CreateScope();
         var localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<SharedResource>>();
 
-        var chinese = localizer["AgencyNameRequired"];
-        Assert.Contains("不能为空", chinese.Value);
+        // 请求外解析本地化器读的是线程 CurrentUICulture，必须显式设置，否则结果取决于运行机器
+        var original = CultureInfo.CurrentUICulture;
+        try
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo("zh-CN");
+            CultureInfo.CurrentCulture = new CultureInfo("zh-CN");
+            Assert.Contains("不能为空", localizer["AgencyNameRequired"].Value);
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = original;
+            CultureInfo.CurrentCulture = original;
+        }
     }
 ```
-> 说明：无认证环境下 Manage 页面会重定向登录页，直接用 DI 解析 `IStringLocalizer<SharedResource>` 验证词条更稳定；视图渲染验证在 Task 6 的 Manage 视图测试中覆盖（会带测试认证）。
+> 说明：无认证环境下 Manage 页面会重定向登录页，因此数据注解词条用 DI 解析 `IStringLocalizer<SharedResource>` 验证；**必须显式设置线程文化**。文件顶部需补 `using System.Globalization;`。视图渲染验证在 Task 6 的 Manage 视图测试中覆盖（会带测试认证）。
 
 - [ ] **Step 2: 运行测试确认失败**
 
@@ -429,7 +448,7 @@ Expected: FAIL —— `AgencyNameRequired` 词条不存在（返回键名本身�
         [Required]
         public string AssignmentId { get; set; }
 ```
-> `ConceptRegistrationModel` / `RepresentationRegistrationModel` / `VariableRegistrationModel` 的 `[Required]` 无自定义消息，交给 `AddDataAnnotationsLocalization` 内置消息（走 SharedResource），无需改动。
+> `ConceptRegistrationModel` / `RepresentationRegistrationModel` / `VariableRegistrationModel` 的裸 `[Required]`/`[EmailAddress]`/`[StringLength]` **没有**自定义消息。`AddDataAnnotationsLocalization` 会以属性内置英文消息串作为键去 `SharedResource` 查找（例如 `"The {0} field is required."`），**必须**在 Step 4 中为这些内置消息串添加词条，否则 zh-CN 下仍显示英文。
 
 - [ ] **Step 4: 追加 SharedResource 词条**
 
@@ -462,6 +481,23 @@ Expected: FAIL —— `AgencyNameRequired` 词条不存在（返回键名本身�
   <data name="Creator" xml:space="preserve"><value>创建者</value></data>
   <data name="SubdomainPattern" xml:space="preserve"><value>子域名只能包含字母、数字和点，且必须以机构名称开头</value></data>
 ```
+
+再追加**内置校验消息**词条（键名必须与 DataAnnotations 内置英文消息串**完全一致**，含 `{0}`/`{1}` 占位符，否则查找失败回退英文）：
+
+`SharedResource.resx`（英文）追加：
+```xml
+  <data name="The {0} field is required." xml:space="preserve"><value>The {0} field is required.</value></data>
+  <data name="The {0} field is not a valid e-mail address." xml:space="preserve"><value>The {0} field is not a valid e-mail address.</value></data>
+  <data name="The field {0} must be a string with a maximum length of {1}." xml:space="preserve"><value>The field {0} must be a string with a maximum length of {1}.</value></data>
+```
+
+`SharedResource.zh-CN.resx` 追加：
+```xml
+  <data name="The {0} field is required." xml:space="preserve"><value>{0} 字段是必填项。</value></data>
+  <data name="The {0} field is not a valid e-mail address." xml:space="preserve"><value>{0} 字段不是有效的电子邮件地址。</value></data>
+  <data name="The field {0} must be a string with a maximum length of {1}." xml:space="preserve"><value>字段 {0} 必须是最大长度为 {1} 的字符串。</value></data>
+```
+> 覆盖范围：本项目实际出现的裸 `[Required]`、`[EmailAddress]`、`[StringLength]`（仅最大值）。若实现时发现其它内置消息（如 `[StringLength]` 同时含最小值），按同规则补齐。
 
 - [ ] **Step 5: 运行测试确认通过**
 
@@ -523,10 +559,11 @@ git commit -m "feat(web): localize data annotation messages via SharedResource"
 - [ ] **Step 2: 写失败测试** `src/Ddi.Registry.Web.Tests/EmailLocalizationTests.cs`
 
 ```csharp
+using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Ddi.Registry.Web.Controllers;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -549,6 +586,23 @@ public sealed class EmailLocalizationTests
         }
     }
 
+    private static void WithCulture(string culture, Action action)
+    {
+        var current = CultureInfo.CurrentUICulture;
+        var currentCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo(culture);
+            CultureInfo.CurrentCulture = new CultureInfo(culture);
+            action();
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = current;
+            CultureInfo.CurrentCulture = currentCulture;
+        }
+    }
+
     [Fact]
     public void ControllerLocalizer_ResolvesChineseEmailKeys()
     {
@@ -556,11 +610,12 @@ public sealed class EmailLocalizationTests
         using var scope = factory.Services.CreateScope();
         var localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<AdminController>>();
 
-        Assert.Contains("已批准", localizer["ApprovedEmailSubject"].Value);
+        WithCulture("zh-CN", () =>
+            Assert.Contains("已批准", localizer["ApprovedEmailSubject"].Value));
     }
 
     [Fact]
-    public async Task ApproveAgency_WithChineseCulture_SendsChineseEmail()
+    public async Task SendApprovedEmail_WithChineseAmbientCulture_SendsChineseEmail()
     {
         var sender = new CapturingEmailSender();
         using var factory = new WebOidcApplicationFactory(configureKeycloak: false,
@@ -569,22 +624,22 @@ public sealed class EmailLocalizationTests
                 services.RemoveAll<IEmailSender>();
                 services.AddSingleton<IEmailSender>(sender);
             });
-        var client = factory.CreateClient();
-        client.DefaultRequestHeaders.Add("Cookie", $"{CookieRequestCultureProvider.DefaultCookieName}=c=zh-CN|uic=zh-CN");
-        _ = await client.GetAsync("/"); // 预热并设置请求文化
 
-        // 通过 DI 触发邮件方法（同请求文化下 localizer 解析中文）
         using var scope = factory.Services.CreateScope();
         var admin = scope.ServiceProvider.GetRequiredService<AdminController>();
         var user = new Ddi.Registry.Data.ApplicationUser { Email = "t@example.com" };
-        await admin.SendApprovedEmail(user, "us.testorg");
+
+        // 直接调用控制器方法发生在请求管道之外，localizer 读取的是线程 CurrentUICulture，
+        // 因此显式设置环境文化，而不是依赖请求 Cookie。
+        WithCulture("zh-CN", () =>
+            admin.SendApprovedEmail(user, "us.testorg").GetAwaiter().GetResult());
 
         Assert.Contains("已批准", sender.Subject);
         Assert.Contains("DDI Alliance", sender.Body);
     }
 }
 ```
-> 注意：`AdminController` 构造函数现已注入 `IStringLocalizer<AdminController>`，DI 可直接解析控制器实例。文件需 `using Microsoft.AspNetCore.Localization;`（`CookieRequestCultureProvider`）。
+> 注意：`AdminController` 构造函数现已注入 `IStringLocalizer<AdminController>`，DI 可直接解析控制器实例。`IStringLocalizer<T>` 是单例，解析时读取线程 `CurrentUICulture`，所以**必须**用 `WithCulture` 显式设置环境文化（请求内 Cookie/查询参数只影响管道内的 HttpContext 文化，不影响管道外的直接调用）。`admin.SendApprovedEmail` 是 `public` 方法。
 
 - [ ] **Step 3: 运行测试确认失败**
 
@@ -720,8 +775,11 @@ git commit -m "feat(web): localize controller strings and approval/invite emails
 **Files:**
 - Modify: `src/Ddi.Registry.Web/Views/Home/Index.cshtml`、`Privacy.cshtml`、`Tools.cshtml`、`RegistrySource.cshtml`
 - Modify: `src/Ddi.Registry.Web/Views/Help/Index.cshtml`、`Administrator.cshtml`
+- Modify: `src/Ddi.Registry.Web/Views/Shared/SearchControl.cshtml`（首页搜索框，含 "Search the Registry" / placeholder / "Search"）
+- Modify: `src/Ddi.Registry.Web/Views/Shared/Error.cshtml`
 - Create: `Resources/Views/Home/*.resx` + `.zh-CN.resx`（Index/Privacy/Tools/RegistrySource）
 - Create: `Resources/Views/Help/*.resx` + `.zh-CN.resx`
+- Create: `Resources/Views/Shared/SearchControl.resx` + `.zh-CN.resx`、`Error.resx` + `.zh-CN.resx`
 - Test: 追加到 `src/Ddi.Registry.Web.Tests/LocalizationTests.cs`
 
 **Interfaces:**
@@ -773,9 +831,11 @@ Expected: FAIL（当前纯英文）。
 ```
 > 含 HTML 的段落用 CDATA 包裹；键名用语义化驼峰命名（`Title`、`AboutBody1` 等）。
 
-- [ ] **Step 4: 迁移 Help 视图**
+- [ ] **Step 4: 迁移 Help 视图与共享 partial**
 
 `Help/Index.cshtml`、`Help/Administrator.cshtml` 同 Step 3 模式；建 `Resources/Views/Help/Index.resx`/`.zh-CN.resx`、`Administrator.resx`/`.zh-CN.resx`。
+
+`Views/Shared/SearchControl.cshtml`（首页搜索框）与 `Views/Shared/Error.cshtml`（异常页）同样注入 `IViewLocalizer` 并本地化，建 `Resources/Views/Shared/SearchControl.resx`/`.zh-CN.resx`、`Error.resx`/`.zh-CN.resx`。SearchControl 词条示例：`SearchTheRegistry`（Search the Registry / 检索注册表）、`SearchPlaceholder`（Enter a DDI URN or agency identifier / 输入 DDI URN 或机构标识符）、`SearchButton`（Search / 搜索）。
 
 - [ ] **Step 5: 运行测试确认通过**
 
@@ -804,23 +864,33 @@ git commit -m "feat(web): localize Home and Help views"
 - Consumes: `IViewLocalizer`（Task 1）。
 - Produces: Agency/Admin 视图随请求文化渲染。
 
-- [ ] **Step 1: 写失败测试**（Admin Index 无需登录仅需管理员角色；测试以匿名访问会 302，改为验证本地化器词条或带认证请求）
+- [ ] **Step 1: 写失败测试**（`AgencyController.Index` 匿名可访问，已核实；`/Agency` 无参数渲染 `AgencyList`，空库时仍渲染 "Agency Search Results" 标题）
 
 ```csharp
     [Fact]
-    public void AdminView_ResolvesLocalizedTitle()
+    public async Task Agency_DefaultCulture_IsChinese()
     {
         using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
-        using var scope = factory.Services.CreateScope();
-        var localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<AgencyController>>();
-        Assert.Contains("机构", localizer["AgencyListTitle"].Value);
+        var client = factory.CreateClient();
+        var html = await client.GetStringAsync("/Agency");
+        Assert.Contains("机构检索结果", html); // Agency Search Results 的中文词条
+    }
+
+    [Fact]
+    public async Task Agency_QueryCultureEn_IsEnglish()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        var client = factory.CreateClient();
+        var html = await client.GetStringAsync("/Agency?culture=en");
+        Assert.Contains("Agency Search Results", html);
     }
 ```
-> 该任务以词条可解析 + 人工验证为准；视图渲染的自动化覆盖在 Task 1/4 已示范。实现时也可为 Agency 公开页（无需登录）加渲染断言，例如 `GET /Agency/Index?culture=en` 返回英文标题。
+> 计划预设 "Agency Search Results" 中文词条为 "机构检索结果"，实现时以最终 `AgencyList.resx` 词条为准；`/Agency` 为空库渲染 "No Results Found" 分支不影响标题断言。
 
 - [ ] **Step 2: 运行测试确认失败**
 
-Expected: FAIL（`AgencyListTitle` 键缺失）。
+Run: `dotnet test src/Ddi.Registry.Web.Tests/Ddi.Registry.Web.Tests.csproj --filter "FullyQualifiedName~LocalizationTests"`
+Expected: FAIL（`Agency` 视图当前为英文）。
 
 - [ ] **Step 3: 迁移 Agency 视图**
 
@@ -861,6 +931,7 @@ Expected: FAIL（当前英文）。
 - [ ] **Step 3: 迁移 Manage 视图**
 
 按 Task 4 Step 3 模式逐个处理 20 个视图；`ViewAgency`/`EditAgency` 的字段标签优先复用 Task 2 的 `SharedResource` 显示名键（`AgencyName`、`AgencyLabel`、`TechnicalContact` 等），避免重复。
+- 同时处理共享显示模板 `Views/Shared/AgencyControl.cshtml`、`PersonControl.cshtml`：若含可见英文列标题/标签（实现时先检查），同样注入 `IViewLocalizer` 并建 `Resources/Views/Shared/AgencyControl.resx`/`PersonControl.resx`（+.zh-CN）。
 
 - [ ] **Step 4: 运行测试确认通过 + 全量构建测试 + 提交**
 
