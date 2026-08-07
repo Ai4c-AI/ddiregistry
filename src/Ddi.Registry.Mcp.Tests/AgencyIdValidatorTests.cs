@@ -23,5 +23,17 @@ namespace Ddi.Registry.Mcp.Tests
 
         [Fact] public void Validate_UnknownTwoCharCode_Fails_WhenIsoPresent()
             => Assert.False(AgencyIdValidator.Validate("zz.foo", "Foo").Ok); // 经嵌入的 iso 数据校验
+
+        [Fact]
+        public void Validate_EmptyId_ReturnsAgencyNameRequired()
+            => Assert.Equal("AgencyNameRequired", AgencyIdValidator.Validate(null, "Foo").ErrorCode);
+
+        [Fact]
+        public void Validate_InvalidCountryCode_ReturnsCountryCodeInvalid()
+            => Assert.Equal("CountryCodeInvalid", AgencyIdValidator.Validate("zz.foo", "Foo").ErrorCode);
+
+        [Fact]
+        public void Validate_MissingValidPrefix_ReturnsAgencyPrefixInvalid()
+            => Assert.Equal("AgencyPrefixInvalid", AgencyIdValidator.Validate("usa.foo", "Foo").ErrorCode);
     }
 }

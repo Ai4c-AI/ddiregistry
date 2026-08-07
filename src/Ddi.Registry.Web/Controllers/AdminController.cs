@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Localization;
 
 namespace Ddi.Registry.Web.Controllers
 {
@@ -24,16 +25,19 @@ namespace Ddi.Registry.Web.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _email;
+        private readonly IStringLocalizer<AdminController> _localizer;
 
         public AdminController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender email)
+            IEmailSender email,
+            IStringLocalizer<AdminController> localizer)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _email = email;
+            _localizer = localizer;
         }
 
         #region Approval
@@ -139,15 +143,15 @@ namespace Ddi.Registry.Web.Controllers
 
         public async Task SendApprovedEmail(ApplicationUser user, string agencyName)
         {
-            var bodyHtml = $"<p>The following agency identifier has been approved:</<p><p>{agencyName}</p><p>Thank you,<br/>The DDI Alliance</p>";
-            var subject = $"DDI Registry - Agency Approved: {agencyName}";
+            var bodyHtml = string.Format(_localizer["ApprovedEmailBody"], agencyName);
+            var subject = string.Format(_localizer["ApprovedEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);
         }
         public async Task SendDeniedEmail(ApplicationUser user, string agencyName, string reason)
         {
-			string bodyHtml = $"<p>The following request for an agency identifier has been denied:</p><p>{agencyName}</p><p>The reason given was:</p><p>{reason}</p><p>Thank you,<br/>The DDI Alliance</p>";
-            var subject = $"DDI Registry - Agency Denied: {agencyName}";
+            var bodyHtml = string.Format(_localizer["DeniedEmailBody"], agencyName, reason);
+            var subject = string.Format(_localizer["DeniedEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);
         }

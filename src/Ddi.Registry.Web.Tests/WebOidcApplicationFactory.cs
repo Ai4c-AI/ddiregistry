@@ -21,11 +21,14 @@ public sealed class WebOidcApplicationFactory : WebApplicationFactory<Program>
     private readonly bool _configureKeycloak;
     private readonly string _environmentName;
     private readonly string _databaseName = Guid.NewGuid().ToString();
+    private readonly Action<IServiceCollection>? _configureServices;
 
-    public WebOidcApplicationFactory(bool configureKeycloak, string environmentName = "Testing")
+    public WebOidcApplicationFactory(bool configureKeycloak, string environmentName = "Testing",
+        Action<IServiceCollection>? configureServices = null)
     {
         _configureKeycloak = configureKeycloak;
         _environmentName = environmentName;
+        _configureServices = configureServices;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -57,6 +60,7 @@ public sealed class WebOidcApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<IDbContextOptionsConfiguration<ApplicationDbContext>>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseInMemoryDatabase(_databaseName));
+            _configureServices?.Invoke(services);
         });
     }
 

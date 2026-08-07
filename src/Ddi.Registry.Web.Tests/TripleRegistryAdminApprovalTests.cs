@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Xunit;
 
 namespace Ddi.Registry.Web.Tests;
@@ -246,7 +247,7 @@ public class TripleRegistryAdminApprovalTests
 
     private static AdminController CreateController(ApplicationDbContext context, string userId)
     {
-        var controller = new AdminController(context, null!, null!, new NoOpEmailSender());
+        var controller = new AdminController(context, null!, null!, new NoOpEmailSender(), new NullStringLocalizer<AdminController>());
         controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext
@@ -265,5 +266,12 @@ public class TripleRegistryAdminApprovalTests
     private sealed class NoOpEmailSender : IEmailSender
     {
         public Task SendEmailAsync(string email, string subject, string htmlMessage) => Task.CompletedTask;
+    }
+
+    private sealed class NullStringLocalizer<T> : IStringLocalizer<T>
+    {
+        public LocalizedString this[string name] => new(name, name);
+        public LocalizedString this[string name, params object[] arguments] => new(name, string.Format(name, arguments));
+        public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) => [];
     }
 }

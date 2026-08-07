@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="InviteEmailSubject" xml:space="preserve"><value>You have been invited to the DDI Registry - Confirm your email</value></data>
+  <data name="InviteEmailBody" xml:space="preserve"><value><![CDATA[{0} ({1}) Has invited you to manage the DDI Agency Id {2}. Please confirm your account by <a href='{3}'>clicking here</a>.]]></value></data>
+  <data name="ApproverEmailSubject" xml:space="preserve"><value>DDI Registry - Agency Approval Request: {0}</value></data>
+  <data name="ApproverEmailBody" xml:space="preserve"><value><![CDATA[<p>{0} {1} has submitted the following request for a new agency identifier:</p><p>{2}</p><p>Please review the agency at <a href="https://registry.ddialliance.org/Admin">https://registry.ddialliance.org/Admin</a>.</p><p>Thank you,<br/>The DDI Alliance</p>]]></value></data>
+  <data name="ConfirmationEmailSubject" xml:space="preserve"><value>DDI Registry - Agency Request: {0}</value></data>
+  <data name="ConfirmationEmailBody" xml:space="preserve"><value><![CDATA[<p>You submitted the following request for a new agency identifier:</p><p>{0}</p><p>You will receive a separate confirmation when your request has been processed.</p><p>Thank you,<br/>The DDI Alliance</p>]]></value></data>
+  <data name="AgencyIdExists" xml:space="preserve"><value>The agency id already exists, please try again</value></data>
+  <data name="AssignmentAgencyPrefixRequired" xml:space="preserve"><value>The agency must start with the agency id</value></data>
+  <data name="SubAgencyExists" xml:space="preserve"><value>Sub agency already exists: {0}</value></data>
+  <data name="ConceptExists" xml:space="preserve"><value>The concept already exists, please try again</value></data>
+  <data name="RepresentationExists" xml:space="preserve"><value>The representation already exists, please try again</value></data>
+  <data name="VariableReferenceNotFound" xml:space="preserve"><value>The concept or representation reference could not be found.</value></data>
+  <data name="CrossAgencyReference" xml:space="preserve"><value>Variable references must remain within the same agency.</value></data>
+  <data name="VariableExists" xml:space="preserve"><value>The variable already exists, please try again</value></data>
+  <data name="AgencyNameRequired" xml:space="preserve"><value>An agency name is required.</value></data>
+  <data name="AgencyLabelRequired" xml:space="preserve"><value>An agency label is required.</value></data>
+  <data name="AgencyNameTooLong" xml:space="preserve"><value>The agency name must be 50 characters or fewer.</value></data>
+  <data name="AgencyNamePattern" xml:space="preserve"><value>The agency name should be in the form [country code] dot [name], e.g. us.agencyname.</value></data>
+  <data name="CountryCodeDataUnavailable" xml:space="preserve"><value>ISO country-code validation data is unavailable.</value></data>
+  <data name="CountryCodeInvalid" xml:space="preserve"><value>{0} is not a valid country code. Use a 2-char ISO 3166 code or 'uk'.</value></data>
+  <data name="AgencyPrefixInvalid" xml:space="preserve"><value>The agency id must start with a 2 character ISO 3166 country code or 'int', e.g. us.agencyname.</value></data>
+</root>

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Ddi.Registry.Data;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Xunit;
 
 namespace Ddi.Registry.Web.Tests;
@@ -429,7 +431,7 @@ public class TripleRegistryManageTests
 
     private static ManageController CreateController(ApplicationDbContext context, string userId)
     {
-        var controller = new ManageController(context, null!, null!, new NoOpEmailSender());
+        var controller = new ManageController(context, null!, null!, new NoOpEmailSender(), new NullStringLocalizer<ManageController>());
         controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext
@@ -447,5 +449,12 @@ public class TripleRegistryManageTests
     private sealed class NoOpEmailSender : IEmailSender
     {
         public Task SendEmailAsync(string email, string subject, string htmlMessage) => Task.CompletedTask;
+    }
+
+    private sealed class NullStringLocalizer<T> : IStringLocalizer<T>
+    {
+        public LocalizedString this[string name] => new(name, name);
+        public LocalizedString this[string name, params object[] arguments] => new(name, string.Format(name, arguments));
+        public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) => [];
     }
 }

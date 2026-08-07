@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Encodings.Web;
+using Microsoft.Extensions.Localization;
 
 namespace Ddi.Registry.Web.Controllers
 {
@@ -22,13 +23,15 @@ namespace Ddi.Registry.Web.Controllers
         private readonly IEmailSender _email;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IStringLocalizer<ManageController> _localizer;
 
-        public ManageController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IEmailSender email)
+        public ManageController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IEmailSender email, IStringLocalizer<ManageController> localizer)
         {
             _context = context;
             _email = email;
             _userManager = userManager;
             _roleManager = roleManager;
+            _localizer = localizer;
         }
 
         #region Assignment
@@ -71,7 +74,7 @@ namespace Ddi.Registry.Web.Controllers
                 string assignmentName = model.AssignmentId.ToLowerInvariant();
                 if (!assignmentName.StartsWith(agency.AgencyId, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    ModelState.AddModelError("", "The agency must start with the agency id");
+                    ModelState.AddModelError("", _localizer["AssignmentAgencyPrefixRequired"]);
                     model.AgencyId = agency.AgencyId;
                     model.AssignmentId = agency.AgencyId + ".";
                     return View(model);
@@ -79,7 +82,7 @@ namespace Ddi.Registry.Web.Controllers
                 
                 if (await _context.GetAssignment(assignmentName) != null)
                 {
-                    ModelState.AddModelError("", "Sub agency already exists: " + assignmentName);
+                    ModelState.AddModelError("", _localizer["SubAgencyExists", assignmentName]);
                     model.AgencyId = agency.AgencyId;
                     model.AssignmentId = agency.AgencyId + ".";
                     return View(model);
@@ -757,7 +760,7 @@ namespace Ddi.Registry.Web.Controllers
             var existing = await _context.ConceptRegistrations.FirstOrDefaultAsync(c => c.Irdi == irdi);
             if (existing != null)
             {
-                ModelState.AddModelError("", "The concept already exists, please try again");
+                ModelState.AddModelError("", _localizer["ConceptExists"]);
                 return View(model);
             }
 
@@ -870,7 +873,7 @@ namespace Ddi.Registry.Web.Controllers
             var existing = await _context.RepresentationRegistrations.FirstOrDefaultAsync(r => r.Irdi == irdi);
             if (existing != null)
             {
-                ModelState.AddModelError("", "The representation already exists, please try again");
+                ModelState.AddModelError("", _localizer["RepresentationExists"]);
                 return View(model);
             }
 
@@ -931,7 +934,7 @@ namespace Ddi.Registry.Web.Controllers
             var representation = await _context.RepresentationRegistrations.FirstOrDefaultAsync(r => r.Irdi == model.RepresentationIrdi);
             if (concept == null || representation == null)
             {
-                ModelState.AddModelError("", "The concept or representation reference could not be found.");
+                ModelState.AddModelError("", _localizer["VariableReferenceNotFound"]);
                 return View(model);
             }
 
@@ -942,7 +945,7 @@ namespace Ddi.Registry.Web.Controllers
                 allowCrossAgency: false);
             if (!validation.IsValid)
             {
-                ModelState.AddModelError("", validation.ErrorMessage);
+                ModelState.AddModelError("", _localizer[validation.ErrorCode]);
                 return View(model);
             }
 
@@ -950,7 +953,7 @@ namespace Ddi.Registry.Web.Controllers
             var existing = await _context.VariableRegistrations.FirstOrDefaultAsync(v => v.Irdi == irdi);
             if (existing != null)
             {
-                ModelState.AddModelError("", "The variable already exists, please try again");
+                ModelState.AddModelError("", _localizer["VariableExists"]);
                 return View(model);
             }
 
@@ -1062,8 +1065,10 @@ namespace Ddi.Registry.Web.Controllers
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    await _email.SendEmailAsync(email, "You have been invited to the DDI Registry - Confirm your email",
-                        $"{inviter.Name} ({inviter.Email}) Has invited you to manage the DDI Agency Id {agencyId}. Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var subject = _localizer["InviteEmailSubject"];
+                    var body = string.Format(_localizer["InviteEmailBody"],
+                        inviter.Name, inviter.Email, agencyId, HtmlEncoder.Default.Encode(callbackUrl));
+                    await _email.SendEmailAsync(email, subject, body);
 
                     return user.Id;
                 }
@@ -1086,7 +1091,14 @@ namespace Ddi.Registry.Web.Controllers
             if (addAgencyModel != null)
             {
                 var validation = AgencyIdValidator.Validate(addAgencyModel.AgencyId, addAgencyModel.Label);
-                if (!validation.Ok) ModelState.AddModelError("", validation.Error);
+                if (!validation.Ok)
+                {
+                    var countryCode = addAgencyModel.AgencyId?.Split('.')[0] ?? string.Empty;
+                    ModelState.AddModelError("",
+                        validation.ErrorCode == "CountryCodeInvalid"
+                            ? _localizer[validation.ErrorCode, countryCode]
+                            : _localizer[validation.ErrorCode]);
+                }
             }
 
             if (ModelState.IsValid)
@@ -1094,7 +1106,7 @@ namespace Ddi.Registry.Web.Controllers
                 Agency agency = await _context.GetAgency(addAgencyModel.AgencyId);
                 if (agency != null)
                 {
-                    ModelState.AddModelError("", "The agency id already exists, please try again");
+                    ModelState.AddModelError("", _localizer["AgencyIdExists"]);
                 }
                 else
                 {
@@ -1153,24 +1165,17 @@ namespace Ddi.Registry.Web.Controllers
 
         private async Task SendApproverEmail(ApplicationUser approver, ApplicationUser user, string agencyName)
         {
-            var bodyHtml = $@"<p>{user.Name} {user.Email} has submitted the following request for a new agency identifier:</<p>
-<p>{agencyName}</p>
-<p>Please review the agency at <a href=""https://registry.ddialliance.org/Admin"">https://registry.ddialliance.org/Admin</a>.</p>
-<p>Thank you,<br/>
-The DDI Alliance</p>";
-            var subject = $"DDI Registry - Agency Approval Request: {agencyName}";
+            var bodyHtml = string.Format(_localizer["ApproverEmailBody"],
+                user.Name, user.Email, agencyName);
+            var subject = string.Format(_localizer["ApproverEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(approver.Email, subject, bodyHtml);
         }
 
         private async Task SendConfirmationEmail(ApplicationUser user, string agencyName)
 		{
-            var bodyHtml = $@"<p>You submitted the following request for a new agency identifier:</<p>
-<p>{agencyName}</p>
-<p>You will receive a separate confirmation when your request has been processed.</p>
-<p>Thank you,<br/>
-The DDI Alliance</p>";
-            var subject = $"DDI Registry - Agency Request: {agencyName}";
+            var bodyHtml = string.Format(_localizer["ConfirmationEmailBody"], agencyName);
+            var subject = string.Format(_localizer["ConfirmationEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);
 		}
