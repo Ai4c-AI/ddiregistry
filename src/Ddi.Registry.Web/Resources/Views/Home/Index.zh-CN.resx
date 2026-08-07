@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>欢迎使用 DDI 注册表</value></data>
+  <data name="WelcomeHeading" xml:space="preserve"><value>欢迎使用 DDI 注册表</value></data>
+  <data name="About" xml:space="preserve"><value>关于</value></data>
+  <data name="AboutBody1" xml:space="preserve"><value><![CDATA[<p><b>DDI 机构注册表</b> 是一个面向元数据生产机构的<em>免费</em>全球唯一标识符系统的组成部分。注册表系统提供机构标识符，该标识符既是全球唯一 ID 中的命名空间，也是分布式服务解析的指针。<br />基于 <b>ISO/IEC 11179 第 6 部分</b> 国际注册数据标识符（11179 IRDI），<b>DDI 机构标识符</b> 在 IRDI 中用作 <b>注册机构</b>（11179 RA），并用于 <a href="https://www.rfc-editor.org/rfc/rfc9517.html">DDI URN</a>。</p>]]></value></data>
+  <data name="AboutBody2" xml:space="preserve"><value><![CDATA[<p><b>DDI 机构解析器</b> 是一项基于 DNS SRV 记录的免费 DDI 机构标识符解析服务，可发现机构提供的 Web 服务和数据服务。</p>]]></value></data>
+  <data name="RequestAgency" xml:space="preserve"><value>申请 DDI 机构 ID</value></data>
+  <data name="RequestAgencyIntro" xml:space="preserve"><value>按照以下快速步骤获取 DDI 机构标识符。</value></data>
+  <data name="Step1" xml:space="preserve"><value>登录注册表。使用</value></data>
+  <data name="LoginPage" xml:space="preserve"><value>登录页面</value></data>
+  <data name="Step1Tail" xml:space="preserve"><value>进行本地登录，或使用已配置的外部 Keycloak 选项。</value></data>
+  <data name="Step2" xml:space="preserve"><value>如果您还没有账户，</value></data>
+  <data name="RegisterHere" xml:space="preserve"><value>在此注册</value></data>
+  <data name="Step2Tail" xml:space="preserve"><value>然后登录。</value></data>
+  <data name="Step3" xml:space="preserve"><value>在</value></data>
+  <data name="YourAgenciesLink" xml:space="preserve"><value>我的机构</value></data>
+  <data name="Step3Tail" xml:space="preserve"><value>标签下申请机构 ID，并等待批准邮件。</value></data>
+  <data name="HelpIntro" xml:space="preserve"><value>有关详细信息，请参阅帮助页面中的</value></data>
+  <data name="DetailedInstructions" xml:space="preserve"><value>详细说明</value></data>
+</root>

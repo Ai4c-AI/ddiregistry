@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>DDI 注册表源代码</value></data>
+  <data name="Heading" xml:space="preserve"><value>DDI 注册表源代码</value></data>
+  <data name="Intro" xml:space="preserve"><value>DDI 注册表的源代码在开源许可证 LGPL 下提供。</value></data>
+  <data name="Download" xml:space="preserve"><value>下载</value></data>
+  <data name="Purpose" xml:space="preserve"><value>用途</value></data>
+  <data name="PurposeBody" xml:space="preserve"><value>您可以在自己的基础设施上部署 DDI 注册表软件以运行自己的注册表服务。如果您希望提供自己的委派和解析服务，而不是依赖 DDI Alliance 的注册表服务，则可能需要这样做。</value></data>
+  <data name="Installation" xml:space="preserve"><value>安装</value></data>
+  <data name="Step1" xml:space="preserve"><value>步骤 1. 依赖</value></data>
+  <data name="Step1Intro" xml:space="preserve"><value>您的系统上应安装以下内容：</value></data>
+  <data name="Step2" xml:space="preserve"><value>步骤 2. 数据库</value></data>
+  <data name="Step2Intro" xml:space="preserve"><value>创建两个名称如下的 postgreSQL 数据库：</value></data>
+  <data name="Step2Body" xml:space="preserve"><value>运行以下文件中的 SQL 命令以创建数据库结构：</value></data>
+  <data name="Step3" xml:space="preserve"><value>步骤 3. 部署站点二进制文件</value></data>
+  <data name="Step3Body" xml:space="preserve"><value>将生成的解决方案文件解压到 IIS 可以访问的目录（例如 c:\inetput\DdiRegistry）。</value></data>
+  <data name="Step4" xml:space="preserve"><value>步骤 4. IIS 配置</value></data>
+  <data name="CreateSite" xml:space="preserve"><value>为 DDI 注册表创建站点</value></data>
+  <data name="CreateSiteStep1" xml:space="preserve"><value>在 IIS 中，选择您的计算机并选择"添加网站"。使用以下设置</value></data>
+  <data name="SiteName" xml:space="preserve"><value>站点名称</value></data>
+  <data name="PhysicalPath" xml:space="preserve"><value>物理路径</value></data>
+  <data name="PhysicalPathValue" xml:space="preserve"><value>上面解压 DdiRegistry/ 目录的位置</value></data>
+  <data name="Binding" xml:space="preserve"><value>绑定</value></data>
+  <data name="Hostname" xml:space="preserve"><value>主机名</value></data>
+  <data name="HostnameValue" xml:space="preserve"><value>您希望使用的主机名</value></data>
+  <data name="CreateSiteStep2" xml:space="preserve"><value>在新创建的应用池中，确保 .NET Framework 版本设置为 4.0。</value></data>
+  <data name="UpdateWebConfig" xml:space="preserve"><value>更新 Web.config 文件</value></data>
+  <data name="UpdateWebConfigBody" xml:space="preserve"><value>在站点根目录的 Web.Config 文件中，搜索 "connectionStrings" 元素并将这些元素更新为指向您的数据库。</value></data>
+  <data name="Step5" xml:space="preserve"><value>步骤 5. 与 DNS 集成</value></data>
+  <data name="Step5Intro" xml:space="preserve"><value>Ddi.Registry.ZoneWriter 控制台应用程序用于将 DDI 注册表数据库的内容与您的 DNS 系统集成。要使用它，请按照以下说明操作。</value></data>
+  <data name="Step5Body" xml:space="preserve"><value>ZoneWriter 通过编写一个兼容 bind 的 zone 文件来工作。此文件可同时用于 bind 和 ActiveDirectory。</value></data>
+  <data name="ZoneWriterStep1" xml:space="preserve"><value>更新 ZoneWriter 的 App.config 文件</value></data>
+  <data name="ZoneWriterStep1a" xml:space="preserve"><value>更新 DdiRegistry 连接字符串以指向您的数据库</value></data>
+  <data name="ZoneWriterStep1b" xml:space="preserve"><value>在 Ddi.Registry.ZoneWriter.Settings 元素下，更新以下属性</value></data>
+  <data name="BaseZoneDesc" xml:space="preserve"><value>注册表系统根权威区域（zone）的名称。要与 DDI 注册表系统配合使用，请保留为 registry.ddialliance.org</value></data>
+  <data name="MasterNameDesc" xml:space="preserve"><value>主名称服务器的主机名</value></data>
+  <data name="NameserverDesc" xml:space="preserve"><value>名称服务器主机名列表</value></data>
+  <data name="DefaultARecordDesc" xml:space="preserve"><value>BaseZone 设置中指定的主机名对应的 A 记录</value></data>
+  <data name="ZoneFileLocationDesc" xml:space="preserve"><value>将写入 zone 文件的位置。</value></data>
+  <data name="ZoneWriterStep2" xml:space="preserve"><value>安排 ZoneWriter 定期运行（例如每 5 分钟）。</value></data>
+  <data name="ZoneWriterStep3" xml:space="preserve"><value>将 DNS 服务器设置为使用该 zone 文件进行配置。</value></data>
+  <data name="Faq" xml:space="preserve"><value>常见问题</value></data>
+  <data name="FaqBody" xml:space="preserve"><value>目前还没有真正出现什么问题。</value></data>
+  <data name="GetInTouch" xml:space="preserve"><value>联系我们</value></data>
+  <data name="FaqTail" xml:space="preserve"><value>我们会根据常见问题陆续添加解答。</value></data>
+</root>

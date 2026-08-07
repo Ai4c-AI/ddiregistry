@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>DDI Registry Source Code</value></data>
+  <data name="Heading" xml:space="preserve"><value>DDI Registry Source Code</value></data>
+  <data name="Intro" xml:space="preserve"><value>The source code for the DDI Registry is available under the LGPL, an Open Source license.</value></data>
+  <data name="Download" xml:space="preserve"><value>Download</value></data>
+  <data name="Purpose" xml:space="preserve"><value>Purpose</value></data>
+  <data name="PurposeBody" xml:space="preserve"><value>You can deploy the DDI Registry software on your own infrastructure to run your own registry service. You might want to do this if you would like to provide your own delegation and resolution services, instead of relying on the DDI Alliance's registry service.</value></data>
+  <data name="Installation" xml:space="preserve"><value>Installation</value></data>
+  <data name="Step1" xml:space="preserve"><value>Step 1. Dependencies</value></data>
+  <data name="Step1Intro" xml:space="preserve"><value>The following should be installed on your system:</value></data>
+  <data name="Step2" xml:space="preserve"><value>Step 2. Database</value></data>
+  <data name="Step2Intro" xml:space="preserve"><value>Create two postgreSQL databases with the following names:</value></data>
+  <data name="Step2Body" xml:space="preserve"><value>Run the SQL commands in the following files to create the database structure:</value></data>
+  <data name="Step3" xml:space="preserve"><value>Step 3. Deploy Site Binaries</value></data>
+  <data name="Step3Body" xml:space="preserve"><value>Extract the built solution files to a directory which IIS can access (e.g., c:\inetput\DdiRegistry).</value></data>
+  <data name="Step4" xml:space="preserve"><value>Step 4. IIS Configuration</value></data>
+  <data name="CreateSite" xml:space="preserve"><value>Create a Site for DDI Registry</value></data>
+  <data name="CreateSiteStep1" xml:space="preserve"><value>In IIS, choose your machine and select Add Web Site. Use the following settings</value></data>
+  <data name="SiteName" xml:space="preserve"><value>Site Name</value></data>
+  <data name="PhysicalPath" xml:space="preserve"><value>Physical path</value></data>
+  <data name="PhysicalPathValue" xml:space="preserve"><value>the location where you extracted the DdiRegistry/ directory above</value></data>
+  <data name="Binding" xml:space="preserve"><value>Binding</value></data>
+  <data name="Hostname" xml:space="preserve"><value>Hostname</value></data>
+  <data name="HostnameValue" xml:space="preserve"><value>your desired hostname</value></data>
+  <data name="CreateSiteStep2" xml:space="preserve"><value>In the newly created Application Pool, make sure the .NET Framework Version is set to 4.0.</value></data>
+  <data name="UpdateWebConfig" xml:space="preserve"><value>Update the Web.config file</value></data>
+  <data name="UpdateWebConfigBody" xml:space="preserve"><value>In the Web.Config file at the root of your site, search for the "connectionStrings" element and update these to point to your database.</value></data>
+  <data name="Step5" xml:space="preserve"><value>Step 5. Integrate with DNS</value></data>
+  <data name="Step5Intro" xml:space="preserve"><value>The Ddi.Registry.ZoneWriter console application is used to integrate the contents of the DDI Registry's database with your DNS system. To use this, follow these instructions.</value></data>
+  <data name="Step5Body" xml:space="preserve"><value>The ZoneWriter works be writing a bind-compatible zone file. This file can be used by both bind and ActiveDirectory.</value></data>
+  <data name="ZoneWriterStep1" xml:space="preserve"><value>Update ZoneWriter's App.config file</value></data>
+  <data name="ZoneWriterStep1a" xml:space="preserve"><value>Update the DdiRegistry connection string to point to your database</value></data>
+  <data name="ZoneWriterStep1b" xml:space="preserve"><value>Under the Ddi.Registry.ZoneWriter.Settings element, update the following properties</value></data>
+  <data name="BaseZoneDesc" xml:space="preserve"><value>The name of the root, authoritative zone for the registry system. To work with the DDI Registry system, leave as registry.ddialliance.org</value></data>
+  <data name="MasterNameDesc" xml:space="preserve"><value>The hostname of your primary nameserver</value></data>
+  <data name="NameserverDesc" xml:space="preserve"><value>A list of hostnames of your nameservers</value></data>
+  <data name="DefaultARecordDesc" xml:space="preserve"><value>The A record for the hostname specified in the BaseZone setting</value></data>
+  <data name="ZoneFileLocationDesc" xml:space="preserve"><value>The location where your zone file will be written.</value></data>
+  <data name="ZoneWriterStep2" xml:space="preserve"><value>Schedule the ZoneWrite to run on a regular basis (e.g., every 5 minutes).</value></data>
+  <data name="ZoneWriterStep3" xml:space="preserve"><value>Set your DNS Server to use the zone file for its configuration.</value></data>
+  <data name="Faq" xml:space="preserve"><value>Frequently Asked Questions</value></data>
+  <data name="FaqBody" xml:space="preserve"><value>Nothing has really come up yet.</value></data>
+  <data name="GetInTouch" xml:space="preserve"><value>Get in touch with us</value></data>
+  <data name="FaqTail" xml:space="preserve"><value>and we'll add answers to common questions as they come up.</value></data>
+</root>

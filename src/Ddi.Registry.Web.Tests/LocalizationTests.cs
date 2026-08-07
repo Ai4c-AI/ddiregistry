@@ -93,4 +93,24 @@ public sealed class LocalizationTests
 
         Assert.Contains("Registry Tools", decoded);
     }
+
+    [Fact]
+    public async Task Home_Default_ShowsChineseWelcome()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        var client = factory.CreateClient();
+        var html = await client.GetStringAsync("/");
+        var decoded = WebUtility.HtmlDecode(html);
+        Assert.Contains("欢迎使用 DDI 注册表", decoded);
+    }
+
+    [Fact]
+    public async Task Help_QueryCultureEn_IsEnglish()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        var client = factory.CreateClient();
+        var html = await client.GetStringAsync("/Help?culture=en");
+        var decoded = WebUtility.HtmlDecode(html);
+        Assert.Contains("DDI Registry Help", decoded);
+    }
 }

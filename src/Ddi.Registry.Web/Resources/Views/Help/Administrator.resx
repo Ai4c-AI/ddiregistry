@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>Administrator Documentation</value></data>
+  <data name="Heading" xml:space="preserve"><value>Administrator Documentation</value></data>
+  <data name="ProcessRequests" xml:space="preserve"><value>Process Agency Requests</value></data>
+  <data name="ProcessRequestsBody1" xml:space="preserve"><value>To process agency identifier requests, navigate to the Approve Agencies page by clicking the Agency Admin link on the top navigation bar. Note that you will need to be</value></data>
+  <data name="LoggedIn" xml:space="preserve"><value>logged in</value></data>
+  <data name="ProcessRequestsBody2" xml:space="preserve"><value>before this link will appear.</value></data>
+  <data name="ProcessRequestsBody3" xml:space="preserve"><value>The Approve Agencies page lists all pending agency identifier requests. You may take the following actions for each request.</value></data>
+  <data name="Approve" xml:space="preserve"><value>Approve</value></data>
+  <data name="ApproveBody" xml:space="preserve"><value>Approve the agency</value></data>
+  <data name="Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="DeleteBody" xml:space="preserve"><value>Do not approve the agency</value></data>
+  <data name="CreateAdminUsers" xml:space="preserve"><value>Create Administrative Users</value></data>
+  <data name="CreateAdminUsersBody1" xml:space="preserve"><value>To manage administrative users, navigate to the User administration page by clicking the User Admin link on the top navigation bar. Note that you will need to be</value></data>
+  <data name="CreateAdminUsersBody2" xml:space="preserve"><value>before this link will appear.</value></data>
+  <data name="CreateAdminUsersBody3" xml:space="preserve"><value>From the User Admin page, you can create new users, edit users, or delete users.</value></data>
+</root>
