@@ -1,28 +1,29 @@
 ﻿@model IEnumerable<Ddi.Registry.Data.Service>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>
-                Service Name
+                @Localizer["ServiceName"]
             </th>
             <th>
-                Hostname
+                @Localizer["Hostname"]
             </th>
             <th>
-                Port
+                @Localizer["Port"]
             </th>
             <th>
-                Protocol
+                @Localizer["Protocol"]
             </th>
             <th>
-                Time to Live
+                @Localizer["TimeToLive"]
             </th>
             <th>
-                Priority
+                @Localizer["Priority"]
             </th>
             <th>
-                Weight
+                @Localizer["Weight"]
             </th>
         </tr>
     </thead>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ContactInformation" xml:space="preserve"><value>联系信息</value></data>
+  <data name="AdministrativeContact" xml:space="preserve"><value>行政联系人</value></data>
+  <data name="TechnicalContact" xml:space="preserve"><value>技术联系人</value></data>
+  <data name="SubAgencyAssignments" xml:space="preserve"><value>子机构分配</value></data>
+  <data name="NoSubAgencies" xml:space="preserve"><value>该机构没有子机构。</value></data>
+  <data name="HttpResolvers" xml:space="preserve"><value>HTTP 解析器</value></data>
+  <data name="NoHttpResolvers" xml:space="preserve"><value>未配置 HTTP 解析器。</value></data>
+  <data name="DnsSrvServices" xml:space="preserve"><value>DNS SRV 服务</value></data>
+  <data name="NoServices" xml:space="preserve"><value>未配置服务。</value></data>
+  <data name="ForeignNameServerDelegations" xml:space="preserve"><value>外部名称服务器委派</value></data>
+  <data name="Disabled" xml:space="preserve"><value>（已禁用）</value></data>
+  <data name="NoDelegations" xml:space="preserve"><value>未配置委派。</value></data>
+</root>

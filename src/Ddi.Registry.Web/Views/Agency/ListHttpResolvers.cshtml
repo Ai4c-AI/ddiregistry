@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<Ddi.Registry.Data.HttpResolver>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>
-                Resolution type
+                @Localizer["ResolutionType"]
             </th>
             <th>
-                URI Template
+                @Localizer["UriTemplate"]
             </th>           
         </tr>
     </thead>

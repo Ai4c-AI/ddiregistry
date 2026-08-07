@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>批准机构</value></data>
+  <data name="NoAgenciesToApprove" xml:space="preserve"><value>没有需要批准的机构。</value></data>
+  <data name="Username" xml:space="preserve"><value>用户名</value></data>
+  <data name="AgencyName" xml:space="preserve"><value>机构名称</value></data>
+  <data name="Label" xml:space="preserve"><value>标签</value></data>
+  <data name="Created" xml:space="preserve"><value>创建时间</value></data>
+  <data name="LastModified" xml:space="preserve"><value>最后修改</value></data>
+  <data name="TechnicalContact" xml:space="preserve"><value>技术联系人</value></data>
+  <data name="AdministrativeContact" xml:space="preserve"><value>行政联系人</value></data>
+  <data name="Approve" xml:space="preserve"><value>批准</value></data>
+  <data name="Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="Deprecate" xml:space="preserve"><value>弃用</value></data>
+  <data name="ApproveConcepts" xml:space="preserve"><value>批准概念注册</value></data>
+  <data name="NoConceptsToApprove" xml:space="preserve"><value>没有需要批准的概念注册。</value></data>
+  <data name="Agency" xml:space="preserve"><value>机构</value></data>
+  <data name="Name" xml:space="preserve"><value>名称</value></data>
+  <data name="Version" xml:space="preserve"><value>版本</value></data>
+  <data name="ApproveRepresentations" xml:space="preserve"><value>批准表示注册</value></data>
+  <data name="NoRepresentationsToApprove" xml:space="preserve"><value>没有需要批准的表示注册。</value></data>
+  <data name="Type" xml:space="preserve"><value>类型</value></data>
+  <data name="ApproveVariables" xml:space="preserve"><value>批准变量注册</value></data>
+  <data name="NoVariablesToApprove" xml:space="preserve"><value>没有需要批准的变量注册。</value></data>
+  <data name="Concept" xml:space="preserve"><value>概念</value></data>
+  <data name="Representation" xml:space="preserve"><value>表示</value></data>
+</root>

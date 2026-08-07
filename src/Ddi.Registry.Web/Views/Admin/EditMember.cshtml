@@ -2,24 +2,25 @@
 @model Ddi.Registry.Data.ApplicationUser
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h2>Edit User</h2>
+<h2>@Localizer["EditUser"]</h2>
 
 
 
 
 @using (Html.BeginForm())
 {
-    @Html.ValidationSummary("Account modification was unsuccessful. Please correct the errors and try again.")
+    @Html.ValidationSummary(Localizer["ValidationSummary"].Value)
     <fieldset>
-        <legend>Account Information</legend>
+        <legend>@Localizer["AccountInformation"]</legend>
 
         <div class="editor-label">
-            @Html.Label("Name")
+            @Html.Label(Localizer["Name"].Value)
         </div>
         <div class="editor-field">
             @Html.DisplayFor(m => m.Name)
@@ -42,7 +43,7 @@
     </fieldset>
 
     <fieldset>
-        <legend>Roles</legend>
+        <legend>@Localizer["Roles"]</legend>
 
         @foreach (string role in new List<string>() { "admin", "SuperAdmin" })
         {
@@ -54,7 +55,7 @@
 
     </fieldset>
 
-    <input type="submit" value="Update" />
+    <input type="submit" value="@Localizer["Update"]" />
 }
 
 <div>

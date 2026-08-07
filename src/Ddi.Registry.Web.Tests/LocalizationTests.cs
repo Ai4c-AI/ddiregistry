@@ -113,4 +113,24 @@ public sealed class LocalizationTests
         var decoded = WebUtility.HtmlDecode(html);
         Assert.Contains("DDI Registry Help", decoded);
     }
+
+    [Fact]
+    public async Task Agency_DefaultCulture_IsChinese()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        var client = factory.CreateClient();
+        var html = await client.GetStringAsync("/Agency");
+        var decoded = WebUtility.HtmlDecode(html);
+        Assert.Contains("机构检索结果", decoded); // Agency Search Results 的中文词条
+    }
+
+    [Fact]
+    public async Task Agency_QueryCultureEn_IsEnglish()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        var client = factory.CreateClient();
+        var html = await client.GetStringAsync("/Agency?culture=en");
+        var decoded = WebUtility.HtmlDecode(html);
+        Assert.Contains("Agency Search Results", decoded);
+    }
 }

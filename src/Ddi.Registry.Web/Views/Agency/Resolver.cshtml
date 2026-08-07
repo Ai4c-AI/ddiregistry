@@ -1,18 +1,19 @@
 ﻿@using Ddi.Registry.Data
 @model Ddi.Registry.Web.Models.ResolverModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "HTTP Resolver";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h2>Resolver Results</h2>
+<h2>@Localizer["Heading"]</h2>
 
-<p>Agency ID: @Html.ActionLink(Model.Assignment.AgencyId, "Index", "Agency", new { agencyName = Model.Assignment.AgencyId })</p>
-<p>URN agency or subagency: @Model.Urn.Agency</p>
-<p>URN: @Model.Urn.ToString()</p>
+<p>@Localizer["AgencyId"]: @Html.ActionLink(Model.Assignment.AgencyId, "Index", "Agency", new { agencyName = Model.Assignment.AgencyId })</p>
+<p>@Localizer["UrnAgency"]: @Model.Urn.Agency</p>
+<p>@Localizer["Urn"]: @Model.Urn.ToString()</p>
 @if (Model.HttpResolvers.Count == 0)
 {
-    <h2>No HTTP Endpoints Found</h2>
+    <h2>@Localizer["NoEndpoints"]</h2>
 }
 else
 {
@@ -20,9 +21,9 @@ else
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Http Resolver Type</th>
-            <th>Description</th>
-            <th>URL</th>
+            <th>@Localizer["ResolverType"]</th>
+            <th>@Localizer["Description"]</th>
+            <th>@Localizer["Url"]</th>
         </tr>
     </thead>
     <tbody>
@@ -37,19 +38,19 @@ else
                 <td>
                         @if(item.ResolutionType == HttpResolver.ServiceNameWeb)
                         {
-                            <p>Website for the DDI URN</p>
+                            <p>@Localizer["WebsiteForUrn"]</p>
                         }
                         else if(item.ResolutionType == HttpResolver.ServiceNameDdiItem)
                         {
-                            <p>DDI representation of the item</p>
+                            <p>@Localizer["DdiItemDesc"]</p>
                         }
                         else if(item.ResolutionType == HttpResolver.ServiceNameDdiSet)
                         {
-                            <p>DDI representation of the item and related items</p>
+                            <p>@Localizer["DdiSetDesc"]</p>
                         }
                         else
                         {
-                            <p>User defined service</p>
+                            <p>@Localizer["UserDefinedService"]</p>
                         }
                     </td>
                 <td>

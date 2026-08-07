@@ -1,14 +1,15 @@
 ﻿@model List<Ddi.Registry.Data.Agency>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Agency List";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h2>Agency Search Results</h2>
+<h2>@Localizer["SearchResults"]</h2>
 
 @if (Model.Count == 0)
 {
-    <h2>No Results Found</h2>
+    <h2>@Localizer["NoResults"]</h2>
 }
 else
 {
@@ -16,10 +17,10 @@ else
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Agency Name</th>
-            <th>Label</th>
-            <th>Date Approved</th>
-            <th>Last Modified</th>
+            <th>@Localizer["AgencyName"]</th>
+            <th>@Localizer["Label"]</th>
+            <th>@Localizer["DateApproved"]</th>
+            <th>@Localizer["LastModified"]</th>
             <th></th>
         </tr>
     </thead>
