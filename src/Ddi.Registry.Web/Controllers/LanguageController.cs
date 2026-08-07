@@ -11,6 +11,7 @@ namespace Ddi.Registry.Web.Controllers
         private static readonly string[] SupportedCultures = { "zh-CN", "en" };
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
             var resolved = culture != null &&

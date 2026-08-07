@@ -1067,7 +1067,7 @@ namespace Ddi.Registry.Web.Controllers
 
                     var subject = _localizer["InviteEmailSubject"];
                     var body = string.Format(_localizer["InviteEmailBody"],
-                        inviter.Name, inviter.Email, agencyId, HtmlEncoder.Default.Encode(callbackUrl));
+                        HtmlEncoder.Default.Encode(inviter.Name ?? string.Empty), HtmlEncoder.Default.Encode(inviter.Email ?? string.Empty), HtmlEncoder.Default.Encode(agencyId ?? string.Empty), HtmlEncoder.Default.Encode(callbackUrl));
                     await _email.SendEmailAsync(email, subject, body);
 
                     return user.Id;
@@ -1166,7 +1166,7 @@ namespace Ddi.Registry.Web.Controllers
         private async Task SendApproverEmail(ApplicationUser approver, ApplicationUser user, string agencyName)
         {
             var bodyHtml = string.Format(_localizer["ApproverEmailBody"],
-                user.Name, user.Email, agencyName);
+                HtmlEncoder.Default.Encode(user.Name ?? string.Empty), HtmlEncoder.Default.Encode(user.Email ?? string.Empty), HtmlEncoder.Default.Encode(agencyName ?? string.Empty));
             var subject = string.Format(_localizer["ApproverEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(approver.Email, subject, bodyHtml);
@@ -1174,7 +1174,7 @@ namespace Ddi.Registry.Web.Controllers
 
         private async Task SendConfirmationEmail(ApplicationUser user, string agencyName)
 		{
-            var bodyHtml = string.Format(_localizer["ConfirmationEmailBody"], agencyName);
+            var bodyHtml = string.Format(_localizer["ConfirmationEmailBody"], HtmlEncoder.Default.Encode(agencyName ?? string.Empty));
             var subject = string.Format(_localizer["ConfirmationEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);

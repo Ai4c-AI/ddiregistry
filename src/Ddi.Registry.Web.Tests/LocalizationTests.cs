@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Ddi.Registry.Web;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -35,6 +37,45 @@ public sealed class LocalizationTests
     }
 
     [Fact]
+    public void SharedResource_FallsBackToEnglish_WhenTranslationMissingForCulture()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        using var scope = factory.Services.CreateScope();
+        var localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<SharedResource>>();
+
+        // de-DE 没有对应的 SharedResource.de-DE.resx，验证 .NET 资源回落链会落到中性（英文）
+        // 资源而不是显示资源键名——这与 zh-CN 缺词条时应回落英文的机制一致。
+        var original = CultureInfo.CurrentUICulture;
+        try
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
+            var value = localizer["AgencyNameRequired"].Value;
+
+            Assert.DoesNotContain("AgencyNameRequired", value);
+            Assert.Equal("An agency name is required.", value);
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = original;
+        }
+    }
+
+    [Fact]
+    public async Task Home_AcceptLanguageEn_IsEnglish()
+    {
+        using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
+        using var client = factory.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/");
+        request.Headers.Add("Accept-Language", "en");
+
+        using var response = await client.SendAsync(request);
+        var html = await response.Content.ReadAsStringAsync();
+        var decoded = WebUtility.HtmlDecode(html);
+
+        Assert.Contains("Registry Tools", decoded);
+    }
+
+    [Fact]
     public async Task SetLanguage_ZhCn_SetsCultureCookieAndRedirectsToReturnUrl()
     {
         using var factory = new WebOidcApplicationFactory(configureKeycloak: false);
@@ -43,8 +84,15 @@ public sealed class LocalizationTests
             AllowAutoRedirect = false
         });
 
-        var response = await client.PostAsync(
-            "/Language/SetLanguage?culture=zh-CN&returnUrl=/Home/Index", new StringContent(""));
+        var token = await GetAntiforgeryTokenAsync(client);
+        var form = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("__RequestVerificationToken", token),
+            new KeyValuePair<string, string>("culture", "zh-CN"),
+            new KeyValuePair<string, string>("returnUrl", "/Home/Index"),
+        });
+
+        var response = await client.PostAsync("/Language/SetLanguage", form);
 
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         Assert.Equal("/Home/Index", response.Headers.Location?.OriginalString);
@@ -60,12 +108,29 @@ public sealed class LocalizationTests
             AllowAutoRedirect = false
         });
 
-        var response = await client.PostAsync(
-            "/Language/SetLanguage?culture=en&returnUrl=https://evil.example.com", new StringContent(""));
+        var token = await GetAntiforgeryTokenAsync(client);
+        var form = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("__RequestVerificationToken", token),
+            new KeyValuePair<string, string>("culture", "en"),
+            new KeyValuePair<string, string>("returnUrl", "https://evil.example.com"),
+        });
+
+        var response = await client.PostAsync("/Language/SetLanguage", form);
 
         // 外部 returnUrl 不安全，回退到首页（默认路由生成 "/"）
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         Assert.Equal("/", response.Headers.Location?.OriginalString);
+    }
+
+    // SetLanguage 现受 [ValidateAntiForgeryToken] 保护；从渲染了 _LanguageSelector 的首页
+    // 提取隐藏字段的令牌，配套的防伪 Cookie 由同一 HttpClient 自动携带。
+    private static async Task<string> GetAntiforgeryTokenAsync(HttpClient client)
+    {
+        var html = await client.GetStringAsync("/");
+        var match = Regex.Match(html, "name=\"__RequestVerificationToken\"[^>]*value=\"([^\"]+)\"");
+        Assert.True(match.Success, "Antiforgery token not found on home page.");
+        return match.Groups[1].Value;
     }
 
     [Fact]

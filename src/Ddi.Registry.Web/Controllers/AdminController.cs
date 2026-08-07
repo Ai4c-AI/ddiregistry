@@ -5,6 +5,7 @@ using Ddi.Registry.Data;
 using Ddi.Registry.Web.Models;
 using System.Globalization;
 using System.Net.Mail;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -143,14 +144,17 @@ namespace Ddi.Registry.Web.Controllers
 
         public async Task SendApprovedEmail(ApplicationUser user, string agencyName)
         {
-            var bodyHtml = string.Format(_localizer["ApprovedEmailBody"], agencyName);
+            var encodedAgencyName = HtmlEncoder.Default.Encode(agencyName ?? string.Empty);
+            var bodyHtml = string.Format(_localizer["ApprovedEmailBody"], encodedAgencyName);
             var subject = string.Format(_localizer["ApprovedEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);
         }
         public async Task SendDeniedEmail(ApplicationUser user, string agencyName, string reason)
         {
-            var bodyHtml = string.Format(_localizer["DeniedEmailBody"], agencyName, reason);
+            var encodedAgencyName = HtmlEncoder.Default.Encode(agencyName ?? string.Empty);
+            var encodedReason = HtmlEncoder.Default.Encode(reason ?? string.Empty);
+            var bodyHtml = string.Format(_localizer["DeniedEmailBody"], encodedAgencyName, encodedReason);
             var subject = string.Format(_localizer["DeniedEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);

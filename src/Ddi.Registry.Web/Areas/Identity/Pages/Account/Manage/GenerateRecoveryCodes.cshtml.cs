@@ -6,6 +6,7 @@ using Ddi.Registry.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
@@ -14,13 +15,16 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<GenerateRecoveryCodesModel> _logger;
+        private readonly IStringLocalizer<GenerateRecoveryCodesModel> _localizer;
 
         public GenerateRecoveryCodesModel(
             UserManager<ApplicationUser> userManager,
-            ILogger<GenerateRecoveryCodesModel> logger)
+            ILogger<GenerateRecoveryCodesModel> logger,
+            IStringLocalizer<GenerateRecoveryCodesModel> localizer)
         {
             _userManager = userManager;
             _logger = logger;
+            _localizer = localizer;
         }
 
         [TempData]
@@ -66,7 +70,7 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
             RecoveryCodes = recoveryCodes.ToArray();
 
             _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);
-            StatusMessage = "You have generated new recovery codes.";
+            StatusMessage = _localizer["RecoveryCodesGenerated"];
             return RedirectToPage("./ShowRecoveryCodes");
         }
     }

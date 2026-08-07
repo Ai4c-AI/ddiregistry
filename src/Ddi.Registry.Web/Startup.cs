@@ -67,6 +67,7 @@ namespace Ddi.Registry.Web
                 //.AddRoles<IdentityRole>()
                 //.AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddErrorDescriber<Ddi.Registry.Web.Services.LocalizedIdentityErrorDescriber>()
                 .AddDefaultTokenProviders(); 
 
             var keycloakAuthority = Configuration["Authentication:Keycloak:Authority"];

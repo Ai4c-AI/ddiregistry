@@ -7,6 +7,7 @@ using Ddi.Registry.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
 {
@@ -14,13 +15,16 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IStringLocalizer<SetPasswordModel> _localizer;
 
         public SetPasswordModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            IStringLocalizer<SetPasswordModel> localizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _localizer = localizer;
         }
 
         [BindProperty]
@@ -85,7 +89,7 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your password has been set.";
+            StatusMessage = _localizer["PasswordSet"];
 
             return RedirectToPage();
         }
