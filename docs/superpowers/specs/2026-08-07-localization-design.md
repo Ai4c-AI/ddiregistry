@@ -75,22 +75,23 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 项目为 SDK 风格，`**/*.resx` 自动编译为嵌入式资源。统一放置于 `Ddi.Registry.Web/Resources/`：
 
 ```
-Ddi.Registry.Web/Resources/
-├── SharedResource.cs                        # 空标记类，namespace: Ddi.Registry.Web.Resources
-├── SharedResource.resx                      # 中性（英文基础文案）
-├── SharedResource.zh-CN.resx                # 中文
-├── Controllers/
-│   ├── HomeController.resx / .zh-CN.resx
-│   ├── ManageController.resx / .zh-CN.resx
-│   ├── AdminController.resx / .zh-CN.resx
-│   └── (其余控制器按需)
-├── Views/
-│   ├── Shared/_Layout.resx / .zh-CN.resx    # 导航、页脚等公共文案
-│   ├── Shared/_LoginPartial.resx / .zh-CN.resx
-│   └── <Area/Controller>/<View>.resx / .zh-CN.resx
-└── Areas/Identity/Pages/Account/
-    ├── Login.resx / .zh-CN.resx             # 覆盖后的 Identity 页
-    └── (按需的其余页面)
+Ddi.Registry.Web/
+├── SharedResource.cs                     # 空标记类（**项目根**），namespace: Ddi.Registry.Web
+├── Resources/
+│   ├── SharedResource.resx               # 中性（英文基础文案）
+│   ├── SharedResource.zh-CN.resx         # 中文
+│   ├── Controllers/
+│   │   ├── HomeController.resx / .zh-CN.resx
+│   │   ├── ManageController.resx / .zh-CN.resx
+│   │   ├── AdminController.resx / .zh-CN.resx
+│   │   └── (其余控制器按需)
+│   ├── Views/
+│   │   ├── Shared/_Layout.resx / .zh-CN.resx    # 导航、页脚等公共文案
+│   │   ├── Shared/_LoginPartial.resx / .zh-CN.resx
+│   │   └── <Area/Controller>/<View>.resx / .zh-CN.resx
+│   └── Areas/Identity/Pages/Account/
+│       ├── Login.resx / .zh-CN.resx             # 覆盖后的 Identity 页
+│       └── (按需的其余页面)
 ```
 
 **关键约定**：
@@ -100,7 +101,7 @@ Ddi.Registry.Web/Resources/
 - **MVC 视图文案**用 `@inject IViewLocalizer Localizer`，映射到 `Resources/Views/<Controller>/<View>.zh-CN.resx`。
 - **Identity 覆盖页文案**用 `IViewLocalizer`，映射到 `Resources/Areas/Identity/Pages/Account/<Page>.zh-CN.resx`（具体资源路径在实现时以实际解析结果为准，遵循 `{RootNamespace}.{ResourcesPath}.{相对路径}` 规则）。
 - **命名规则**：`.resx` = 英文基础词条，`.zh-CN.resx` = 中文词条；中文缺词条自动回落英文。
-- **标记类** `SharedResource.cs` 命名空间必须为 `Ddi.Registry.Web.Resources`，保证 `factory.Create(typeof(SharedResource))` 与 `Resources/SharedResource.resx` 的资源名一致。
+- **标记类** `SharedResource.cs` 必须放在**项目根**（namespace `Ddi.Registry.Web`），不能放在 `Resources/` 目录或 `...Resources` 命名空间下。若放在 `Resources/` 下，`IStringLocalizer<SharedResource>` 的 base name 会变成 `Ddi.Registry.Web.Resources.Resources.SharedResource`（`Resources` 重复），导致 `factory.Create(typeof(SharedResource))` 与资源名不一致、数据注解本地化整体失效。
 
 ## 各表面迁移
 

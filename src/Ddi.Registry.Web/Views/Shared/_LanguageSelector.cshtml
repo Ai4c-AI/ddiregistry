@@ -5,7 +5,7 @@
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var currentCulture = requestCulture?.RequestCulture.Culture.Name ?? "zh-CN";
-    var returnUrl = "~" + Context.Request.Path.Value;
+    var returnUrl = "~" + Context.Request.Path.Value + Context.Request.QueryString.Value;
 }
 <form id="language-selector" asp-controller="Language" asp-action="SetLanguage"
       asp-route-returnUrl="@returnUrl" method="post" class="form-inline ml-2">

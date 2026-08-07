@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="UnableToUpdateEmail" xml:space="preserve"><value>无法更新邮箱地址</value></data>
+  <data name="ProfileUpdated" xml:space="preserve"><value>您的个人资料已更新</value></data>
+  <data name="VerificationEmailSent" xml:space="preserve"><value>验证邮件已发送，请查收您的邮箱。</value></data>
+  <data name="ConfirmEmailSubject" xml:space="preserve"><value>确认您的邮箱</value></data>
+  <data name="ConfirmEmailBody" xml:space="preserve"><value><![CDATA[请通过 <a href='{0}'>点击此处</a> 确认您的账户。]]></value></data>
+</root>

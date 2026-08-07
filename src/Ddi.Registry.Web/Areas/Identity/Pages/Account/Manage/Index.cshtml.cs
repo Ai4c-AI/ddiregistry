@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
 {
@@ -20,17 +21,20 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
+        private readonly IStringLocalizer<IndexModel> _localizer;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            IStringLocalizer<IndexModel> localizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _context = context;
+            _localizer = localizer;
         }
 
         public string Username { get; set; }
@@ -125,7 +129,7 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
                 if(newEmailExists != null)
                 {
                     // email already in use
-                    ModelState.AddModelError(string.Empty,"Unable to update email address");
+                    ModelState.AddModelError(string.Empty, _localizer["UnableToUpdateEmail"]);
                     return Page();
                 }
                 var setUserResult = await _userManager.SetUserNameAsync(user, Input.Email);
@@ -167,7 +171,7 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
             await _context.SaveChangesAsync();
 
             
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = _localizer["ProfileUpdated"];
             return RedirectToPage();
         }
 
@@ -195,10 +199,10 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account.Manage
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                _localizer["ConfirmEmailSubject"],
+                string.Format(_localizer["ConfirmEmailBody"], HtmlEncoder.Default.Encode(callbackUrl)));
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = _localizer["VerificationEmailSent"];
             return RedirectToPage();
         }
     }

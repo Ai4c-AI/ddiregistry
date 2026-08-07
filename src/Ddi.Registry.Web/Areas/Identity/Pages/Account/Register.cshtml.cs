@@ -172,12 +172,12 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account
                 var recaptchaResponse = JsonConvert.DeserializeObject<RecaptchaValidationResponse>(responseText);
                 if (!recaptchaResponse.Success)
                 {
-                    ModelState.AddModelError("reCAPTCHA", "invalid reCAPTCHA " + string.Join(":", recaptchaResponse.ErrorCodes));
+                    ModelState.AddModelError("reCAPTCHA", _localizer["RecaptchaInvalid"] + " " + string.Join(":", recaptchaResponse.ErrorCodes));
                 }
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("reCAPTCHA", "invalid reCAPTCHA");
+                ModelState.AddModelError("reCAPTCHA", _localizer["RecaptchaInvalid"]);
             }
         }
     }

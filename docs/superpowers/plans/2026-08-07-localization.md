@@ -16,7 +16,7 @@
 - 所有 `.resx` 置于 `Ddi.Registry.Web/Resources/` 下；`ResourcesPath = "Resources"`。
 - 专有名词（DDI、Agency Registry、Keycloak、DDI Alliance、机构名、域名）不翻译。
 - 邮件本地化跟随**发送者当前请求语言**（`IStringLocalizer` 在请求内解析）。
-- 数据注解消息统一走 `SharedResource`；标记类 `SharedResource` 命名空间为 `Ddi.Registry.Web.Resources`。
+- 数据注解消息统一走 `SharedResource`；标记类 `SharedResource` 命名空间为 `Ddi.Registry.Web`，**必须放在项目根**（`src/Ddi.Registry.Web/SharedResource.cs`），不能放在 `Resources/` 目录或 `...Resources` 命名空间下——否则资源 base name 会变成 `...Resources.Resources.SharedResource`（`Resources` 重复），数据注解本地化整体失效。
 - 视图正文本地化用 `@inject IViewLocalizer Localizer` + `Localizer["Key"]`（`_ViewImports` 已 `@using Microsoft.AspNetCore.Mvc.Localization`）；**导航/共享文案**（词条放在 SharedResource）用 `@inject IStringLocalizer<SharedResource> Localizer`。二者**不混用**：`IViewLocalizer` 只查自身视图路径对应的资源，**不会**回落到 SharedResource——把 SharedResource 里的键用 `IViewLocalizer` 读取会渲染出键名本身。
 - 每个任务结束需 `dotnet build Ddi.Registry.Web.sln` 通过，且 `dotnet test src/Ddi.Registry.Web.Tests/Ddi.Registry.Web.Tests.csproj` 通过，然后提交。
 
@@ -26,7 +26,7 @@
 
 | 文件 | 职责 |
 | --- | --- |
-| `Resources/SharedResource.cs` | 空标记类，数据注解与共享文案的本地化源 |
+| `SharedResource.cs`（项目根） | 空标记类，数据注解与共享文案的本地化源 |
 | `Resources/SharedResource.resx` / `.zh-CN.resx` | 共享/导航/校验词条（英文 / 中文） |
 | `Resources/Views/**/*.resx` / `.zh-CN.resx` | 各 MVC 视图词条 |
 | `Resources/Controllers/*.resx` / `.zh-CN.resx` | 各控制器（含邮件）词条 |
@@ -41,7 +41,7 @@
 ### Task 1: 本地化基础设施 + 语言选择器 + 布局/登录导航本地化
 
 **Files:**
-- Create: `src/Ddi.Registry.Web/Resources/SharedResource.cs`
+- Create: `src/Ddi.Registry.Web/SharedResource.cs`（**项目根**，非 Resources/ 下，原因见全局约束）
 - Create: `src/Ddi.Registry.Web/Resources/SharedResource.resx`
 - Create: `src/Ddi.Registry.Web/Resources/SharedResource.zh-CN.resx`
 - Modify: `src/Ddi.Registry.Web/Startup.cs`（ConfigureServices 与 Configure）
@@ -95,7 +95,7 @@ public sealed class LocalizationTests
             "/Language/SetLanguage?culture=en&returnUrl=https://evil.example.com", new StringContent(""));
 
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-        Assert.Equal("/Home/Index", response.Headers.Location?.OriginalString);
+        Assert.Equal("/", response.Headers.Location?.OriginalString); // 外部 returnUrl 重定向到默认路由生成的 "/"
     }
 
     [Fact]
@@ -129,9 +129,9 @@ Expected: FAIL —— `LanguageController` 不存在 / 渲染内容仍是英文�
 
 - [ ] **Step 3: 创建标记类与资源文件**
 
-`Resources/SharedResource.cs`：
+`src/Ddi.Registry.Web/SharedResource.cs`（**项目根**）：
 ```csharp
-namespace Ddi.Registry.Web.Resources
+namespace Ddi.Registry.Web
 {
     /// <summary>
     /// Marker class that serves as the shared resource source for data annotations
@@ -142,6 +142,8 @@ namespace Ddi.Registry.Web.Resources
     }
 }
 ```
+
+> 说明：必须放在项目根（namespace `Ddi.Registry.Web`）。若放在 `Resources/` 下且 namespace 为 `...Resources`，`IStringLocalizer<SharedResource>` 的 base name 会变为 `Ddi.Registry.Web.Resources.Resources.SharedResource`（`Resources` 重复），导致数据注解本地化与共享文案全部失效。
 
 `Resources/SharedResource.resx`（英文基础词条，格式如下，后续任务不断追加 `<data>` 项）：
 ```xml
