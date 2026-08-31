@@ -1,29 +1,23 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
 <div>
-    <h1 class="display-4">Welcome to the DDI Registry</h1>
+    <h1 class="display-4">@Localizer["WelcomeHeading"]</h1>
     <partial name="SearchControl" model="new SearchModel()" />
 
-    <h3>About</h3>
-    <p>
-        <b>The DDI Agency Registry</b> is a component of a <em>free</em> global unique identifier system for metadata producing organizations.
-        The registry system provides an agency identifier which acts as both a namespace in a globally unique id as well as a pointer for distributed service resolution.
-        <br />
-        Based on <b>ISO/IEC 11179 Part 6</b> International Registration Data Identifiers (11179 IRDIs), <b>DDI agency identifiers</b> are used as the <b>Registration Authority</b> (11179 RA) in a IRDI and in <a href="https://www.rfc-editor.org/rfc/rfc9517.html">DDI URNs</a>.
-    </p>
-    <p>
-        <b>The DDI Agency Resolver</b> is a free DNS SRV record-based resolution service for DDI agency identifiers, and enables discovery of web services and data services provided by an agency.
-    </p>
+    <h3>@Localizer["About"]</h3>
+    @Html.Raw(Localizer["AboutBody1"].Value)
+    @Html.Raw(Localizer["AboutBody2"].Value)
 
-    <h3>Request a DDI agency ID</h3>
-    <p>Follow these three quick steps to obtain a DDI agency identifier</p>
+    <h3>@Localizer["RequestAgency"]</h3>
+    <p>@Localizer["RequestAgencyIntro"]</p>
     <ol>
-        <li>Create an account. <a asp-area="Identity" asp-page="/Account/Register">Register here.</a></li>
-        <li>Request an Agency ID under the <a href="/Manage">Your Agencies</a> tab.</li>
-        <li>You will receive an email confirmation when the agency identifier is approved.</li>
+        <li>@Localizer["Step1"] <a asp-area="Identity" asp-page="/Account/Login">@Localizer["LoginPage"]</a> @Localizer["Step1Tail"]</li>
+        <li>@Localizer["Step2"] <a asp-area="Identity" asp-page="/Account/Register">@Localizer["RegisterHere"]</a> @Localizer["Step2Tail"]</li>
+        <li>@Localizer["Step3"] <a href="/Manage">@Localizer["YourAgenciesLink"]</a> @Localizer["Step3Tail"]</li>
     </ol>
 
-    <p>See the Help page for @Html.ActionLink("detailed instructions", "Index", "Help").</p>
+    <p>@Localizer["HelpIntro"] @Html.ActionLink(Localizer["DetailedInstructions"].Value, "Index", "Help").</p>
 </div>

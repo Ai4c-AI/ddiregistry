@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<Ddi.Registry.Data.HttpResolver>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>
-                Resolution type
+                @Localizer["ResolutionType"]
             </th>
             <th>
-                URI Template
+                @Localizer["UriTemplate"]
             </th>            
             <th></th>
         </tr>
@@ -23,8 +24,8 @@
                     @item.UrlTemplate
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "EditHttpResolver", new { resolverId = item.Id }) |
-                    @Html.ActionLink("Delete", "DeleteHttpResolver", new { resolverId = item.Id })
+                    @Html.ActionLink(Localizer["Edit"].Value, "EditHttpResolver", new { resolverId = item.Id }) |
+                    @Html.ActionLink(Localizer["Delete"].Value, "DeleteHttpResolver", new { resolverId = item.Id })
                 </td>
             </tr>
         }

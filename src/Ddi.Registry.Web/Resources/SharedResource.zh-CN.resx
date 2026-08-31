@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav.Develop" xml:space="preserve"><value>开发</value></data>
+  <data name="Nav.RegistryTools" xml:space="preserve"><value>注册表工具</value></data>
+  <data name="Nav.RegistryDeployment" xml:space="preserve"><value>注册表部署</value></data>
+  <data name="Nav.RegistryGitHub" xml:space="preserve"><value>DDI 注册表 GitHub</value></data>
+  <data name="Nav.YourAgencies" xml:space="preserve"><value>我的机构</value></data>
+  <data name="Nav.Contact" xml:space="preserve"><value>联系我们</value></data>
+  <data name="Nav.Administration" xml:space="preserve"><value>管理</value></data>
+  <data name="Nav.Admin" xml:space="preserve"><value>管理</value></data>
+  <data name="Nav.AgencyAdmin" xml:space="preserve"><value>机构管理</value></data>
+  <data name="Nav.AgencyAdminHelp" xml:space="preserve"><value>机构管理帮助</value></data>
+  <data name="Nav.SuperAdmin" xml:space="preserve"><value>超级管理员</value></data>
+  <data name="Nav.UserAdmin" xml:space="preserve"><value>用户管理</value></data>
+  <data name="Nav.Privacy" xml:space="preserve"><value>隐私</value></data>
+  <data name="Nav.Manage" xml:space="preserve"><value>管理</value></data>
+  <data name="Nav.ContactDDI" xml:space="preserve"><value>联系我们</value></data>
+  <data name="Nav.Register" xml:space="preserve"><value>注册</value></data>
+  <data name="Nav.Login" xml:space="preserve"><value>登录</value></data>
+  <data name="Nav.Logout" xml:space="preserve"><value>退出</value></data>
+  <data name="Language.Label" xml:space="preserve"><value>语言</value></data>
+  <data name="Cookie.ConsentMessage" xml:space="preserve"><value>本网站使用 Cookie。</value></data>
+  <data name="Cookie.LearnMore" xml:space="preserve"><value>了解更多</value></data>
+  <data name="Cookie.Accept" xml:space="preserve"><value>接受</value></data>
+  <data name="AgencyName" xml:space="preserve"><value>机构名称</value></data>
+  <data name="AgencyNameRequired" xml:space="preserve"><value>机构名称不能为空。</value></data>
+  <data name="AgencyNamePattern" xml:space="preserve"><value>机构名称格式应为 [国家/地区代码].[名称]，例如 us.agencyname</value></data>
+  <data name="AgencyLabel" xml:space="preserve"><value>机构标签</value></data>
+  <data name="AgencyLabelRequired" xml:space="preserve"><value>机构标签不能为空。</value></data>
+  <data name="TechnicalContact" xml:space="preserve"><value>技术联系人</value></data>
+  <data name="TechnicalContactEmail" xml:space="preserve"><value>技术联系人邮箱</value></data>
+  <data name="AdministrativeContact" xml:space="preserve"><value>行政联系人</value></data>
+  <data name="AdministrativeContactEmail" xml:space="preserve"><value>行政联系人邮箱</value></data>
+  <data name="Creator" xml:space="preserve"><value>创建者</value></data>
+  <data name="SubdomainPattern" xml:space="preserve"><value>子域名只能包含字母、数字和点，且必须以机构名称开头</value></data>
+  <data name="The {0} field is required." xml:space="preserve"><value>{0} 字段是必填项。</value></data>
+  <data name="The {0} field is not a valid e-mail address." xml:space="preserve"><value>{0} 字段不是有效的电子邮件地址。</value></data>
+  <data name="The field {0} must be a string with a maximum length of {1}." xml:space="preserve"><value>字段 {0} 必须是最大长度为 {1} 的字符串。</value></data>
+</root>

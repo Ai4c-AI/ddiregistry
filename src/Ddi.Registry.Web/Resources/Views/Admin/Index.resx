@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>Approve Agencies</value></data>
+  <data name="NoAgenciesToApprove" xml:space="preserve"><value>No agencies need to be approved.</value></data>
+  <data name="Username" xml:space="preserve"><value>Username</value></data>
+  <data name="AgencyName" xml:space="preserve"><value>Agency Name</value></data>
+  <data name="Label" xml:space="preserve"><value>Label</value></data>
+  <data name="Created" xml:space="preserve"><value>Created</value></data>
+  <data name="LastModified" xml:space="preserve"><value>Last Modified</value></data>
+  <data name="TechnicalContact" xml:space="preserve"><value>Technical Contact</value></data>
+  <data name="AdministrativeContact" xml:space="preserve"><value>Administrative Contact</value></data>
+  <data name="Approve" xml:space="preserve"><value>Approve</value></data>
+  <data name="Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Deprecate" xml:space="preserve"><value>Deprecate</value></data>
+  <data name="ApproveConcepts" xml:space="preserve"><value>Approve Concept Registrations</value></data>
+  <data name="NoConceptsToApprove" xml:space="preserve"><value>No concept registrations need to be approved.</value></data>
+  <data name="Agency" xml:space="preserve"><value>Agency</value></data>
+  <data name="Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Version" xml:space="preserve"><value>Version</value></data>
+  <data name="ApproveRepresentations" xml:space="preserve"><value>Approve Representation Registrations</value></data>
+  <data name="NoRepresentationsToApprove" xml:space="preserve"><value>No representation registrations need to be approved.</value></data>
+  <data name="Type" xml:space="preserve"><value>Type</value></data>
+  <data name="ApproveVariables" xml:space="preserve"><value>Approve Variable Registrations</value></data>
+  <data name="NoVariablesToApprove" xml:space="preserve"><value>No variable registrations need to be approved.</value></data>
+  <data name="Concept" xml:space="preserve"><value>Concept</value></data>
+  <data name="Representation" xml:space="preserve"><value>Representation</value></data>
+</root>

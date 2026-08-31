@@ -17,7 +17,7 @@ namespace Ddi.Registry.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -177,6 +177,96 @@ namespace Ddi.Registry.Data.Migrations
                     b.ToTable("Assignments");
                 });
 
+            modelBuilder.Entity("Ddi.Registry.Data.ConceptRegistration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AgencyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ApprovalState")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Definition")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DomainOntology")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Irdi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MapsToClass")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgencyId");
+
+                    b.HasIndex("ApprovalState");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("Irdi")
+                        .IsUnique();
+
+                    b.HasIndex("AgencyId", "Name", "Version")
+                        .IsUnique();
+
+                    b.ToTable("ConceptRegistrations");
+                });
+
+            modelBuilder.Entity("Ddi.Registry.Data.ConceptRelation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsCrossAgency")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SourceConceptIrdi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TargetConceptIrdi")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TargetExternalIrdi")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConceptRelations");
+                });
+
             modelBuilder.Entity("Ddi.Registry.Data.Delegation", b =>
                 {
                     b.Property<string>("DelegationId")
@@ -238,6 +328,63 @@ namespace Ddi.Registry.Data.Migrations
                     b.ToTable("HttpResolvers");
                 });
 
+            modelBuilder.Entity("Ddi.Registry.Data.RepresentationRegistration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AgencyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ApprovalState")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Irdi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JsonSchema")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShaclTemplateIrdi")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgencyId");
+
+                    b.HasIndex("ApprovalState");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("Irdi")
+                        .IsUnique();
+
+                    b.HasIndex("AgencyId", "Name", "Version")
+                        .IsUnique();
+
+                    b.ToTable("RepresentationRegistrations");
+                });
+
             modelBuilder.Entity("Ddi.Registry.Data.Service", b =>
                 {
                     b.Property<string>("ServiceId")
@@ -279,6 +426,78 @@ namespace Ddi.Registry.Data.Migrations
                     b.HasIndex("AssignmentId");
 
                     b.ToTable("Services");
+                });
+
+            modelBuilder.Entity("Ddi.Registry.Data.VariableRegistration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AgencyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ApprovalState")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CollectionMethod")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ConceptIrdi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Irdi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("QualityGate")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RepresentationIrdi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SourceType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Universe")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgencyId");
+
+                    b.HasIndex("ApprovalState");
+
+                    b.HasIndex("ConceptIrdi");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("Irdi")
+                        .IsUnique();
+
+                    b.HasIndex("RepresentationIrdi");
+
+                    b.HasIndex("AgencyId", "Name", "Version")
+                        .IsUnique();
+
+                    b.ToTable("VariableRegistrations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -472,6 +691,23 @@ namespace Ddi.Registry.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Assignment");
+                });
+
+            modelBuilder.Entity("Ddi.Registry.Data.VariableRegistration", b =>
+                {
+                    b.HasOne("Ddi.Registry.Data.ConceptRegistration", null)
+                        .WithMany()
+                        .HasForeignKey("ConceptIrdi")
+                        .HasPrincipalKey("Irdi")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ddi.Registry.Data.RepresentationRegistration", null)
+                        .WithMany()
+                        .HasForeignKey("RepresentationIrdi")
+                        .HasPrincipalKey("Irdi")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

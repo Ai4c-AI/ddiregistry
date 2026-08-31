@@ -3,6 +3,12 @@
     "DefaultConnection": "Host=localhost;Database=ddi_registry;Username=postgres;Password=yourpassword;",
     "ProviderName": "Npgsql"
   },
+  "DefaultUser": {
+    "UserName": "admin",
+    "Email": "admin@localhost",
+    "Password": "Password123!",
+    "Role": "admin"
+  },
   "EmailConfiguration": {
     "Host": "localhost",
     "Port": 587,
@@ -15,6 +21,13 @@
   "Recaptcha": {
     "ReCaptchaPublicKey": "xxx",
     "ReCaptchaPrivateKey": "xxx"
+  },
+  "Authentication": {
+    "Keycloak": {
+      "Authority": "http://localhost:8180/realms/ddi-registry",
+      "ClientId": "registry-web",
+      "ClientSecret": "local-registry-web-secret"
+    }
   },
   "Logging": {
     "LogLevel": {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>工具</value></data>
+  <data name="Heading" xml:space="preserve"><value>工具</value></data>
+  <data name="Intro" xml:space="preserve"><value>以下开发工具可与 DDI 注册表配合使用。</value></data>
+  <data name="ColTool" xml:space="preserve"><value>工具</value></data>
+  <data name="ColLicense" xml:space="preserve"><value>许可证</value></data>
+  <data name="ColDescription" xml:space="preserve"><value>说明</value></data>
+  <data name="ResolverDotNet" xml:space="preserve"><value>.NET 软件开发人员可以使用 Colectica DDI Resolver Library for .NET，通过全球域名系统（DNS）查询 DDI 机构的相关信息。</value></data>
+  <data name="ResolverJava" xml:space="preserve"><value>Java 软件开发人员可以使用 Colectica DDI Resolver Library for Java，通过全球域名系统（DNS）查询 DDI 机构的相关信息。</value></data>
+  <data name="RegistrySourceDesc" xml:space="preserve"><value>您可以在自己的基础设施上部署 DDI 注册表软件以运行自己的注册表服务。如果您希望提供自己的委派和解析服务，而不是依赖 DDI Alliance 的注册表服务，则可能需要这样做。</value></data>
+</root>

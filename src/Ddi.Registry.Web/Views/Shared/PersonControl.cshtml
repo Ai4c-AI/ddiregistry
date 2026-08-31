@@ -1,5 +1,6 @@
 ﻿@using Ddi.Registry.Web
 @model Ddi.Registry.Data.ApplicationUser
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <div class="card">
 
@@ -27,8 +28,8 @@
                     @Html.DisplayFor(model => model.Country)
                 </div>
                 <div class="display-field" style="clear: both;">
-                    Phone: @Html.DisplayFor(model => model.PhoneNumber)<br />
-                    HomePage: <a href="@Html.DisplayFor(model => model.HomePage)">@Html.DisplayFor(model => model.HomePage)</a>
+                    @Localizer["Phone"]: @Html.DisplayFor(model => model.PhoneNumber)<br />
+                    @Localizer["HomePage"]: <a href="@Html.DisplayFor(model => model.HomePage)">@Html.DisplayFor(model => model.HomePage)</a>
                 </div>
             </div>
         </div>

@@ -1,31 +1,32 @@
 ﻿@model Ddi.Registry.Data.Assignment
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Delete " + Model.AssignmentId;
+    ViewData["Title"] = Localizer["DeletePrefix"].Value + " " + Model.AssignmentId;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete @Model.AssignmentId</h2>
+<h2>@Localizer["DeletePrefix"] @Model.AssignmentId</h2>
 
-<h3>Are you sure you want to delete this assignment?</h3>
+<h3>@Localizer["ConfirmDelete"]</h3>
 
 <fieldset>
 
-    <div class="display-label">Name</div>
+    <div class="display-label">@Localizer["Name"]</div>
     <div class="display-field">@Model.AssignmentId</div>
 
-    <div class="display-label">DateCreated</div>
+    <div class="display-label">@Localizer["DateCreated"]</div>
     <div class="display-field">@String.Format("{0:g}", Model.DateCreated)</div>
 
-    <div class="display-label">LastModified</div>
+    <div class="display-label">@Localizer["LastModified"]</div>
     <div class="display-field">@String.Format("{0:g}", Model.LastModified)</div>
     
 </fieldset>
 @using (Html.BeginForm()) {
     <p>
 		@Html.HiddenFor(a => a.AssignmentId)
-        <input type="submit" value="Delete" /> |
-        @Html.ActionLink("Back to Agency Page", "ViewAgency", new { agencyId = Model.AgencyId })
+        <input type="submit" value="@Localizer["Delete"]" /> |
+        @Html.ActionLink(Localizer["BackToAgency"].Value, "ViewAgency", new { agencyId = Model.AgencyId })
     </p>
 }
 

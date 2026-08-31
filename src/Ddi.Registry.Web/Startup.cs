@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,18 +23,21 @@ using Ddi.Registry.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using AspNetCoreRateLimit;
 
 namespace Ddi.Registry.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -57,12 +67,53 @@ namespace Ddi.Registry.Web
                 //.AddRoles<IdentityRole>()
                 //.AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddErrorDescriber<Ddi.Registry.Web.Services.LocalizedIdentityErrorDescriber>()
                 .AddDefaultTokenProviders(); 
+
+            var keycloakAuthority = Configuration["Authentication:Keycloak:Authority"];
+            var keycloakClientId = Configuration["Authentication:Keycloak:ClientId"];
+            var keycloakClientSecret = Configuration["Authentication:Keycloak:ClientSecret"];
+            var hasRequiredKeycloakSettings = !string.IsNullOrWhiteSpace(keycloakAuthority) &&
+                !string.IsNullOrWhiteSpace(keycloakClientId) &&
+                !string.IsNullOrWhiteSpace(keycloakClientSecret);
+            var usesPlaceholderKeycloakSettings = string.Equals(keycloakAuthority, "https://keycloak.example/realms/ddi-registry", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(keycloakClientSecret, "set-through-user-secrets-or-environment", StringComparison.OrdinalIgnoreCase);
+            var isKeycloakConfigured = hasRequiredKeycloakSettings && !usesPlaceholderKeycloakSettings;
+            if (isKeycloakConfigured)
+            {
+                services.AddAuthentication()
+                    .AddOpenIdConnect("Keycloak", options =>
+                    {
+                        options.SignInScheme = IdentityConstants.ExternalScheme;
+                        options.Authority = keycloakAuthority;
+                        options.ClientId = keycloakClientId;
+                        options.ClientSecret = keycloakClientSecret;
+                        options.RequireHttpsMetadata = !Environment.IsDevelopment();
+                        options.CallbackPath = "/signin-oidc";
+                        options.ResponseType = OpenIdConnectResponseType.Code;
+                        options.UsePkce = true;
+                        options.SaveTokens = false;
+                        options.GetClaimsFromUserInfoEndpoint = true;
+                        options.Scope.Clear();
+                        options.Scope.Add("openid");
+                        options.Scope.Add("profile");
+                        options.Scope.Add("email");
+                        options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                    });
+            }
+
+            services.AddScoped<ExternalLoginAccountLinker>();
 
             var emailconfig = Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
             services.AddTransient<IEmailSender, EmailSender>(i => new EmailSender(emailconfig));
 
-            services.AddMvc();
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            services.AddMvc()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization(options =>
+                    options.DataAnnotationLocalizerProvider = (type, factory) =>
+                        factory.Create(typeof(SharedResource)));
 
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
@@ -78,6 +129,16 @@ namespace Ddi.Registry.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.Use(async (context, next) =>
+            {
+                if (context.Connection.RemoteIpAddress is null)
+                {
+                    context.Connection.RemoteIpAddress = IPAddress.Loopback;
+                }
+
+                await next();
+            });
+
             app.UseIpRateLimiting();
 
             if (env.IsDevelopment())
@@ -94,12 +155,21 @@ namespace Ddi.Registry.Web
                 app.UseHsts();
             }
 
-            UpdateDatabase(app).Wait();
+            UpdateDatabase(app, env).Wait();
             CreateRoles(app).Wait();
+            CreateDefaultUserAsync(app).Wait();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();            
+            app.UseCookiePolicy();
+
+            var supportedCultures = new[] { new CultureInfo("zh-CN"), new CultureInfo("en") };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("zh-CN"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseRouting();
 
@@ -113,7 +183,7 @@ namespace Ddi.Registry.Web
             }); 
         }
 
-        private static async Task UpdateDatabase(IApplicationBuilder app)
+        private static async Task UpdateDatabase(IApplicationBuilder app, IWebHostEnvironment env)
         {
             using (var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
@@ -121,7 +191,14 @@ namespace Ddi.Registry.Web
             {
                 using (var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
                 {
-                    await context.Database.MigrateAsync();
+                    if (!context.Database.IsRelational())
+                    {
+                        await context.Database.EnsureCreatedAsync();
+                    }
+                    else
+                    {
+                        await context.Database.MigrateAsync();
+                    }
                 }
             }
         }
@@ -144,6 +221,71 @@ namespace Ddi.Registry.Web
                             var result = await roleManager.CreateAsync(new IdentityRole(roleName));
                         }
                     }
+                }
+            }
+        }
+
+        private async Task CreateDefaultUserAsync(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                var userName = Configuration["DefaultUser:UserName"] ?? "admin";
+                var email = Configuration["DefaultUser:Email"] ?? "admin@localhost";
+                var password = Configuration["DefaultUser:Password"] ?? "Password123!";
+                var roleName = Configuration["DefaultUser:Role"] ?? "admin";
+
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+
+                var user = await userManager.FindByNameAsync(userName);
+                if (user == null)
+                {
+                    user = new ApplicationUser
+                    {
+                        UserName = userName,
+                        Email = email,
+                        EmailConfirmed = true
+                    };
+
+                    var createResult = await userManager.CreateAsync(user, password);
+                    if (!createResult.Succeeded)
+                    {
+                        throw new InvalidOperationException($"Failed to create default user '{userName}': {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+                    }
+                }
+                else
+                {
+                    user.Email = email;
+                    user.EmailConfirmed = true;
+                    await userManager.UpdateAsync(user);
+                }
+
+                await userManager.SetEmailAsync(user, email);
+
+                if (!await userManager.HasPasswordAsync(user))
+                {
+                    await userManager.AddPasswordAsync(user, password);
+                }
+                else
+                {
+                    var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+                    var resetResult = await userManager.ResetPasswordAsync(user, resetToken, password);
+                    if (!resetResult.Succeeded)
+                    {
+                        throw new InvalidOperationException($"Failed to set default password for '{userName}': {string.Join(", ", resetResult.Errors.Select(e => e.Description))}");
+                    }
+                }
+
+                if (!await userManager.IsInRoleAsync(user, roleName))
+                {
+                    await userManager.AddToRoleAsync(user, roleName);
                 }
             }
         }

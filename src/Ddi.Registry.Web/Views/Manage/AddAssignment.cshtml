@@ -1,10 +1,11 @@
 ﻿@model Ddi.Registry.Web.Models.AssignmentModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Add an Assignment";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h2>Add Sub Agency Assignment</h2>
+<h2>@Localizer["Heading"]</h2>
 
 
 
@@ -15,20 +16,20 @@
     <fieldset>
         @Html.HiddenFor(model => model.AgencyId)
 
-        <p>The Sub Agency assignment should start with "@(Model.AgencyId)."</p>
+        <p>@Localizer["Prompt"] "@(Model.AgencyId)."</p>
         @Html.TextBoxFor(model => model.AssignmentId, new { autofocus = "true" })
         @Html.ValidationMessageFor(model => model.AssignmentId)
 
         <div class="editor-submit">
             <p>
-                <input type="submit" value="Create" />
+                <input type="submit" value="@Localizer["Create"]" />
             </p>
         </div>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to Management Page", "ViewAgency", new { agencyId = Model.AgencyId })
+    @Html.ActionLink(Localizer["BackToManagement"].Value, "ViewAgency", new { agencyId = Model.AgencyId })
 </div>
 
 @section Scripts {

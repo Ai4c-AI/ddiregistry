@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="InviteEmailSubject" xml:space="preserve"><value>您已被邀请加入 DDI 注册表 - 确认您的邮箱</value></data>
+  <data name="InviteEmailBody" xml:space="preserve"><value><![CDATA[{0}（{1}）邀请您管理 DDI 机构标识符 {2}。请通过 <a href='{3}'>点击此处</a> 确认您的账户。]]></value></data>
+  <data name="ApproverEmailSubject" xml:space="preserve"><value>DDI 注册表 - 机构批准申请：{0}</value></data>
+  <data name="ApproverEmailBody" xml:space="preserve"><value><![CDATA[<p>{0} {1} 提交了以下新机构标识符申请：</p><p>{2}</p><p>请前往 <a href="https://registry.ddialliance.org/Admin">https://registry.ddialliance.org/Admin</a> 审核该机构。</p><p>谢谢，<br/>DDI Alliance</p>]]></value></data>
+  <data name="ConfirmationEmailSubject" xml:space="preserve"><value>DDI 注册表 - 机构申请：{0}</value></data>
+  <data name="ConfirmationEmailBody" xml:space="preserve"><value><![CDATA[<p>您提交了以下新机构标识符申请：</p><p>{0}</p><p>您的申请处理完成后将收到单独确认。</p><p>谢谢，<br/>DDI Alliance</p>]]></value></data>
+  <data name="AgencyIdExists" xml:space="preserve"><value>该机构标识符已存在，请重试</value></data>
+  <data name="AssignmentAgencyPrefixRequired" xml:space="preserve"><value>子机构标识符必须以机构标识符开头</value></data>
+  <data name="SubAgencyExists" xml:space="preserve"><value>子机构已存在：{0}</value></data>
+  <data name="ConceptExists" xml:space="preserve"><value>该概念已存在，请重试</value></data>
+  <data name="RepresentationExists" xml:space="preserve"><value>该表示已存在，请重试</value></data>
+  <data name="VariableReferenceNotFound" xml:space="preserve"><value>找不到引用的概念或表示。</value></data>
+  <data name="CrossAgencyReference" xml:space="preserve"><value>变量引用必须属于同一机构。</value></data>
+  <data name="VariableExists" xml:space="preserve"><value>该变量已存在，请重试</value></data>
+  <data name="AgencyNameRequired" xml:space="preserve"><value>机构名称不能为空</value></data>
+  <data name="AgencyLabelRequired" xml:space="preserve"><value>机构标签不能为空</value></data>
+  <data name="AgencyNameTooLong" xml:space="preserve"><value>机构名称不能超过 50 个字符</value></data>
+  <data name="AgencyNamePattern" xml:space="preserve"><value>机构名称格式应为 [国家/地区代码].[名称]，例如 us.agencyname</value></data>
+  <data name="CountryCodeDataUnavailable" xml:space="preserve"><value>ISO 国家/地区代码验证数据不可用</value></data>
+  <data name="CountryCodeInvalid" xml:space="preserve"><value>{0} 不是有效的国家/地区代码。请使用 2 位 ISO 3166 代码或 'uk'。</value></data>
+  <data name="AgencyPrefixInvalid" xml:space="preserve"><value>机构标识符必须以 2 位 ISO 3166 国家/地区代码或 'int' 开头，例如 us.agencyname</value></data>
+</root>

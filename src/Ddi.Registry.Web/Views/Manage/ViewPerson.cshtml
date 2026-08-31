@@ -1,8 +1,9 @@
 ﻿@model Ddi.Registry.Data.ApplicationUser
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = Model.Name;
 
-    var cardViewData = new ViewDataDictionary(ViewData) { { "CardTitle", "Contact" } };
+    var cardViewData = new ViewDataDictionary(ViewData) { { "CardTitle", Localizer["Contact"].Value } };
 }
 <partial name="PersonControl" model="Model" view-data="cardViewData" />

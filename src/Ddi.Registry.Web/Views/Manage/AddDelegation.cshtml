@@ -1,10 +1,11 @@
 ﻿@model Ddi.Registry.Data.Delegation
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Add a Delegation";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h2>Add Delegation</h2>
+<h2>@Localizer["Heading"]</h2>
 
 
 
@@ -18,7 +19,7 @@
         @Html.HiddenFor(model => model.DelegationId)
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.NameServer, "Name Server")
+            @Html.LabelFor(model => model.NameServer, Localizer["NameServer"].Value)
         </div>
         <div class="editor-field">
             @Html.TextBoxFor(model => model.NameServer, new { autofocus = "true" })
@@ -27,14 +28,14 @@
 
         <div class="editor-submit">
             <p>
-                <input type="submit" value="Create" />
+                <input type="submit" value="@Localizer["Create"]" />
             </p>
         </div>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to Management Page", "EditAssignment", new { assignmentId = Model.AssignmentId })
+    @Html.ActionLink(Localizer["BackToManagement"].Value, "EditAssignment", new { assignmentId = Model.AssignmentId })
 </div>
 
 @section Scripts {

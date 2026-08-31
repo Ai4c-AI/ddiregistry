@@ -1,0 +1,16 @@
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var currentCulture = requestCulture?.RequestCulture.Culture.Name ?? "zh-CN";
+    var returnUrl = "~" + Context.Request.Path.Value + Context.Request.QueryString.Value;
+}
+<form id="language-selector" asp-controller="Language" asp-action="SetLanguage"
+      asp-route-returnUrl="@returnUrl" method="post" class="form-inline ml-2">
+    <select name="culture" class="form-control form-control-sm" onchange="this.form.submit()" aria-label="@Localizer["Language.Label"]">
+        <option value="zh-CN" selected="@(currentCulture.StartsWith("zh"))">中文</option>
+        <option value="en" selected="@(currentCulture.StartsWith("en"))">English</option>
+    </select>
+</form>

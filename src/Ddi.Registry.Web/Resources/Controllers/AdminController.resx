@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ApprovedEmailSubject" xml:space="preserve"><value>DDI Registry - Agency Approved: {0}</value></data>
+  <data name="ApprovedEmailBody" xml:space="preserve"><value><![CDATA[<p>The following agency identifier has been approved:</p><p>{0}</p><p>Thank you,<br/>The DDI Alliance</p>]]></value></data>
+  <data name="DeniedEmailSubject" xml:space="preserve"><value>DDI Registry - Agency Denied: {0}</value></data>
+  <data name="DeniedEmailBody" xml:space="preserve"><value><![CDATA[<p>The following request for an agency identifier has been denied:</p><p>{0}</p><p>The reason given was:</p><p>{1}</p><p>Thank you,<br/>The DDI Alliance</p>]]></value></data>
+</root>

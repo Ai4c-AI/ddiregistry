@@ -1,7 +1,8 @@
 ﻿@model Ddi.Registry.Web.Models.ApproveModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Approve Agencies";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
 @functions { 
@@ -30,11 +31,11 @@
     }
 }
 
-<h2>Approve Agencies</h2>
+<h2>@Localizer["Title"]</h2>
 
 @if (Model.Agencies.Count() == 0)
 {
-	<p>No agencies need to be approved.</p>
+	<p>@Localizer["NoAgenciesToApprove"]</p>
 }
 else
 {
@@ -42,25 +43,25 @@ else
         <thead>
             <tr>
                 <th>
-                    Username
+                    @Localizer["Username"]
                 </th>
                 <th>
-                    Agency Name
+                    @Localizer["AgencyName"]
                 </th>
                 <th>
-                    Label
+                    @Localizer["Label"]
                 </th>
                 <th>
-                    Created
+                    @Localizer["Created"]
                 </th>
                 <th>
-                    Last Modified
+                    @Localizer["LastModified"]
                 </th>
                 <th>
-                    Technical Contact
+                    @Localizer["TechnicalContact"]
                 </th>
                 <th>
-                    Administrative Contact
+                    @Localizer["AdministrativeContact"]
                 </th>
                 <th>
                 </th>
@@ -108,11 +109,127 @@ else
                 }
             </td>
             <td>
-                @Html.ActionLink("Approve", "Approve", new { agencyId = item.AgencyId }) |
-                @Html.ActionLink("Delete", "Delete", new { agencyId = item.AgencyId })
+                @Html.ActionLink(Localizer["Approve"].Value, "Approve", new { agencyId = item.AgencyId }) |
+                @Html.ActionLink(Localizer["Delete"].Value, "Delete", new { agencyId = item.AgencyId })
             </td>
         </tr>
     }
+        </tbody>
+    </table>
+}
+
+<h2>@Localizer["ApproveConcepts"]</h2>
+
+@if (!Model.RequestedConcepts.Any())
+{
+    <p>@Localizer["NoConceptsToApprove"]</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Localizer["Agency"]</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Version"]</th>
+                <th>@Localizer["Label"]</th>
+                <th>@Localizer["Created"]</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RequestedConcepts)
+            {
+                <tr>
+                    <td>@item.AgencyId</td>
+                    <td>@item.Name</td>
+                    <td>@item.Version</td>
+                    <td>@item.Label</td>
+                    <td>@item.CreatedAt</td>
+                    <td>
+                        @Html.ActionLink(Localizer["Approve"].Value, "ApproveConceptRegistration", new { irdi = item.Irdi }) |
+                        @Html.ActionLink(Localizer["Deprecate"].Value, "DeprecateConceptRegistration", new { irdi = item.Irdi })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>@Localizer["ApproveRepresentations"]</h2>
+
+@if (!Model.RequestedRepresentations.Any())
+{
+    <p>@Localizer["NoRepresentationsToApprove"]</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Localizer["Agency"]</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Version"]</th>
+                <th>@Localizer["Type"]</th>
+                <th>@Localizer["Created"]</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RequestedRepresentations)
+            {
+                <tr>
+                    <td>@item.AgencyId</td>
+                    <td>@item.Name</td>
+                    <td>@item.Version</td>
+                    <td>@item.Type</td>
+                    <td>@item.CreatedAt</td>
+                    <td>
+                        @Html.ActionLink(Localizer["Approve"].Value, "ApproveRepresentationRegistration", new { irdi = item.Irdi }) |
+                        @Html.ActionLink(Localizer["Deprecate"].Value, "DeprecateRepresentationRegistration", new { irdi = item.Irdi })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>@Localizer["ApproveVariables"]</h2>
+
+@if (!Model.RequestedVariables.Any())
+{
+    <p>@Localizer["NoVariablesToApprove"]</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Localizer["Agency"]</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Version"]</th>
+                <th>@Localizer["Concept"]</th>
+                <th>@Localizer["Representation"]</th>
+                <th>@Localizer["Created"]</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RequestedVariables)
+            {
+                <tr>
+                    <td>@item.AgencyId</td>
+                    <td>@item.Name</td>
+                    <td>@item.Version</td>
+                    <td>@item.ConceptIrdi</td>
+                    <td>@item.RepresentationIrdi</td>
+                    <td>@item.CreatedAt</td>
+                    <td>
+                        @Html.ActionLink(Localizer["Approve"].Value, "ApproveVariableRegistration", new { irdi = item.Irdi }) |
+                        @Html.ActionLink(Localizer["Deprecate"].Value, "DeprecateVariableRegistration", new { irdi = item.Irdi })
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }

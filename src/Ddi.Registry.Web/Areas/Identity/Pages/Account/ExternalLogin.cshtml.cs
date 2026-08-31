@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Ddi.Registry.Data;
+using Ddi.Registry.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,15 +19,18 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ExternalLoginAccountLinker _accountLinker;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
+            ExternalLoginAccountLinker accountLinker,
             ILogger<ExternalLoginModel> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _accountLinker = accountLinker;
             _logger = logger;
         }
 
@@ -88,54 +92,40 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account
             }
             else
             {
-                // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
-                LoginProvider = info.LoginProvider;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (string.IsNullOrWhiteSpace(email))
                 {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
+                    return ExternalLoginFailure(returnUrl, "the external provider did not supply an email claim");
                 }
-                return Page();
+
+                var linkResult = await _accountLinker.LinkAsync(info, email);
+                if (linkResult == ExternalLoginLinkResult.MissingUser)
+                {
+                    return ExternalLoginFailure(returnUrl, "no local user exists for the external email");
+                }
+                if (linkResult == ExternalLoginLinkResult.Failed)
+                {
+                    return ExternalLoginFailure(returnUrl, "the external login could not be bound to the local user");
+                }
+
+                var user = await _userManager.FindByEmailAsync(email);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", user.UserName, info.LoginProvider);
+                return LocalRedirect(returnUrl);
             }
         }
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            // Get the information about the user from the external login provider
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                ErrorMessage = "Error loading external login information during confirmation.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
-            }
+            return ExternalLoginFailure(returnUrl, "external account confirmation is disabled");
+        }
 
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-                        return LocalRedirect(returnUrl);
-                    }
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-
-            LoginProvider = info.LoginProvider;
-            ReturnUrl = returnUrl;
-            return Page();
+        private IActionResult ExternalLoginFailure(string returnUrl, string reason)
+        {
+            _logger.LogInformation("External login failed because {Reason}.", reason);
+            ErrorMessage = "Unable to sign in with the external provider.";
+            return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
         }
     }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>Configure authenticator app</value></data>
+  <data name="Intro" xml:space="preserve"><value>To use an authenticator app go through the following steps:</value></data>
+  <data name="Step1" xml:space="preserve"><value>Download a two-factor authenticator app like Microsoft Authenticator for</value></data>
+  <data name="Step2" xml:space="preserve"><value>Scan the QR Code or enter this key</value></data>
+  <data name="Step2Tail" xml:space="preserve"><value>into your two factor authenticator app. Spaces and casing do not matter.</value></data>
+  <data name="QrInfo1" xml:space="preserve"><value>To enable QR code generation please read our</value></data>
+  <data name="Documentation" xml:space="preserve"><value>documentation</value></data>
+  <data name="Step3" xml:space="preserve"><value>Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code. Enter the code in the confirmation box below.</value></data>
+  <data name="VerificationCode" xml:space="preserve"><value>Verification Code</value></data>
+  <data name="Verify" xml:space="preserve"><value>Verify</value></data>
+</root>

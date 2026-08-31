@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="EditPrefix" xml:space="preserve"><value>编辑</value></data>
+  <data name="ResolutionTypeHeading" xml:space="preserve"><value>HTTP 解析类型</value></data>
+  <data name="ResolutionTypeHint" xml:space="preserve"><value>默认解析类型为 website、ddiitem 和 ddiset。</value></data>
+  <data name="UrlTemplateHeading" xml:space="preserve"><value>URL 模板</value></data>
+  <data name="UrlTemplateHint" xml:space="preserve"><value>您可以在 URL 模板中使用标签 {agency} {identifier} {version} 和 {ddiurn}。</value></data>
+  <data name="UrlTemplateExample" xml:space="preserve"><value>例如，https://yourorganization.com/Item/{agency}/{identifier}/{version}</value></data>
+  <data name="Save" xml:space="preserve"><value>保存</value></data>
+  <data name="BackToAssignment" xml:space="preserve"><value>返回分配页面</value></data>
+</root>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>帮助</value></data>
+  <data name="Heading" xml:space="preserve"><value>DDI 注册表帮助</value></data>
+  <data name="RequestAgency" xml:space="preserve"><value>申请 DDI 机构标识符</value></data>
+  <data name="RequestAgencyIntro" xml:space="preserve"><value>按照以下步骤获取 DDI 机构标识符。</value></data>
+  <data name="HelpStep1" xml:space="preserve"><value>为您的组织创建账户。</value></data>
+  <data name="RegisterHere" xml:space="preserve"><value>在此注册</value></data>
+  <data name="NavigateTo" xml:space="preserve"><value>导航到</value></data>
+  <data name="Manage" xml:space="preserve"><value>管理</value></data>
+  <data name="WebSiteSection" xml:space="preserve"><value>网站的部分。</value></data>
+  <data name="HelpStep3" xml:space="preserve"><value>点击"申请新机构"链接来申请您的机构。各字段的详细说明见下。</value></data>
+  <data name="HelpStep4" xml:space="preserve"><value>机构标识符获批后，您将收到邮件确认。</value></data>
+  <data name="AgencyName" xml:space="preserve"><value>机构名称</value></data>
+  <data name="AgencyNameBody" xml:space="preserve"><value>机构名称格式应为 [国家/地区代码].[名称]，例如 us.agencyname</value></data>
+  <data name="ContactPersons" xml:space="preserve"><value>联系人类型</value></data>
+  <data name="AdminContact" xml:space="preserve"><value>行政联系人</value></data>
+  <data name="AdminContactBody" xml:space="preserve"><value>行政联系人是有权代表 WHOIS 记录中指定的注册人（registrant）与 DDI 注册表交互的个人。域名的行政联系人有权接受通知并就机构标识符的管理向 DDI 注册表提出请求；行政联系人将与机构标识符的技术联系人一起收到与机构标识符相关的所有续费和其他行政通知。</value></data>
+  <data name="TechContact" xml:space="preserve"><value>技术联系人</value></data>
+  <data name="TechContactBody" xml:space="preserve"><value>机构标识符的技术联系人是有权管理机构标识符相关任何技术问题的个人或组织。</value></data>
+  <data name="SubAgency" xml:space="preserve"><value>配置子机构</value></data>
+  <data name="SubAgencyBody" xml:space="preserve"><value>机构获批后，您可以管理子机构。子机构标识符与机构标识符类似，但无需等待批准即可创建。</value></data>
+  <data name="SubAgencyStep2" xml:space="preserve"><value>点击已批准机构标识符旁边的"管理"链接。</value></data>
+  <data name="SubAgencyStep3" xml:space="preserve"><value>点击"添加子机构分配"链接。</value></data>
+  <data name="SubAgencyStep4" xml:space="preserve"><value>输入子机构的标识符。</value></data>
+  <data name="Resolution" xml:space="preserve"><value>配置解析服务</value></data>
+  <data name="ResolutionBody1" xml:space="preserve"><value>DDI 注册表与</value></data>
+  <data name="DomainNameSystem" xml:space="preserve"><value>域名系统</value></data>
+  <data name="ResolutionBody2" xml:space="preserve"><value>集成，为您可能运行的 DDI 相关服务提供全球解析。例如，您可以允许人们查询保存机构元数据的基于 Web Service 的存储库 URL。</value></data>
+  <data name="ResolutionStep3" xml:space="preserve"><value>点击某个子机构标识符旁边的"编辑"链接。</value></data>
+  <data name="ResolutionStep4" xml:space="preserve"><value>点击"添加服务"链接以描述您要启用解析的服务。如果您想使用自己的 DNS 服务器进行解析，请使用"委派"部分配置名称服务器。</value></data>
+</root>

@@ -1,10 +1,11 @@
 ﻿@model IEnumerable<Ddi.Registry.Data.Delegation>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>
-                Name Server
+                @Localizer["NameServer"]
             </th>
             <th></th>
         </tr>
@@ -18,8 +19,8 @@
                     @Html.DisplayFor(modelItem => item.NameServer)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "EditDelegation", new { delegationId = item.DelegationId }) |
-                    @Html.ActionLink("Delete", "DeleteDelegation", new { delegationId = item.DelegationId })
+                    @Html.ActionLink(Localizer["Edit"].Value, "EditDelegation", new { delegationId = item.DelegationId }) |
+                    @Html.ActionLink(Localizer["Delete"].Value, "DeleteDelegation", new { delegationId = item.DelegationId })
                 </td>
             </tr>
         }

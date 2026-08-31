@@ -1,10 +1,11 @@
 ﻿@model Ddi.Registry.Web.Models.AssignmentModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edit " + Model.AssignmentId;
+    ViewData["Title"] = Localizer["EditPrefix"].Value + " " + Model.AssignmentId;
 }
 
-<h2>Edit @Model.AssignmentId</h2>
+<h2>@Localizer["EditPrefix"] @Model.AssignmentId</h2>
 
 
 
@@ -27,10 +28,10 @@
 
     
     <fieldset>
-        <legend>HTTP Resolvers</legend>
+        <legend>@Localizer["HttpResolvers"]</legend>
 
         <div style="margin-top: 12px;">
-            <p>@Html.ActionLink("Add a HTTP Resolver", "AddHttpResolver", new { assignmentId = Model.AssignmentId })</p>
+            <p>@Html.ActionLink(Localizer["AddHttpResolver"].Value, "AddHttpResolver", new { assignmentId = Model.AssignmentId })</p>
         </div>
 
         @if (Model.HttpResolvers.Count() > 0)
@@ -40,15 +41,15 @@
     </fieldset>
 
     <fieldset>
-        <legend>DNS SRV Services</legend>
+        <legend>@Localizer["DnsSrvServices"]</legend>
 
         @if (Model.IsDelegated)
         {
-            <p><strong>These services are not active because resolution for @Model.AssignmentId is delegated to other name servers.</strong></p>
+            <p><strong>@Localizer["ServicesInactive"] @Model.AssignmentId @Localizer["ServicesInactiveTail"]</strong></p>
         }
 
         <div style="margin-top: 12px;">
-            <p>@Html.ActionLink("Add a service", "AddService", new { assignmentId = Model.AssignmentId })</p>
+            <p>@Html.ActionLink(Localizer["AddService"].Value, "AddService", new { assignmentId = Model.AssignmentId })</p>
         </div>
 
         @if (Model.Services.Count() > 0)
@@ -59,18 +60,18 @@
 
     <fieldset>
         <legend>
-            Delegations @if (!Model.IsDelegated)
-            {<text>(Disabled)</text>}
+            @Localizer["Delegations"] @if (!Model.IsDelegated)
+            {<text>@Localizer["Disabled"]</text>}
         </legend>
 
         <div class="editor-field">
             @Html.EditorFor(model => model.Delegated)
-            @Html.LabelFor(model => model.Delegated, "Use my own name servers for resolution.")
+            @Html.LabelFor(model => model.Delegated, Localizer["UseOwnNameServers"].Value)
             @Html.ValidationMessageFor(model => model.Delegated)
         </div>
 
         <div style="padding-top: 12px; clear: both;">
-            <p>@Html.ActionLink("Add a Nameserver", "AddDelegation", new { assignmentId = Model.AssignmentId })</p>
+            <p>@Html.ActionLink(Localizer["AddNameserver"].Value, "AddDelegation", new { assignmentId = Model.AssignmentId })</p>
         </div>
 
         @if (Model.Delegations.Count() > 0)

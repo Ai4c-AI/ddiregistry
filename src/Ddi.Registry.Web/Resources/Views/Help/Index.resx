@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>Help</value></data>
+  <data name="Heading" xml:space="preserve"><value>DDI Registry Help</value></data>
+  <data name="RequestAgency" xml:space="preserve"><value>Request a DDI Agency Identifier</value></data>
+  <data name="RequestAgencyIntro" xml:space="preserve"><value>Follow these steps to obtain a DDI agency identifier.</value></data>
+  <data name="HelpStep1" xml:space="preserve"><value>Create an account for your organization.</value></data>
+  <data name="RegisterHere" xml:space="preserve"><value>Register here</value></data>
+  <data name="NavigateTo" xml:space="preserve"><value>Navigate to the</value></data>
+  <data name="Manage" xml:space="preserve"><value>Manage</value></data>
+  <data name="WebSiteSection" xml:space="preserve"><value>section of the web site.</value></data>
+  <data name="HelpStep3" xml:space="preserve"><value>Click the "Request New Agency" link to request your agency. See below for details on each field.</value></data>
+  <data name="HelpStep4" xml:space="preserve"><value>You will receive an email confirmation when the agency identifier is approved.</value></data>
+  <data name="AgencyName" xml:space="preserve"><value>Agency Name</value></data>
+  <data name="AgencyNameBody" xml:space="preserve"><value>The agency name should be in the form [country code] dot [name]. For example: us.agencyname</value></data>
+  <data name="ContactPersons" xml:space="preserve"><value>Types of Contact Persons</value></data>
+  <data name="AdminContact" xml:space="preserve"><value>Administrative Contact</value></data>
+  <data name="AdminContactBody" xml:space="preserve"><value>An administrative contact is the individual authorized to interact with the DDI Registry on behalf of the registrant specified in the WHOIS record. The administrative contact for your domain has the authorization to accept notices and make requests to the DDI Registry regarding the management of your agency identifier and, along with the technical contact for your agency identifier, will receive all renewal and other administrative notices associated with the agency identifier.</value></data>
+  <data name="TechContact" xml:space="preserve"><value>Technical Contact</value></data>
+  <data name="TechContactBody" xml:space="preserve"><value>The technical contact for your agency identifier is the individual or organization authorized to manage any technical issues related to your agency identifier.</value></data>
+  <data name="SubAgency" xml:space="preserve"><value>Configure a Sub Agency</value></data>
+  <data name="SubAgencyBody" xml:space="preserve"><value>Once your agency is approved, you can manage sub agencies. Sub agency identifiers are just like agency identifiers, but you can create them without waiting for approval.</value></data>
+  <data name="SubAgencyStep2" xml:space="preserve"><value>Click the Manage link next to your approved agency identifier.</value></data>
+  <data name="SubAgencyStep3" xml:space="preserve"><value>Click the "Add sub agency assignment" link.</value></data>
+  <data name="SubAgencyStep4" xml:space="preserve"><value>Enter an identifier for your sub agency.</value></data>
+  <data name="Resolution" xml:space="preserve"><value>Configure Resolution Services</value></data>
+  <data name="ResolutionBody1" xml:space="preserve"><value>The DDI Registry integrates with the</value></data>
+  <data name="DomainNameSystem" xml:space="preserve"><value>Domain Name System</value></data>
+  <data name="ResolutionBody2" xml:space="preserve"><value>to provide global resolution for DDI-related services you may run. For example, you may allow people to query for the URL of a Web Service-based repository that holds your agency's metadata.</value></data>
+  <data name="ResolutionStep3" xml:space="preserve"><value>Click the Edit link next to one of your sub agency identifiers.</value></data>
+  <data name="ResolutionStep4" xml:space="preserve"><value>Click the "Add a service" link to describe the service for which you would like to enable resolution. If you would like to use your own DNS servers for resolution, use the Delegations section to configure your name servers.</value></data>
+</root>

@@ -1,10 +1,11 @@
 ﻿@page
 @model LogoutModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Log out";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
 <header>
     <h1>@ViewData["Title"]</h1>
-    <p>You have successfully logged out of the application.</p>
+    <p>@Localizer["Body"]</p>
 </header>

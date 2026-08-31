@@ -11,13 +11,6 @@
 
   <ItemGroup>
     <None Remove="appsettings.json.dist" />
-    <None Remove="iso3166-countrycodes.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="iso3166-countrycodes.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -30,18 +23,17 @@
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
     <PackageReference Include="GravatarHelper.AspNetCore" Version="1.1.0" />
-    <PackageReference Include="MailKit" Version="4.14.1" />
-	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.2" />
-	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
+    <PackageReference Include="MailKit" Version="4.17.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.10" />
+	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="NISOCountries.Core" Version="1.2.0" />
-    <PackageReference Include="NISOCountries.Ripe" Version="1.2.0" />
   </ItemGroup>
 
 
@@ -50,11 +42,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Ddi.Registry.Web.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
   
   <ItemGroup>
     <Folder Include="wwwroot\assets\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="appsettings.json" />
   </ItemGroup>
 
 

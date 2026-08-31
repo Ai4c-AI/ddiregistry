@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>Add an Agency</value></data>
+  <data name="Heading" xml:space="preserve"><value>Add Agency</value></data>
+  <data name="Intro" xml:space="preserve"><value>Use this form to request an agency identifier. The agency name should be in the form [country code] dot [name]. For example:</value></data>
+  <data name="AdminContactPrompt" xml:space="preserve"><value>Select the Admin contact from the list, or enter their email address.</value></data>
+  <data name="TechnicalContactPrompt" xml:space="preserve"><value>Select the Technical contact from the list, or enter their email address.</value></data>
+  <data name="NoneOrOther" xml:space="preserve"><value>--- None or Other ---</value></data>
+  <data name="OrEnterEmail" xml:space="preserve"><value>or enter an email address</value></data>
+  <data name="Save" xml:space="preserve"><value>Save</value></data>
+  <data name="BackToManagement" xml:space="preserve"><value>Back to Management Page</value></data>
+</root>

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Ddi.Registry.Web.Models;
@@ -22,12 +23,14 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
+        private readonly IStringLocalizer<ForgotPasswordModel> _localizer;
 
-        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IConfiguration configuration)
+        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IConfiguration configuration, IStringLocalizer<ForgotPasswordModel> localizer)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _configuration = configuration;
+            _localizer = localizer;
         }
 
         [BindProperty]
@@ -68,8 +71,8 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    _localizer["ResetPasswordEmailSubject"],
+                    string.Format(_localizer["ResetPasswordEmailBody"], HtmlEncoder.Default.Encode(callbackUrl)));
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
@@ -97,12 +100,12 @@ namespace Ddi.Registry.Web.Areas.Identity.Pages.Account
                 var recaptchaResponse = JsonConvert.DeserializeObject<RecaptchaValidationResponse>(responseText);
                 if (!recaptchaResponse.Success)
                 {
-                    ModelState.AddModelError("reCAPTCHA", "invalid reCAPTCHA " + string.Join(":", recaptchaResponse.ErrorCodes));
+                    ModelState.AddModelError("reCAPTCHA", _localizer["RecaptchaInvalid"] + " " + string.Join(":", recaptchaResponse.ErrorCodes));
                 }
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("reCAPTCHA", "invalid reCAPTCHA");
+                ModelState.AddModelError("reCAPTCHA", _localizer["RecaptchaInvalid"]);
             }
         }
     }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>管理员文档</value></data>
+  <data name="Heading" xml:space="preserve"><value>管理员文档</value></data>
+  <data name="ProcessRequests" xml:space="preserve"><value>处理机构申请</value></data>
+  <data name="ProcessRequestsBody1" xml:space="preserve"><value>要处理机构标识符申请，请点击顶部导航栏中的"机构管理"链接，进入"批准机构"页面。请注意，您需要</value></data>
+  <data name="LoggedIn" xml:space="preserve"><value>登录</value></data>
+  <data name="ProcessRequestsBody2" xml:space="preserve"><value>后此链接才会出现。</value></data>
+  <data name="ProcessRequestsBody3" xml:space="preserve"><value>"批准机构"页面列出所有待处理的机构标识符申请。您可以对每个申请执行以下操作。</value></data>
+  <data name="Approve" xml:space="preserve"><value>批准</value></data>
+  <data name="ApproveBody" xml:space="preserve"><value>批准该机构</value></data>
+  <data name="Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="DeleteBody" xml:space="preserve"><value>不批准该机构</value></data>
+  <data name="CreateAdminUsers" xml:space="preserve"><value>创建管理用户</value></data>
+  <data name="CreateAdminUsersBody1" xml:space="preserve"><value>要管理管理用户，请点击顶部导航栏中的"用户管理"链接，进入用户管理页面。请注意，您需要</value></data>
+  <data name="CreateAdminUsersBody2" xml:space="preserve"><value>后此链接才会出现。</value></data>
+  <data name="CreateAdminUsersBody3" xml:space="preserve"><value>在用户管理页面，您可以创建新用户、编辑用户或删除用户。</value></data>
+</root>

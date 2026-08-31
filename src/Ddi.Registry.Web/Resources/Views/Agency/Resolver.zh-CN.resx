@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>HTTP 解析器</value></data>
+  <data name="Heading" xml:space="preserve"><value>解析结果</value></data>
+  <data name="AgencyId" xml:space="preserve"><value>机构 ID</value></data>
+  <data name="UrnAgency" xml:space="preserve"><value>URN 机构或子机构</value></data>
+  <data name="Urn" xml:space="preserve"><value>URN</value></data>
+  <data name="NoEndpoints" xml:space="preserve"><value>未找到 HTTP 端点</value></data>
+  <data name="ResolverType" xml:space="preserve"><value>HTTP 解析器类型</value></data>
+  <data name="Description" xml:space="preserve"><value>说明</value></data>
+  <data name="Url" xml:space="preserve"><value>URL</value></data>
+  <data name="WebsiteForUrn" xml:space="preserve"><value>该 DDI URN 的网站</value></data>
+  <data name="DdiItemDesc" xml:space="preserve"><value>该项目的 DDI 表示</value></data>
+  <data name="DdiSetDesc" xml:space="preserve"><value>该项目及相关项目的 DDI 表示</value></data>
+  <data name="UserDefinedService" xml:space="preserve"><value>用户自定义服务</value></data>
+</root>

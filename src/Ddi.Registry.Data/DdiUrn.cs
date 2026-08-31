@@ -1,12 +1,12 @@
-﻿namespace Ddi.Registry.Web.Models
+namespace Ddi.Registry.Data
 {
     public class DdiUrn
     {
         private string agency;
-        public string Agency 
+        public string Agency
         {
             get { return agency; }
-            set 
+            set
             {
                 if (value != null) { agency = value.ToLowerInvariant(); }
                 else { agency = null; }
@@ -29,7 +29,7 @@
 
             if(parts.Length != 5) { return false; }
 
-            if(parts[0].ToLower() != "urn" && parts[1].ToLower() != "ddi") { return false; }
+            if(parts[0].ToLower() != "urn" || parts[1].ToLower() != "ddi") { return false; }
 
             ddiUrn = new DdiUrn();
             ddiUrn.Agency = parts[2];

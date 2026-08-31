@@ -1,25 +1,26 @@
 ﻿@using Ddi.Registry.Data
 @model List<ApplicationUser>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-	ViewData["Title"] = "Index";
+	ViewData["Title"] = Localizer["Title"].Value;
 }
 <h2>
-	Users</h2>
+	@Localizer["Users"]</h2>
 @Html.ValidationSummary()
 <p>
-	@Html.ActionLink("Create User", "Register", "Account")
+	@Html.ActionLink(Localizer["CreateUser"].Value, "Register", "Account")
 </p>
 <table class="table table-striped">
     <thead>
         <tr>
             <th>
-                Name
+                @Localizer["Name"]
             </th>
             <th>
-                Organization
+                @Localizer["Organization"]
             </th>
             <th>
-                Email
+                @Localizer["Email"]
             </th>
             <th></th>
             <!--<th>
@@ -44,7 +45,7 @@
                 @item.Email
             </td>
             <td>
-                @Html.ActionLink("Impersonate User", "ImpersonateUser", new { id = item.Id })
+                @Html.ActionLink(Localizer["ImpersonateUser"].Value, "ImpersonateUser", new { id = item.Id })
             </td>
         </tr>
         }

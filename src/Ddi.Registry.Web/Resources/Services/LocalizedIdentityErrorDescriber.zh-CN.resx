@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DefaultError" xml:space="preserve"><value>发生未知错误。</value></data>
+  <data name="ConcurrencyFailure" xml:space="preserve"><value>乐观并发冲突，对象已被修改。</value></data>
+  <data name="PasswordMismatch" xml:space="preserve"><value>密码不正确。</value></data>
+  <data name="InvalidToken" xml:space="preserve"><value>令牌无效。</value></data>
+  <data name="RecoveryCodeRedemptionFailed" xml:space="preserve"><value>恢复代码兑换失败。</value></data>
+  <data name="LoginAlreadyAssociated" xml:space="preserve"><value>已存在使用此登录方式的用户。</value></data>
+  <data name="InvalidUserName" xml:space="preserve"><value>用户名“{0}”无效，只能包含字母或数字。</value></data>
+  <data name="InvalidEmail" xml:space="preserve"><value>邮箱“{0}”无效。</value></data>
+  <data name="DuplicateUserName" xml:space="preserve"><value>用户名“{0}”已被使用。</value></data>
+  <data name="DuplicateEmail" xml:space="preserve"><value>邮箱“{0}”已被使用。</value></data>
+  <data name="InvalidRoleName" xml:space="preserve"><value>角色名“{0}”无效。</value></data>
+  <data name="DuplicateRoleName" xml:space="preserve"><value>角色名“{0}”已被使用。</value></data>
+  <data name="UserAlreadyHasPassword" xml:space="preserve"><value>用户已设置密码。</value></data>
+  <data name="UserLockoutNotEnabled" xml:space="preserve"><value>此用户未启用锁定功能。</value></data>
+  <data name="UserAlreadyInRole" xml:space="preserve"><value>用户已在角色“{0}”中。</value></data>
+  <data name="UserNotInRole" xml:space="preserve"><value>用户不在角色“{0}”中。</value></data>
+  <data name="PasswordTooShort" xml:space="preserve"><value>密码长度至少为 {0} 个字符。</value></data>
+  <data name="PasswordRequiresUniqueChars" xml:space="preserve"><value>密码必须至少包含 {0} 个不同的字符。</value></data>
+  <data name="PasswordRequiresNonAlphanumeric" xml:space="preserve"><value>密码必须至少包含一个非字母数字字符。</value></data>
+  <data name="PasswordRequiresDigit" xml:space="preserve"><value>密码必须至少包含一个数字（“0”-“9”）。</value></data>
+  <data name="PasswordRequiresLower" xml:space="preserve"><value>密码必须至少包含一个小写字母（“a”-“z”）。</value></data>
+  <data name="PasswordRequiresUpper" xml:space="preserve"><value>密码必须至少包含一个大写字母（“A”-“Z”）。</value></data>
+</root>

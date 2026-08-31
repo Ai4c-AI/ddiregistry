@@ -5,6 +5,7 @@ using Ddi.Registry.Data;
 using Ddi.Registry.Web.Models;
 using System.Globalization;
 using System.Net.Mail;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Localization;
 
 namespace Ddi.Registry.Web.Controllers
 {
@@ -24,16 +26,19 @@ namespace Ddi.Registry.Web.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _email;
+        private readonly IStringLocalizer<AdminController> _localizer;
 
         public AdminController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender email)
+            IEmailSender email,
+            IStringLocalizer<AdminController> localizer)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _email = email;
+            _localizer = localizer;
         }
 
         #region Approval
@@ -73,6 +78,24 @@ namespace Ddi.Registry.Web.Controllers
                 }
             }
             model.People = people;
+            model.RequestedConcepts = await _context.ConceptRegistrations
+                .Where(x => x.ApprovalState == ApprovalState.Requested)
+                .OrderBy(x => x.AgencyId)
+                .ThenBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
+            model.RequestedRepresentations = await _context.RepresentationRegistrations
+                .Where(x => x.ApprovalState == ApprovalState.Requested)
+                .OrderBy(x => x.AgencyId)
+                .ThenBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
+            model.RequestedVariables = await _context.VariableRegistrations
+                .Where(x => x.ApprovalState == ApprovalState.Requested)
+                .OrderBy(x => x.AgencyId)
+                .ThenBy(x => x.Name)
+                .ThenBy(x => x.Version)
+                .ToListAsync();
 
             return View(model);
         }
@@ -121,15 +144,18 @@ namespace Ddi.Registry.Web.Controllers
 
         public async Task SendApprovedEmail(ApplicationUser user, string agencyName)
         {
-            var bodyHtml = $"<p>The following agency identifier has been approved:</<p><p>{agencyName}</p><p>Thank you,<br/>The DDI Alliance</p>";
-            var subject = $"DDI Registry - Agency Approved: {agencyName}";
+            var encodedAgencyName = HtmlEncoder.Default.Encode(agencyName ?? string.Empty);
+            var bodyHtml = string.Format(_localizer["ApprovedEmailBody"], encodedAgencyName);
+            var subject = string.Format(_localizer["ApprovedEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);
         }
         public async Task SendDeniedEmail(ApplicationUser user, string agencyName, string reason)
         {
-			string bodyHtml = $"<p>The following request for an agency identifier has been denied:</p><p>{agencyName}</p><p>The reason given was:</p><p>{reason}</p><p>Thank you,<br/>The DDI Alliance</p>";
-            var subject = $"DDI Registry - Agency Denied: {agencyName}";
+            var encodedAgencyName = HtmlEncoder.Default.Encode(agencyName ?? string.Empty);
+            var encodedReason = HtmlEncoder.Default.Encode(reason ?? string.Empty);
+            var bodyHtml = string.Format(_localizer["DeniedEmailBody"], encodedAgencyName, encodedReason);
+            var subject = string.Format(_localizer["DeniedEmailSubject"], agencyName);
 
             await _email.SendEmailAsync(user.Email, subject, bodyHtml);
         }
@@ -144,6 +170,102 @@ namespace Ddi.Registry.Web.Controllers
 				return View(model);
             }
             return Forbid();
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> ApproveConceptRegistration(string irdi)
+        {
+            var concept = await _context.ConceptRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (concept == null)
+            {
+                return Forbid();
+            }
+
+            concept.ApprovalState = ApprovalState.Approved;
+            concept.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> DeprecateConceptRegistration(string irdi)
+        {
+            var concept = await _context.ConceptRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (concept == null)
+            {
+                return Forbid();
+            }
+
+            concept.ApprovalState = ApprovalState.Deprecated;
+            concept.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> ApproveRepresentationRegistration(string irdi)
+        {
+            var representation = await _context.RepresentationRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (representation == null)
+            {
+                return Forbid();
+            }
+
+            representation.ApprovalState = ApprovalState.Approved;
+            representation.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> DeprecateRepresentationRegistration(string irdi)
+        {
+            var representation = await _context.RepresentationRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (representation == null)
+            {
+                return Forbid();
+            }
+
+            representation.ApprovalState = ApprovalState.Deprecated;
+            representation.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> ApproveVariableRegistration(string irdi)
+        {
+            var variable = await _context.VariableRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (variable == null)
+            {
+                return Forbid();
+            }
+
+            variable.ApprovalState = ApprovalState.Approved;
+            variable.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [Authorize(Roles = "admin,SuperAdmin")]
+        public async Task<IActionResult> DeprecateVariableRegistration(string irdi)
+        {
+            var variable = await _context.VariableRegistrations.FirstOrDefaultAsync(x => x.Irdi == irdi);
+            if (variable == null)
+            {
+                return Forbid();
+            }
+
+            variable.ApprovalState = ApprovalState.Deprecated;
+            variable.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin");
         }
 
 		[Authorize(Roles = "admin,SuperAdmin")]

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>Manage</value></data>
+  <data name="Agencies" xml:space="preserve"><value>Agencies</value></data>
+  <data name="NoApprovedAgencies" xml:space="preserve"><value>This account has no approved agencies.</value></data>
+  <data name="AgencyName" xml:space="preserve"><value>Agency Name</value></data>
+  <data name="AgencyLabel" xml:space="preserve"><value>Agency Label</value></data>
+  <data name="Created" xml:space="preserve"><value>Created</value></data>
+  <data name="Modified" xml:space="preserve"><value>Modified</value></data>
+  <data name="AdministrativeContact" xml:space="preserve"><value>Administrative Contact</value></data>
+  <data name="TechnicalContact" xml:space="preserve"><value>Technical Contact</value></data>
+  <data name="Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Manage" xml:space="preserve"><value>Manage</value></data>
+  <data name="Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="PendingRequests" xml:space="preserve"><value>Pending Requests</value></data>
+  <data name="NoPendingRequests" xml:space="preserve"><value>This account has no pending agency requests.</value></data>
+  <data name="RequestNewAgency" xml:space="preserve"><value>Request New Agency</value></data>
+  <data name="RequestedOn" xml:space="preserve"><value>Requested On</value></data>
+  <data name="EditContacts" xml:space="preserve"><value>Edit Contacts</value></data>
+  <data name="RelatedPeople" xml:space="preserve"><value>Related People</value></data>
+  <data name="Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Details" xml:space="preserve"><value>Details</value></data>
+</root>

@@ -1,10 +1,11 @@
 ﻿@model Ddi.Registry.Web.Models.UnknownAgencyModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Unknown Agency";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h2>Unknown Agency</h2>
+<h2>@Localizer["Heading"]</h2>
 
-<p>An agency named <strong>@Model.AgencyName</strong> does not exist.</p>
+<p>@Localizer["Body1"] <strong>@Model.AgencyName</strong> @Localizer["Body2"]</p>
 <partial name="SearchControl" model="new Ddi.Registry.Web.Models.SearchModel()" />

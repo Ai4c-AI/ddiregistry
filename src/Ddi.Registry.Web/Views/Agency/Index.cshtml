@@ -1,4 +1,5 @@
 ﻿@model Ddi.Registry.Web.Models.AgencyOverviewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = Model.Agency.AgencyId;
@@ -8,25 +9,25 @@
 
 <partial name="AgencyControl" model="Model.Agency" />
 
-<h2>Contact Information</h2>
+<h2>@Localizer["ContactInformation"]</h2>
 @if (Model.AdminContact != null)
 {
-    var adminViewData = new ViewDataDictionary(ViewData) { { "CardTitle" , "Administrative Contact" } };
+    var adminViewData = new ViewDataDictionary(ViewData) { { "CardTitle" , Localizer["AdministrativeContact"].Value } };
     <partial name="PersonControl" model="Model.AdminContact" view-data="adminViewData" />
     
 }
 
 @if (Model.TechnicalContact != null)
 {
-    var techViewData = new ViewDataDictionary(ViewData) { { "CardTitle", "Technical Contact" } };
+    var techViewData = new ViewDataDictionary(ViewData) { { "CardTitle", Localizer["TechnicalContact"].Value } };
     <partial name="PersonControl" model="Model.TechnicalContact" view-data="techViewData" />
 
 }
 
 @if (Model.Assignments.Count() == 0)
 {
-    <h2>Sub Agency Assignments</h2>
-    <p>This agency has no sub agencies.</p>
+    <h2>@Localizer["SubAgencyAssignments"]</h2>
+    <p>@Localizer["NoSubAgencies"]</p>
 }
 else
 {
@@ -35,7 +36,7 @@ else
         <h2>@a.AssignmentId</h2>
 
         
-        <h4>Http Resolvers</h4>
+        <h4>@Localizer["HttpResolvers"]</h4>
 
         if (Model.HttpResolvers[a.AssignmentId].Count() > 0)
         {
@@ -43,10 +44,10 @@ else
         }
         else
         {
-            <p>No http resolvers are configured.</p>
+            <p>@Localizer["NoHttpResolvers"]</p>
         }
 
-        <h4>DNS SRV Services</h4>
+        <h4>@Localizer["DnsSrvServices"]</h4>
 
         if (Model.Services[a.AssignmentId].Count() > 0)
         {
@@ -54,14 +55,14 @@ else
         }
         else
         {
-            <p>No services are configured.</p>
+            <p>@Localizer["NoServices"]</p>
         }
 
         <h4>
-            Foreign Name Server Delegations 
+            @Localizer["ForeignNameServerDelegations"]
             @if (!a.IsDelegated)
             {
-                <span>(Disabled)</span>
+                <span>@Localizer["Disabled"]</span>
             }
         </h4>
 
@@ -71,7 +72,7 @@ else
         }
         else
         {
-            <p>No delegations are configured.</p>
+            <p>@Localizer["NoDelegations"]</p>
         }
     }
 }

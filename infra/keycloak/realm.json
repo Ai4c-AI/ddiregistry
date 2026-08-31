@@ -1,0 +1,179 @@
+{
+  "realm": "ddi-registry",
+  "enabled": true,
+  "accessTokenLifespan": 300,
+  "clientScopes": [
+    {
+      "name": "profile",
+      "protocol": "openid-connect"
+    },
+    {
+      "name": "email",
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "email",
+            "claim.name": "email",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ddi.registry.read",
+      "protocol": "openid-connect"
+    },
+    {
+      "name": "ddi.registry.write",
+      "protocol": "openid-connect"
+    },
+    {
+      "name": "mcp-audience",
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "mcp-client-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "mcp-client",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "registry-web",
+      "protocol": "openid-connect",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "local-registry-web-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8000/signin-oidc",
+        "http://localhost:49959/signin-oidc",
+        "https://localhost:49958/signin-oidc"
+      ],
+      "webOrigins": [
+        "http://localhost:8000",
+        "http://localhost:49959",
+        "https://localhost:49958"
+      ],
+      "defaultClientScopes": [
+        "profile",
+        "email"
+      ]
+    },
+    {
+      "clientId": "mcp-client",
+      "protocol": "openid-connect",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "ddi.registry.read",
+        "ddi.registry.write",
+        "mcp-audience"
+      ]
+    },
+    {
+      "clientId": "mcp-service-client",
+      "protocol": "openid-connect",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "local-mcp-service-secret",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "defaultClientScopes": [
+        "ddi.registry.read",
+        "mcp-audience"
+      ]
+    },
+    {
+      "clientId": "wrong-audience-client",
+      "protocol": "openid-connect",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "ddi.registry.read",
+        "ddi.registry.write"
+      ]
+    },
+    {
+      "clientId": "short-lived-client",
+      "protocol": "openid-connect",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "attributes": {
+        "access.token.lifespan": "5"
+      },
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "ddi.registry.read",
+        "ddi.registry.write",
+        "mcp-audience"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "admin@localhost",
+      "firstName": "Admin",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Password123!",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "mcp-test-user",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "test@example.com",
+      "firstName": "Mcp",
+      "lastName": "Test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-test-password",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}
